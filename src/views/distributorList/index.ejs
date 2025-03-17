@@ -1,0 +1,153 @@
+<%- include("../shared/header.ejs") %>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    .hidden { display: none; }
+</style>
+<style>
+    .scroll-section {
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      background: #f8f9fa;
+    }
+  </style>
+  <style>
+
+    .table-dark th {
+        color: #0000A0 !important; 
+        background-color: #E0E0FC;
+        border: 1px solid rgb(224, 203, 203);
+    }
+
+    #distributorTable tbody tr:nth-child(odd) td {
+        background: #FFFFFF !important; 
+    }
+
+    #distributorTable tbody tr:nth-child(even) td {
+        background: #EFEFFF !important; 
+    }
+</style>
+
+
+   
+<div class="container mt-4">
+    <h4 class="mb-4" style="color: #41378d;">Document Verification</h4>
+
+    <div class="table-responsive">
+        <table id="distributorTable" class="table table-hover table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>S.No</th>
+                    <th>Application Type</th>
+                    <th>DB Type</th>
+                    <th>Firm's Name</th>
+                    <th>Distributor's Name</th>
+                    <th>Email ID</th>
+                    <th>Mobile No.</th>
+                    <th>Start Date</th>
+                    <th>Status</th>
+                    <th>Created By</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (distributors.length > 0) { %>
+                    <% distributors.forEach((distributor, index) => { %>
+                        <tr>
+                            <td><%= index + 1 %></td> 
+                            <td><%= distributor.firmName %></td>
+                            <td><%= distributor.email %></td>
+                            <td><%= distributor.contactNumber %></td>
+                            <td><%= distributor.aseemail %></td>
+                            <td><%= distributor.aseemail %></td>
+                            <td><%= distributor.aseemail %></td>
+                            <td><%= distributor.aseemail %></td>
+                            <td>
+                                <% if (distributor.is_final_approver === 1) { %>
+                                    <span class="badge bg-success">Sent</span> 
+                                <% } else { %>
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                <% } %>
+                            </td>
+                            <td><%= new Date(distributor.create_date).toLocaleDateString('en-GB') %></td>
+                            <td>
+                                <a href="/distributorList/<%= distributor?.application_id %>">
+                                    <button class="btn btn-primary">
+                                        <i class="fa fa-eye"></i>
+                                    </button>
+                                </a>
+                            </td>                             
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan=11" class="text-center">No distributors found.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+            
+            
+        </table>
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+    if ($('#distributorTable tbody tr').length > 1) { 
+        $('#distributorTable').DataTable({
+            "paging": true,
+            "searching": true,
+            "ordering": true,
+            "info": true,
+            "lengthMenu": [5, 10, 25, 50], 
+            "pageLength": 5 
+        });
+    }
+ });
+</script>
+
+<script>
+    function confirmDelete(id) {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = `/edit_distributor/delete_distributor?id=${id}`;
+        }
+    });
+}
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        <% if (notification) { %>
+            Swal.fire({
+                icon: '<%= notification.type %>', 
+                title: '<%= notification.message %>',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        <% } %>
+    });
+</script>
+
+
+<%- include("../shared/footer.ejs") %>

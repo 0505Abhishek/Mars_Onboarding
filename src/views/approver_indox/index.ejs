@@ -1,0 +1,199 @@
+<%- include("../shared/header.ejs") %>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+
+<style>
+    .hidden { display: none; }
+</style>
+<style>
+    .scroll-section {
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      background: #f8f9fa;
+    }
+  </style>
+  <style>
+
+    .table-dark th {
+        color: #0000A0 !important; 
+        background-color: #E0E0FC;
+        border: 1px solid rgb(224, 203, 203);
+    }
+
+    #distributorTable tbody tr:nth-child(odd) td {
+        background: #FFFFFF !important; 
+    }
+
+    #distributorTable tbody tr:nth-child(even) td {
+        background: #EFEFFF !important; 
+    }
+
+    .dt-buttons .btn, .buttons-copy, .buttons-csv {
+    background-color: #007bff !important; /* Blue color */
+    color: white !important; /* White text */
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+  }
+
+</style>
+
+
+   
+<div class="container mt-4">
+    <div class="d-flex justify-content-between mb-2">
+        <!-- DataTable Buttons -->
+        <div>
+            
+        </div>
+    
+        <div class="d-flex gap-2">
+            <!-- Status Filter -->
+            <select id="statusFilter" class="form-select">
+                <option value="">Filter by Status</option>
+                <option value="Active">Active</option>
+                <option value="All Opportunity">All Opportunity</option>
+            </select>
+    
+            <!-- Type Filter -->
+            <select id="typeFilter" class="form-select">
+                <option value="">Filter by Type</option>
+                <option value="Distributor">Distributor</option>
+                <option value="Retailer">Retailer</option>
+                <option value="Wholesaler">Wholesaler</option>
+            </select>
+        </div>
+    </div>
+    
+    <div class="table-responsive">
+        <table id="distributorTable" class="table table-striped table-bordered display nowrap" style="width:100%">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Business Name</th>
+                    <th>Score</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                    <th>Territory</th>
+                    <th>Last Updated</th>
+                    <th>Census Code</th>
+                    <th>City</th>
+                    <th>PAN</th>
+                    <th>SAP Dummy Code</th>
+                    <th>Initiator Email</th>
+                    <th>Initiator Role</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="distributorBody">
+                <% if (distributors?.length > 0) { %>
+                    <% distributors.forEach((distributor) => { %>
+                        <tr data-status="<%= distributor?.status ?? 'N/A' %>">
+                            <td><%= distributor?.id ?? 'N/A' %></td> 
+                            <td><%= distributor?.businessName ?? 'N/A' %></td>
+                            <td><%= distributor?.score ?? 'N/A' %></td>
+                            <td><%= distributor?.type ?? 'N/A' %></td>
+                            <td><%= distributor?.status ?? 'N/A' %></td>
+                            <td><%= distributor?.territory ?? 'N/A' %></td>
+                            <td><%= distributor?.last_updated_date ? new Date(distributor?.last_updated_date).toLocaleDateString('en-GB') : 'N/A' %></td>
+                            <td><%= distributor?.census_code ?? 'N/A' %></td>
+                            <td><%= distributor?.city ?? 'N/A' %></td>
+                            <td><%= distributor?.pan ?? 'N/A' %></td>
+                            <td><%= distributor?.sap_dummy_code ?? 'N/A' %></td>
+                            <td><%= distributor?.initiator_email ?? 'N/A' %></td>
+                            <td><%= distributor?.initiator_role ?? 'N/A' %></td>
+                            <td>
+                                <% if (true) { %>
+                                    <a href="/approver_indox/<%=distributor.id %>">
+                                        <button class="btn btn-primary">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+                                    </a>
+                                <% } %>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="14" class="text-center">No distributors found.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+
+<script>
+    $(document).ready(function () {
+        var table = $('#distributorTable').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'copyHtml5',
+                    text: '<i class="text-white">Copy</i>',
+                    className: 'btn btn-primary btn-sm'
+                },
+                {
+                    extend: 'csvHtml5',
+                    text: '<i class="text-white">CSV</i>',
+                    className: 'btn btn-primary btn-sm'
+                }
+            ],
+            paging: true,
+            searching: true,
+            ordering: true,
+            info: true,
+            lengthMenu: [5, 10, 25, 50],
+            pageLength: 5,
+            scrollX: true, // ✅ Horizontal scrolling for large tables
+            autoWidth: false, // Prevents DataTables from overriding column widths
+            columnDefs: [
+                { "orderable": false, "targets": [3, 4] } // Disabling sorting on Type & Status columns
+            ]
+        });
+    });    
+
+</script>
+
+<script>
+    function confirmDelete(id) {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: "Yes, delete it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = `/edit_distributor/delete_distributor?id=${id}`;
+        }
+    });
+}
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        <% if (notification) { %>
+            Swal.fire({
+                icon: '<%= notification.type %>', 
+                title: '<%= notification.message %>',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        <% } %>
+    });
+</script>
+
+
+<%- include("../shared/footer.ejs") %>

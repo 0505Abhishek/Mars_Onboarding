@@ -1,0 +1,28 @@
+{
+  "name": "mars_onboarding",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "connect-multiparty": "^2.2.0",
+    "cookie-parser": "^1.4.7",
+    "crypto-js": "^4.2.0",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "jsonwebtoken": "^9.0.2",
+    "mysql": "^2.18.1",
+    "nodemailer": "^6.10.0",
+    "nodemon": "^3.1.9",
+    "xlsx": "^0.18.5"
+  }
+}

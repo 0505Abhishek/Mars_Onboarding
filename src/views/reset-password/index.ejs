@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Language" content="en">
+    <title> Admin-MARS</title>
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no" />
+    <link rel="icon" type="image/x-icon" href="../images/ficon (1).png">
+
+    <meta name="msapplication-tap-highlight" content="no">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+        integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<body class="vh-100">
+    <div class="container-fluid">
+        <div class="row vh-100 ">
+            <div class="col-md-7 col-lg-4 col-xl-4 bg-light pt-5">
+                <div class="mt-5 pt-5 p-3 z-index-0">
+                    <div class=" text-center pt-4">
+                        <img src="../images/logo-main.svg" width="200" alt="" loading="lazy">
+                        <h2>Reset Password </h2>
+                    </div>
+
+                    <form role="form text-left" action="./reset-password" method="post" id="reset-password-form">
+                        <div class="mb-3">
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" name="password" id="password" class="form-control"
+                                    placeholder="Your password" required>
+                                <div id="password-validation"></div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-group">
+                                <label for="confirmPassword">Confirm Password</label>
+                                <input type="password" name="confirmPassword" id="confirmPassword" class="form-control"
+                                    placeholder="Your confirm password" required>
+                                <div id="confirm-password-validation"></div>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn login-btn w-100 my-4 mb-2">Submit</button>
+                        </div>
+                    </form>
+                    <div class=" mt-5 pt-5">
+                        <div class="mt-5 pt-5 text-center">
+                            <div class="app-footer-right">
+                                <p class="mb-0 text-center">© 2024. All right reserved.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8 col-lg-7 col-xl-8 text-center pt-5 mt-4">
+                <img src="../images/authentication.jpg" class="img-fluid custom-img" alt="Phone image">
+            </div>
+
+        </div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            $('#password').keyup(function () {
+                var password = $(this).val();
+                var passwordValidation = $('#password-validation');
+                var passwordStrength = checkStrength(password);
+
+                if (passwordStrength) {
+                    passwordValidation.removeClass('text-danger').addClass('text-success')
+                        .text('Password Strength: ' + passwordStrength);
+                } else {
+                    passwordValidation.removeClass('text-success').addClass('text-danger')
+                        .text('Password too weak');
+                }
+            });
+
+            $('#confirmPassword').keyup(function () {
+                var password = $('#password').val();
+                var confirmPassword = $(this).val();
+                var confirmPasswordValidation = $('#confirm-password-validation');
+
+                if (password === confirmPassword) {
+                    confirmPasswordValidation.removeClass('text-danger').addClass('text-success')
+                        .text('Passwords match');
+                } else {
+                    confirmPasswordValidation.removeClass('text-success').addClass('text-danger')
+                        .text('Passwords do not match');
+                }
+            });
+
+            function checkStrength(password) {
+                // Your password strength checking logic here
+                // Example logic:
+                if (password.length >= 8) {
+                    return 'Strong';
+                } else if (password.length >= 6) {
+                    return 'Moderate';
+                } else {
+                    return 'Weak';
+                }
+            }
+        });
+    </script>
+    <script src='https://code.jquery.com/jquery-1.12.4.min.js'></script>
+    <script src='https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js'></script>
+    <script src='https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.js'></script>
+    <script src="../js/main.js"></script>
+</body>
+
+</html>

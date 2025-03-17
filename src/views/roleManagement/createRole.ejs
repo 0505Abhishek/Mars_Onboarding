@@ -1,0 +1,358 @@
+<%- include("../shared/header.ejs", { token: token }) %>
+    <style>
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .form-group input[type="text"],
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .permissions-dropdown {
+            position: relative;
+        }
+
+        .permissions-container {
+            display: none;
+            position: absolute;
+            width: 100%;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .permissions-container label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .permissions-container input[type="checkbox"] {
+            margin-right: 5px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 5px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .submit-btn {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .submit-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .dropdown-active {
+            display: block;
+        }
+
+        .h100 {
+            height: 100vh;
+        }
+
+        .permission-section {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+        }
+
+        .permission {
+            text-align: center;
+        }
+
+        .permission label {
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        input[type="radio"] {
+            margin: 0 5px;
+        }
+    </style>
+    <div class="main-panel">
+        <div class="content-wrapper">
+
+            <div class="row">
+                <div class="col-12 grid-margin stretch-card">
+                    <div class="card ">
+                        <div class="card-body role-management table-responsive">
+                            <div class="business-hading d-flex justify-content-between">
+                                <h4>CREATE ROLE</h4>
+
+                            </div>
+
+                            <div class="form-container">
+                                <form action="/role_managment/createrole" method="post" enctype="multipart/form-data">
+                                    <!-- Role Name -->
+
+                                    <div class="form-group">
+                                        <label for="businessLine">Parent Role </label>
+                                        <select id="businessLine" name="parent_id" class="form-control">
+                                            <option value="" disabled selected>Select Parent role </option>
+                                            <% tblrole.forEach(function(line) { %>
+                                                <% if (line.flag===1) { %>
+                                                    <option value="<%= line.id %>">
+                                                        <%= line.role %>
+                                                    </option>
+                                                    <% } %>
+                                                        <% }); %>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="roleName">Role Name <span class="required">*</span></label>
+                                        <input type="text" id="roleName" name="role" placeholder="Enter Role Name"
+                                            required>
+                                    </div>
+
+                                    <!-- Display Name -->
+                                    <div class="form-group">
+                                        <label for="displayName">Display Name <span class="required">*</span></label>
+                                        <input type="text" id="displayName" name="display_name"
+                                            placeholder="Enter Display Name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Approval">Approval </label>
+                                        <select id="Approval" name="approval" class="form-control" required>
+                                            <option value="" disabled selected>Select Approval </option>
+                                            <option value="1">
+                                                Yes
+                                            </option>
+                                            <option value="0">
+                                                No
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="reject">Reject </label>
+                                        <select id="reject" name="reject" class="form-control" required>
+                                            <option value="" disabled selected>Select Reject </option>
+                                            <option value="1">
+                                                Yes
+                                            </option>
+                                            <option value="0">
+                                                No
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Clarification">Clarification </label>
+                                        <select id="Clarification" name="clarification" class="form-control" required>
+                                            <option value="" disabled selected>Select Clarification </option>
+                                            <option value="1">
+                                                Yes
+                                            </option>
+                                            <option value="0">
+                                                No
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="DummyCode">Dummy Code </label>
+                                        <select id="DummyCode" name="dummy_code" class="form-control" required>
+                                            <option value="" disabled selected>Select Dummy Code </option>
+                                            <option value="1">
+                                                Yes
+                                            </option>
+                                            <option value="0">
+                                                No
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Correction from cd">Correction from cd </label>
+                                        <select id="Correction from cd" name="correction_from_cd" class="form-control"
+                                            required>
+                                            <option value="" disabled selected>Select Correction from cd </option>
+                                            <option value="1">
+                                                Yes
+                                            </option>
+                                            <option value="0">
+                                                No
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="Correction from executive">Correction from executive </label>
+                                        <select id="Correction from executive" name="correction_from_executive"
+                                            class="form-control" required>
+                                            <option value="" disabled selected>Select Correction from executive
+                                            </option>
+                                            <option value="1">
+                                                Yes
+                                            </option>
+                                            <option value="0">
+                                                No
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <!-- Select Permissions -->
+                                    <div class="form-group">
+                                        <label for="permissionsInput">Select Permission(s) <span
+                                                class="required">*</span></label>
+                                        <div class="permissions-dropdown">
+                                            <input type="text" id="permissionsInput" class="search-input"
+                                                placeholder="Select Permission(s)" readonly onclick="toggleDropdown()">
+                                            <div class="permissions-container" id="permissionsDropdown">
+                                                <input type="text" id="searchPermissions" class="search-input"
+                                                    placeholder="Search permissions..." onkeyup="filterPermissions()">
+                                                <label><input type="checkbox" name="module_name" value="DASHBOARD"
+                                                        onclick="updateSelected()" required> Dashboard</label>
+                                                <label><input type="checkbox" name="module_name"
+                                                        value="PROSPECTIVE_DISTRIBUTOR" onclick="updateSelected()">
+                                                    ProspectiveDistributors</label>
+                                                <label><input type="checkbox" name="module_name"
+                                                        value="APPLICATION_LIST" onclick="updateSelected()">
+                                                    ApplicationList </label>
+                                                <label><input type="checkbox" name="module_name" value="ROLE_MANAGEMENT"
+                                                        onclick="updateSelected()"> RoleManagement
+                                                </label>
+                                                <label><input type="checkbox" name="module_name" value="USER_MANAGEMENT"
+                                                        onclick="updateSelected()"> UserManagement
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <button type="submit" class="btn w-100 btn-success">Submit</button>
+                                </form>
+                            </div>
+
+                            <script>
+                                // Function to toggle the dropdown
+                                function toggleDropdown() {
+                                    const dropdown = document.getElementById('permissionsDropdown');
+                                    dropdown.classList.toggle('dropdown-active');
+                                }
+
+                                // Function to filter the permissions based on search input
+                                function filterPermissions() {
+                                    const input = document.getElementById('searchPermissions');
+                                    const filter = input.value.toLowerCase();
+                                    const labels = document.querySelectorAll('.permissions-container label');
+
+                                    labels.forEach(label => {
+                                        const text = label.textContent || label.innerText;
+                                        if (text.toLowerCase().indexOf(filter) > -1) {
+                                            label.style.display = "";
+                                        } else {
+                                            label.style.display = "none";
+                                        }
+                                    });
+                                }
+
+                                // Function to update the selected permissions in the input field and set value to 1 when checked
+                                function updateSelected() {
+                                    const checkboxes = document.querySelectorAll('.permissions-container input[type="checkbox"]');
+                                    const selectedPermissions = [];
+
+                                    checkboxes.forEach((checkbox) => {
+                                        // Set the value to "1" if checked, otherwise "0"
+                                        // checkbox.value = checkbox.checked ? '1' : '0';
+
+                                        // Add to the list of selected permissions if checked
+                                        if (checkbox.checked) {
+                                            selectedPermissions.push(checkbox.parentNode.textContent.trim());
+                                        }
+                                    });
+
+                                    // Update the input field with the selected permissions as a comma-separated list
+                                    document.getElementById('permissionsInput').value = selectedPermissions.join(', ');
+                                }
+
+                                // Close dropdown when clicking outside
+                                window.onclick = function (event) {
+                                    const dropdown = document.getElementById('permissionsDropdown');
+                                    const inputField = document.getElementById('permissionsInput');
+                                    const searchField = document.getElementById('searchPermissions');
+
+                                    // Check if the click is outside the dropdown and the input field
+                                    if (!dropdown.contains(event.target) && !inputField.contains(event.target)) {
+                                        if (dropdown.classList.contains('dropdown-active')) {
+                                            dropdown.classList.remove('dropdown-active');
+                                        }
+                                    }
+                                }
+
+                            </script>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- content-wrapper ends -->
+        <!-- partial:../../partials/_footer.html -->
+        <footer class="footer">
+            <div class="container-fluid text-center">
+
+            </div>
+        </footer>
+        <!-- partial -->
+    </div>
+    <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+    </div>
+    <script>
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+
+        function showToast(icon, title) {
+            Toast.fire({
+                icon: icon,
+                title: title
+            });
+        }
+        "  <% if (message) { %>"
+        showToast("error", "<%= message %>");
+        "<% } else if (success) { %>"
+        showToast("success", "<%= success %>");
+
+        "  <% } %>"
+
+    </script>
+    <%- include("../shared/footer.ejs") %>

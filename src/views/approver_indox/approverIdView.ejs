@@ -1,0 +1,359 @@
+<%- include("../shared/header.ejs") %>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Application Details - Overview</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .nav-tabs .nav-link.active {
+            background-color: #007bff;
+            color: white;
+        }
+        #card-body2
+        {
+            margin-top: -30px;
+        }
+        #card-body3{
+            margin-top: -30px;
+        }
+    </style>
+
+    <style>
+        .list-group-item {
+            font-size: 18px; /* Increased font size */
+            cursor: pointer; /* Add pointer effect */
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container mt-4">
+        <div class="d-flex align-items-center mb-3">
+            <i class="fas fa-arrow-left text-black"></i>
+            <h1 class="ms-2 h5">Application Details</h1>
+        </div>
+        <a href="#" class="text-primary mb-3 d-block">Ashok General Store</a>
+
+        <div class="card">
+            <!-- Navigation Tabs -->
+            <ul class="nav nav-tabs" id="myTabs">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" data-tab="overview" href="#">OVERVIEW</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" data-tab="history" href="#">HISTORY</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-bs-toggle="tab" data-tab="documents" href="#">DOCUMENTS & DETAILS</a>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="card-body" id="card-body1">
+                <div id="overview" class="tab-content active">
+                    <p class="h6">Amit Kumar Mahawar</p>
+                    <p class="text-muted">
+                        <i class="fas fa-map-marker-alt me-2"></i> Ratnapur
+                    </p>
+                    <p class="mt-3">
+                        <span class="text-primary">Application Type -</span> New Town
+                    </p>
+                    <p class="mt-2">
+                        <span class="text-primary">Application Start Date -</span> 11/02/2025
+                    </p>
+                </div>
+            </div> 
+
+            <div class="card-body" id="card-body2">
+                <div id="history" class="tab-content d-none">
+                    <h5 class="text-primary">Application Timeline</h5>
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span class="text-primary" onclick="toggleDetails('inviteSent')">Invite Sent</span>
+                            <span>11/02/2025 &nbsp; 1:53:53 PM</span>
+                        </li>
+                        <div id="inviteSent" class="details d-none">
+                            <table class="table table-bordered mt-2">
+                                <tr>
+                                    <th>Action</th>
+                                    <th>Date</th>
+                                    <th>Details</th>
+                                </tr>
+                                <tr>
+                                    <td>Invite Sent</td>
+                                    <td>11/02/2025</td>
+                                    <td>1:53:53 PM</td>
+                                </tr>
+                            </table>
+                        </div>
+            
+                        <li class="list-group-item text-primary" onclick="toggleDetails('documentCapture')">Document Capture</li>
+                        <div id="documentCapture" class="details d-none">
+                            <table class="table table-bordered mt-2">
+                                <thead>
+                                    <tr>
+                                        <th>S.No.</th>
+                                        <th>From</th>
+                                        <th>Action</th>
+                                        <th>Date</th>
+                                        <th>To</th>
+                                        <th>Remarks/Comments</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Lorem Ipsum</td>
+                                        <td>Send Invite</td>
+                                        <td>11/02/2025 1:53:53 PM</td>
+                                        <td>Amit Kumar Mahawar</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Lorem Ipsum</td>
+                                        <td>Accepted</td>
+                                        <td>11/02/2025 1:57:27 PM</td>
+                                        <td>Amit Kumar Mahawar</td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+            
+                        <li class="list-group-item text-primary" onclick="toggleDetails('underReview')">Under Review</li>
+                        <div id="underReview" class="details d-none">
+                            <table class="table table-bordered mt-2">
+                                <thead>
+                                    <tr>
+                                        <th>S.No.</th>
+                                        <th>From</th>
+                                        <th>Action</th>
+                                        <th>Date</th>
+                                        <th>To</th>
+                                        <th>Remarks/Comments</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Lorem Ipsum</td>
+                                        <td>Send Invite</td>
+                                        <td>11/02/2025 1:53:53 PM</td>
+                                        <td>Amit Kumar Mahawar</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Lorem Ipsum</td>
+                                        <td>Accepted</td>
+                                        <td>11/02/2025 1:57:27 PM</td>
+                                        <td>Amit Kumar Mahawar</td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+            
+                        <li class="list-group-item text-primary" onclick="toggleDetails('inviteExpired')">Invite Expired</li>
+                        <div id="inviteExpired" class="details d-none">
+                            <table class="table table-bordered mt-2">
+                                <thead>
+                                    <tr>
+                                        <th>S.No.</th>
+                                        <th>From</th>
+                                        <th>Action</th>
+                                        <th>Date</th>
+                                        <th>To</th>
+                                        <th>Remarks/Comments</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>Lorem Ipsum</td>
+                                        <td>Send Invite</td>
+                                        <td>11/02/2025 1:53:53 PM</td>
+                                        <td>Amit Kumar Mahawar</td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>Lorem Ipsum</td>
+                                        <td>Accepted</td>
+                                        <td>11/02/2025 1:57:27 PM</td>
+                                        <td>Amit Kumar Mahawar</td>
+                                        <td></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </ul>
+                </div>
+            </div>
+            
+            
+
+            <div class="card-body" id="card-body3">
+                <div id="documents" class="tab-content d-none">
+                    <!-- Basic Details Section -->
+                  <ul class="list-group">
+                    <li class="list-group-item text-primary" onclick="toggleDetails('basicDetails')">Basic Details</li>
+                    <div id="basicDetails" class="details d-none">
+                        <form id="basicDetailsForm">
+                            <table class="table table-bordered mt-2">
+                                <thead>
+                                    <tr>
+                                        <th>Field Name</th>
+                                        <th>User Input</th>
+                                        <th>Remarks</th>
+                                        <th>Verified</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Full Name</td>
+                                        <td><input type="text" class="form-control" id="fullName" value="Amit Kumar Mahawar"></td>
+                                        <td><input type="text" class="form-control" id="fullNameRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="fullNameCheck"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Email</td>
+                                        <td><input type="email" class="form-control" id="email" value="amit@example.com"></td>
+                                        <td><input type="text" class="form-control" id="emailRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="emailCheck"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Phone Number</td>
+                                        <td><input type="text" class="form-control" id="phone" value="9876543210"></td>
+                                        <td><input type="text" class="form-control" id="phoneRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="phoneCheck"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                    </div>
+            
+                    <!-- Additional Details Section -->
+                    <li class="list-group-item text-primary" onclick="toggleDetails('additionalDetails')">Additional Details</li>
+                    <div id="additionalDetails" class="details d-none">
+                        <form id="additionalDetailsForm">
+                            <table class="table table-bordered mt-2">
+                                <thead>
+                                    <tr>
+                                        <th>Field Name</th>
+                                        <th>User Input</th>
+                                        <th>Remarks</th>
+                                        <th>Verified</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Address</td>
+                                        <td><input type="text" class="form-control" id="address" value="New Delhi, India"></td>
+                                        <td><input type="text" class="form-control" id="addressRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="addressCheck"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>City</td>
+                                        <td><input type="text" class="form-control" id="city" value="Delhi"></td>
+                                        <td><input type="text" class="form-control" id="cityRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="cityCheck"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
+                    </div>
+
+                    <li class="list-group-item text-primary">Decision Panel</li>
+                    <div id="additionalDeta" class="details d-none">
+                    </div>
+                    <li class="list-group-item text-primary" onclick="toggleDetails('approvalStatusSection')">Select Choice</li>
+                    <div id="approvalStatusSection" class="details d-none">
+                    <form id="approvalStatusForm">
+                        <table class="table table-bordered mt-2">
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label for="approvalStatus" class="fw-bold mb-2">Approval Status:</label>
+                                        <select id="approvalStatus" class="form-select w-100">
+                                            <option value="">Select</option>
+                                            <option value="approve">Approve</option>
+                                            <option value="reject">Reject</option>
+                                            <option value="correction">Correction</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                     </form>
+                    </div>
+                  </ul>  
+                    <!-- Remarks Section -->
+                    <div class="d-flex flex-column mt-3">
+                        <label for="remarkInput" class="fw-bold mb-2">Remarks:</label>
+                        <input type="text" class="form-control w-100" id="remarkInput">
+                    </div>
+                    
+
+                    <!-- Submit Button -->
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-primary px-4">SUBMIT</button>
+                    </div>
+                </div>
+
+            </div>
+            
+            <script>
+                function toggleDetails(id) {
+                    let element = document.getElementById(id);
+                    element.classList.toggle('d-none');
+                }
+            </script>
+             
+
+        </div>
+    </div>
+        
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const tabs = document.querySelectorAll(".nav-link[data-bs-toggle='tab']");
+            const tabContents = document.querySelectorAll(".tab-content");
+
+            tabs.forEach(tab => {
+                tab.addEventListener("click", function (e) {
+                    e.preventDefault();
+
+                    // Remove active class from all tabs
+                    tabs.forEach(t => t.classList.remove("active"));
+                    // Hide all tab contents
+                    tabContents.forEach(content => content.classList.add("d-none"));
+
+                    // Activate the clicked tab
+                    this.classList.add("active");
+                    const target = this.getAttribute("data-tab");
+                    document.getElementById(target).classList.remove("d-none");
+                });
+            });
+        });
+    </script>
+
+
+    <script>
+        function toggleDetails(id) {
+            var element = document.getElementById(id);
+            if (element.classList.contains('d-none')) {
+                element.classList.remove('d-none');
+            } else {
+                element.classList.add('d-none');
+            }
+        }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<%- include("../shared/footer.ejs") %>
+

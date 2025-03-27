@@ -65,7 +65,6 @@ app.use('/public', express.static(__dirname + '/src/public'));
 app.use('/', adminRoute);
 app.use((req, res) => {
 
-  console.log('Invalid route accessed');
   res.redirect('/page404/page404'); 
 });
 app.listen(3100, () => {

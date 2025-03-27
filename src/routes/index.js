@@ -11,7 +11,10 @@ const rsemApplicationCorrection = require("../routes/rsemApplicationCorrection/r
 const approverLead = require("../routes/approveLead/approveLead.route");
 const leadStatus = require("../routes/lead_status/lead_status.route");
 const approverIndox = require("../routes/approvers_indox/approvers_indox.route");
-const report = require("../routes/report/report.route"); 
+const report = require("../routes/report/report.route");
+const correction = require("../routes/correction/correction.route"); 
+const correctionPage = require("../routes/correctionPage/correctionPage.route"); 
+
 const path = require('path');
 const router = express.Router();
 
@@ -67,6 +70,14 @@ const routes = [
     {
         path:'/report',
         route: report
+    },
+    {
+        path:'/correction',
+        route: correction
+    },
+    {
+        path:'/correctionPage',
+        route: correctionPage
     }
 ];
 routes.forEach((route) => {

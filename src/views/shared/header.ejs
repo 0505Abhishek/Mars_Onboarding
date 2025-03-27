@@ -11,7 +11,7 @@
     
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css">  
 
-    <link rel="stylesheet" href="../css/style.css"> 
+    <link rel="stylesheet" href="/css/style.css"> 
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font/css/materialdesignicons.min.css">  
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -170,6 +170,11 @@
                                             <i class="fa-solid fa-file-contract"></i>
                                             <span class="menu-title">Document Verification</span>
                                         </a>
+                                    <% } else if (item.module_name === 'CORRECTION') { %>
+                                        <a class="nav-link" href="/correction">
+                                            <i class="fa-solid fa-file-contract"></i>
+                                            <span class="menu-title">Correction</span>
+                                        </a>    
                                     
                                     <% } else if (item.module_name === 'ROLE_MANAGEMENT') { %>
                                         <a class="nav-link" href="/role_managment">
@@ -184,7 +189,7 @@
                 
                         <!-- Logout Button -->
                         <li class="nav-item">
-                            <a class="nav-link" href="/account">
+                            <a class="nav-link" href="/">
                                 <i class="fa-solid fa-right-from-bracket"></i>
                                 <span class="menu-title">LOGOUT</span>
                             </a>

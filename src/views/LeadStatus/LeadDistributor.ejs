@@ -12,14 +12,17 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <style>
-.modal-backdrop {
-    display: none !important;
-}
+    .modal-backdrop {
+        display: none !important;
+    }
 
-.modal-body {
-    max-height: 440px; /* Set max height */
-    overflow-y: auto; /* Enable scrolling */
-}
+    .modal-body {
+        max-height: 440px;
+        overflow-y: auto;
+    }
+    .modal-dialog{
+        width:75%;
+    }
 
      table {
             width: 100%;
@@ -48,6 +51,25 @@
         }
 
 </style>
+<style>
+    .file-upload {
+        display: inline-block;
+        background: #007bff;
+        color: white;
+        padding: 6px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+    
+    .file-upload:hover {
+        background: #0056b3;
+    }
+
+    .file-upload i {
+        margin-right: 5px;
+    }
+</style>
   <style>
 
     .table-dark th {
@@ -65,55 +87,232 @@
     }
 </style>
 
+<style>
+    .back-link {
+        font-size: 18px;
+        font-weight: bold;
+        text-decoration: none;
+        color: #1a1a1a;
+        display: flex;
+        align-items: center;
+        margin-bottom:20px;
+    }
 
-   
+    .back-link i {
+        font-size: 20px;
+        margin-right: 8px;
+    }
+</style>
+
+
 <div class="container mt-4">
-    <h5 class="mb-4" style="color: #41378d;">Distributor List</h5>
-
-    <div class="table-responsive">
-        <table id="documentTable">
-            <thead>
-                <tr>
-                    <th>S. No.</th>
-                    <th>Document Name</th>
-                    <th>Upload</th>
-                    <th>View</th>
-                    <th>Remarks</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Doc 1</td>
-                    <td>
-                        <label for="file1" class="upload-icon">📤</label>
-                        <input type="file" id="file1" class="file-upload" data-view="view1">
-                    </td>
-                    <td>
-                        <span id="view1" class="view-icon">👁</span>
-                    </td>
-                    <td>
-                        <input type="text" placeholder="Enter remarks">
-                    </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Doc 2</td>
-                    <td>
-                        <label for="file2" class="upload-icon">📤</label>
-                        <input type="file" id="file2" class="file-upload" data-view="view2">
-                    </td>
-                    <td>
-                        <span id="view2" class="view-icon">👁</span>
-                    </td>
-                    <td>
-                        <input  style="width:100%" type="text" placeholder="Enter remarks">
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <div class="d-flex justify-content-between align-items-center">
+        <a href="/lead_status" class="back-link">
+            <i class="fa fa-angle-left"></i> Approve Lead
+        </a>
     </div>
+
+    <form id="documentForm" action="/lead_status/<%=application_id%>" method="POST" enctype="multipart/form-data">
+        <div class="table-responsive">
+            <table id="documentTable" class="table">
+                <thead>
+                    <tr>
+                        <th>S. No.</th>
+                        <th>Document Name</th>
+                        <th>Upload</th>
+                        <th>View</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>CRF Form</td>
+                        <td>
+                            <label class="file-upload">
+                                <input type="file" name="crf_form" data-view="view1"  hidden>
+                                <i class="fa fa-upload"></i> 
+                            </label>
+                        </td>
+                        <td>
+                            <span id="view1" class="view-icon" style="display: none;">👁</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>GST Certificate</td>
+                        <td>
+                            <label class="file-upload">
+                                <input type="file" name="gst_certificate" data-view="view2"  hidden>
+                                <i class="fa fa-upload"></i> 
+                            </label>
+                        </td>
+                        <td>
+                            <span id="view2" class="view-icon" style="display: none;">👁</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>FSSAI Certificate</td>
+                        <td>
+                            <label class="file-upload">
+                                <input type="file" name="fssai_certificate" data-view="view3"  hidden>
+                                <i class="fa fa-upload"></i> 
+                            </label>
+                        </td>
+                        <td>
+                            <span id="view3" class="view-icon" style="display: none;">👁</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>PAN Card</td>
+                        <td>
+                            <label class="file-upload">
+                                <input type="file" name="pan_card" data-view="view4"  hidden>
+                                <i class="fa fa-upload"></i> 
+                            </label>
+                        </td>
+                        <td>
+                            <span id="view4" class="view-icon" style="display: none;">👁</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>Cancelled Cheque</td>
+                        <td>
+                            <label class="file-upload">
+                                <input type="file" name="cancelled_cheque" data-view="view5"  hidden>
+                                <i class="fa fa-upload"></i> 
+                            </label>
+                        </td>
+                        <td>
+                            <span id="view5" class="view-icon" style="display: none;">👁</span>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>6</td>
+                        <td>DB Agreement</td>
+                        <td>
+                            <label class="file-upload">
+                                <input type="file" name="db_agreement"  hidden data-view="view6">
+                                <i class="fa fa-upload"></i> 
+                            </label>
+                        </td>
+                        <td>
+                            <span id="view6" class="view-icon" style="display: none;">👁</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>7</td>
+                        <td>Godown Insurance</td>
+                        <td>
+                            <label class="file-upload">
+                                <input type="file" name="godown_insurance"  hidden data-view="view7">
+                                <i class="fa fa-upload"></i> 
+                            </label>
+                        </td>
+                        <td>
+                            <span id="view7" class="view-icon" style="display: none;">👁</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>8</td>
+                        <td>RSM Email Approval</td>
+                        <td>
+                            <label class="file-upload">
+                                <input type="file" name="rsm_email_approval"  hidden data-view="view8">
+                                <i class="fa fa-upload"></i> 
+                            </label>
+                        </td>
+                        <td>
+                            <span id="view8" class="view-icon" style="display: none;">👁</span>
+                        </td>
+                    </tr>
+
+                        <tr>
+                            <td>9</td>
+                            <td>If GST & FSSAI address mis-match,<br>then FSSAI amendment application copy</td>
+                            <td>
+                                <label class="file-upload">
+                                    <input type="file" name="fssai_amendment_copy" hidden data-view="view9">
+                                    <i class="fa fa-upload"></i> 
+                                </label>
+                            </td>
+                            <td>
+                                <span id="view9" class="view-icon" style="display: none;">👁</span>
+                            </td>
+                        </tr>
+                        
+                        <% if (distributor.dbType === 'Hub') { %>
+                        <tr>
+                            <td>10</td>
+                            <td>For Hub – Freight Sheet</td>
+                            <td>
+                                <label class="file-upload">
+                                    <input type="file" name="freight_sheet" hidden data-view="view10">
+                                    <i class="fa fa-upload"></i> 
+                                </label>
+                            </td>
+                            <td>
+                                <span id="view10" class="view-icon" style="display: none;">👁</span>
+                            </td>
+                        </tr>
+                        <% } %>
+                        
+                        <% if (distributor.dbType === 'Credit') { %>
+                        <tr>
+                            <td>11</td>
+                            <td>For Credit – Bank Statement</td>
+                            <td>
+                                <label class="file-upload">
+                                    <input type="file" name="bank_statement" hidden data-view="view11">
+                                    <i class="fa fa-upload"></i> 
+                                </label>
+                            </td>
+                            <td>
+                                <span id="view11" class="view-icon" style="display: none;">👁</span>
+                            </td>
+                        </tr>
+                        <% } %>
+                        
+                        <% if (distributor.applicationType === 'Replacement') { %>
+                        <tr>
+                            <td>12</td>
+                            <td>Upload Document</td>
+                            <td>
+                                <input type="radio" name="doc_upload" value="noc" class="doc-selector"> NOC Document
+                                <input type="radio" name="doc_upload" value="rsm" class="doc-selector"> RSM Email Approval
+                            </td>
+                        </tr>
+                        <% } %>
+                    <tbody id="uploadRowContainer"></tbody> 
+
+                </tbody>
+            </table>
+
+
+
+        </div>
+
+        <!-- Overall Remarks -->
+        <div class="mt-3 w-75 mx-auto">
+            <label for="overallRemarks" class="form-label" style="font-weight: 500;">Overall Remarks:</label>
+            <input type="text" name="overallRemarks" id="overallRemarks" class="form-control" placeholder="Enter overall remarks">
+        </div>
+
+        <!-- Submit Button -->
+        <div class="mt-3 d-flex justify-content-center">
+            <button type="submit" id="submitBtn" class="btn btn-primary">Submit</button>
+        </div>
+    </form>
 </div>
+
+
+
+
+
+
 
 
 <div class="modal" id="fileModal" tabindex="-1" role="dialog">
@@ -129,22 +328,22 @@
             <div id="filePreview"></div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary">Save changes</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         </div>
       </div>
     </div>
   </div>
 
   <script>
- document.addEventListener("DOMContentLoaded", function () {
-    const fileInputs = document.querySelectorAll(".file-upload");
+document.addEventListener("DOMContentLoaded", function () {
+    const fileInputs = document.querySelectorAll(".file-upload input[type='file']");
     const viewIcons = document.querySelectorAll(".view-icon");
     const modalElement = document.getElementById("fileModal");
     const modalBody = document.getElementById("filePreview");
-    const closeModalBtn = modalElement.querySelector("[data-dismiss='modal']"); 
-
+    const closeModalBtn = modalElement.querySelector("[data-bs-dismiss='modal']");
+    
     let modalInstance = new bootstrap.Modal(modalElement);
+    const allowedTypes = ["image/jpeg", "image/png", "image/jpg", "application/pdf"];
 
     fileInputs.forEach((input) => {
         input.addEventListener("change", function () {
@@ -152,6 +351,14 @@
             const file = this.files[0];
 
             if (file) {
+                if (!allowedTypes.includes(file.type)) {
+                    alert("❌ Only PDF and image files (JPG, JPEG, PNG) are allowed.");
+
+                    // Reset input value to prevent upload
+                    this.value = "";
+                    return;
+                }
+
                 const fileUrl = URL.createObjectURL(file);
                 const viewIcon = document.getElementById(viewId);
 
@@ -165,28 +372,25 @@
     });
 
     viewIcons.forEach((icon) => {
-    icon.addEventListener("click", function () {
-        const fileUrl = this.dataset.file;
-        const fileType = this.dataset.type;
+        icon.addEventListener("click", function () {
+            const fileUrl = this.dataset.file;
+            const fileType = this.dataset.type;
 
-        if (fileUrl && fileType) {
-            if (fileType.startsWith("image")) {
-                modalBody.innerHTML = `<img src="${fileUrl}" style="width: 100%; height: auto;">`;
-            } else if (fileType === "application/pdf") {
-                modalBody.innerHTML = `
-                    <embed src="${fileUrl}" type="application/pdf" width="100%" height="500px" />
-                `;
-            } else {
-                modalBody.innerHTML = `<p>Unsupported file type</p>`;
+            if (fileUrl && fileType) {
+                if (fileType.startsWith("image")) {
+                    modalBody.innerHTML = `<img src="${fileUrl}" style="width: 100%; height: auto;">`;
+                } else if (fileType === "application/pdf") {
+                    modalBody.innerHTML = `<embed src="${fileUrl}" type="application/pdf" width="100%" height="500px" />`;
+                } else {
+                    modalBody.innerHTML = `<p>Unsupported file type</p>`;
+                }
+
+                modalInstance.show();
             }
-
-            modalInstance.show();
-        }
+        });
     });
-});
 
-
-    // Ensure modal closes properly
+    // Close modal properly
     closeModalBtn.addEventListener("click", function () {
         modalInstance.hide();
     });
@@ -202,8 +406,71 @@
     <% } %>
 });
 
+</script>
 
-   </script>
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
+    const fileInputs = document.querySelectorAll("input[type='file']");
+
+
+    // Prevent form submission if  files are missing
+    document.getElementById("submitBtn").addEventListener("click", function (event) {
+        let isValid = true;
+        let errorMsg = "";
+
+        // for (let input of document.querySelectorAll("input[type='file']")) {
+        //     if (input.hasAttribute("") && input.files.length === 0) {
+        //         isValid = false;
+        //         errorMsg = "❌ Please upload all  documents.";
+        //         break;
+        //     }
+        // }
+
+        if (!isValid) {
+            event.preventDefault();
+            alert(errorMsg);
+        }
+    });
+});
+</script>
+
+<script>
+    document.querySelectorAll('.doc-selector').forEach(radio => {
+        radio.addEventListener('change', function() {
+            let uploadRowContainer = document.getElementById('uploadRowContainer');
+
+            // Clear previous row if any
+            uploadRowContainer.innerHTML = '';
+
+            let newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>13</td>
+                <td>Upload ${this.value === 'noc' ? 'NOC Document' : 'RSM Email Approval'}</td>
+                <td>
+                    <label class="file-upload">
+                        <input type="file" name="${this.value}_document" hidden data-view="view_${this.value}">
+                        <i class="fa fa-upload"></i> 
+                    </label>
+                </td>
+                <td>
+                    <span id="view_${this.value}" class="view-icon" style="display: none;">👁</span>
+                </td>
+            `;
+
+            uploadRowContainer.appendChild(newRow);
+
+            // Show view icon when file is uploaded
+            newRow.querySelector('input[type="file"]').addEventListener('change', function() {
+                let viewIcon = document.getElementById(this.getAttribute('data-view'));
+                if (this.files.length > 0) {
+                    viewIcon.style.display = 'inline';
+                } else {
+                    viewIcon.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
 
 
 <%- include("../shared/footer.ejs") %>

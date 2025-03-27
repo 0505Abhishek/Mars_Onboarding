@@ -74,18 +74,22 @@
                             <td><%= distributor.aseemail %></td>
                             <td>
                                 <% if (distributor.is_final_approver === 1) { %>
-                                    <span class="badge bg-success">Sent</span> 
+                                    <span class="badge bg-success">Approved</span> 
+                                <% } else if(distributor.is_final_approver === 0 && distributor.flag === 3){ %>
+                                    <span class="badge bg-warning text-dark">Correction<span>
                                 <% } else { %>
                                     <span class="badge bg-warning text-dark">Pending</span>
                                 <% } %>
                             </td>
                             <td><%= new Date(distributor.create_date).toLocaleDateString('en-GB') %></td>
                             <td>
-                                <a href="/distributorList/<%= distributor?.application_id %>">
-                                    <button class="btn btn-primary">
-                                        <i class="fa fa-eye"></i>
-                                    </button>
-                                </a>
+                                <% if (distributor.is_final_approver === 0 && distributor.canApprove && distributor.lower_pending == 0 && distributor.flag!==3) { %>
+                                    <a href="/distributorList/<%= distributor?.application_id %>">
+                                        <button class="btn btn-primary">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+                                    </a>
+                                <% } %>
                             </td>                             
                         </tr>
                     <% }) %>
@@ -104,7 +108,7 @@
 
 
 <script>
-    $(document).ready(function () {
+$(document).ready(function () {
     if ($('#distributorTable tbody tr').length > 1) { 
         $('#distributorTable').DataTable({
             "paging": true,
@@ -112,10 +116,18 @@
             "ordering": true,
             "info": true,
             "lengthMenu": [5, 10, 25, 50], 
-            "pageLength": 5 
+            "pageLength": 5,
+            "scrollY": "400px", // Table rows ke liye vertical scroll
+            "scrollX": true, // Horizontal scrolling enable karega (agar zarurat ho)
+            "scrollCollapse": true,
+            "fixedHeader": {
+                header: true,
+                footer: false
+            }
         });
     }
- });
+});
+
 </script>
 
 <script>

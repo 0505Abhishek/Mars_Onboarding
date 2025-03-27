@@ -15,6 +15,7 @@ const insertQuery = async (data) => {
 }
 
 const selectQuery = async (data) => {
+    console.log(data.email);
     let query = `SELECT * FROM users WHERE email_id = '${data.email}'`;
 
     return new Promise((resolve, reject) => {
@@ -27,6 +28,19 @@ const selectQuery = async (data) => {
     })
 }
 
+
+const selectQueryById = async (data) => {
+    let query = `SELECT * FROM users WHERE id = '${data.id}'`;
+
+    return new Promise((resolve, reject) => {
+        mysqlConnection.query(query, (error, result) => {
+            if (error) {
+                return reject(error)
+            }
+            return resolve(result);
+        });
+    })
+}
 
 const selectQueryByToken = async (token) => {
     return new Promise((resolve, reject) => {
@@ -44,7 +58,7 @@ const updateQuery = async (data) => {
     let token = data.token;
 
     return new Promise((resolve, reject) => {
-        let query = `UPDATE awsm_users SET ? WHERE email =?`;
+        let query = `UPDATE users SET ? WHERE email_id =?`;
         mysqlConnection.query(query, [{ token:data.token }, `${data.email}`], (error, result) => {
             if (error) {
                 return reject(error);
@@ -79,18 +93,19 @@ const updateQueryByToken = async (data) => {
     })
 }
 
-const updatePasswordByToken = async (data) => {
-    let password = data.password;
+const updatePasswordByToken = async (data, password) => {
+    console.log(data, ". updatePasswordByToken.", password);
+
 
     return new Promise((resolve, reject) => {
-        let query = `UPDATE awsm_users SET ?, view_password = ? WHERE token = ?`;
-        mysqlConnection.query(query, [{ password: data.password }, data.confirmPassword, data.token], (error, result) => {
+        let query = `UPDATE users SET password = ? WHERE email_id = ?`;
+        mysqlConnection.query(query, [password, data], (error, result) => {
             if (error) {
                 return reject(error);
             }
             return resolve(result);
-        })
-    })
-}
+        });
+    });
+};
 
-module.exports = { insertQuery, selectQuery, selectQueryByToken, updateQuery, updateQueryByToken, updateQueryPassword, updatePasswordByToken }
+module.exports = { selectQueryById, insertQuery, selectQuery, selectQueryByToken, updateQuery, updateQueryByToken, updateQueryPassword, updatePasswordByToken }

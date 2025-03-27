@@ -466,40 +466,62 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     $.ajax({
-        url: "/add_distributor/save_draft", 
-        type: "POST",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function (response) {
-            Swal.fire({
-                icon: "success",
-                title: "Draft Saved Successfully!",
-                showConfirmButton: false,
-                timer: 2000
-            });
-            if (response.distributorId) {
-             setTimeout(function () {
-                window.location.href = `http://localhost:4101/edit_distributor?id=${response.distributorId}`;
-             }, 2000); 
-            } else {
-                alert("Failed to get distributor ID!");
-            }
-        },
-        error: function (error) {
-            console.error("AJAX Error:", error);
+    url: "/add_distributor/save_draft",
+    type: "POST",
+    data: formData,
+    processData: false,
+    contentType: false,
+    success: function (response) {
+        Swal.fire({
+            icon: "success",
+            title: "Draft Saved Successfully!",
+            showConfirmButton: false,
+            timer: 2000
+        });
+
+        if (response.distributorId) {
+            setTimeout(() => {
+                window.location.href = `/edit_distributor?id=${response.distributorId}`;
+            }, 2000);
+        } else {
             Swal.fire({
                 icon: "error",
-                title: "Failed to save draft!",
-                text: error.responseText || "An error occurred",
+                title: "Failed to get distributor ID!",
+                text: "Please try again later.",
                 showConfirmButton: true
             });
         }
-    });
+    },
+    error: function (xhr) {
+        console.error("AJAX Error:", xhr);
+        Swal.fire({
+            icon: "error",
+            title: "Failed to save draft!",
+            text: xhr.responseJSON?.message || "An error occurred",
+            showConfirmButton: true
+        });
+    }
+});
+
+
 });
     
 });
 
 </script>
 
+
+<script>
+    document.querySelector("form").addEventListener("submit", function (event) {
+    let submitButton = document.querySelector("button[type='submit']");
+    
+    submitButton.disabled = true;
+    submitButton.textContent = "Processing...";
+    
+    setTimeout(() => {
+        submitButton.classList.add("btn-secondary"); 
+    }, 100);
+
+});
+</script>
 <%- include("../shared/footer.ejs") %>

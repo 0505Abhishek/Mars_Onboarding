@@ -1,5 +1,6 @@
 const editDistributor = require('../../models/editDistributor/editDistributor.model');
 const dashboard = require('../../models/dashboard.model');
+const mailer = require('../../util/sent_mail');
 
 
 const editDistributorView = async (req, res) => {
@@ -31,6 +32,13 @@ const updateDistributor = async(req,res)=>{
     const user_id = req.cookies.user_id;
 
 
+
+    if(distributor[0].invite_send_flag == 1)
+    {
+        req.session.notification = { type: 'Error', message: 'Invite has already send!' };
+        return res.redirect('/distributor_draft_list');
+    }
+
     let hierarchy = [];
     let currentUserId = user_id;
     let sequence = 1;
@@ -54,11 +62,13 @@ const updateDistributor = async(req,res)=>{
     
         user.approval_sequence = sequence++;
         await editDistributor.insertApprovalWorkflow(req.query.id, user.id, user.role_id, user);
+        hierarchy.push(user.id);
 
         if (user.role === "RSEM" && applicationASM && !asmInserted) {
 
             applicationASM.approval_sequence = sequence++;
             await editDistributor.insertApprovalWorkflow(req.query.id, applicationASM.id, applicationASM.role_id, applicationASM);
+            hierarchy.push(applicationASM.id);
             asmInserted = true; 
         }
 
@@ -66,6 +76,10 @@ const updateDistributor = async(req,res)=>{
         currentUserId = user.parent_id;
     }
     
+    let lastApprover = hierarchy?.[hierarchy.length - 1] || null;
+    let distributor1 = await editDistributor.getDistributorById(req.query.id, req.cookies.email);
+    await editDistributor.insertProspectiveLog(distributor1);
+    await editDistributor.updateProspectiveInfo(hierarchy, hierarchy.length, hierarchy[0], lastApprover, req.body.email);
 
     applicationASM = null;
     asmInserted = false;
@@ -82,9 +96,19 @@ const updateDistributor = async(req,res)=>{
         data.invitesend="";
         data.invite_send_flag=1;
         data.invitecheckstatus="send";
-        const result = await editDistributor.updateDistributor(data,req.query.id, "Invite sent to RSEM");
+
+
+        let distributor = await editDistributor.getDistributorById(req.query.id, req.cookies.email);
+
+        await editDistributor.insertProspectiveLog(distributor[0]);
+        
+        const result = await editDistributor.updateDistributor(data,req.query.id,'Pending');
         // const result1 = await editDistributor.updateDistributorHierarchy(req.cookies.user_id, req.query.id, 1, "approved");
 
+         let hierarchyData = await editDistributor.getUserById(hierarchy[0]);
+         let distributorDetail =  await editDistributor.getDistributorById(req.query.id, req.cookies.email);
+
+        await mailer.sendEmail(hierarchyData.email_id, distributorDetail[0].firmName, hierarchyData.employee_name, hierarchyData.role, "Rsemapproval");
         req.session.notification = { type: 'success', message: 'Invite sent to RSEM Successfully!' };
         return res.redirect('/distributor_draft_list');
    }
@@ -95,6 +119,7 @@ const updateDistributor = async(req,res)=>{
 
 
 const deleteDistributor = async(req,res)=>{
+    try{
         let distributorId = req.query.id;
         
         if (!distributorId) {
@@ -109,7 +134,11 @@ const deleteDistributor = async(req,res)=>{
             req.session.notification = { type: "error", message: "Error deleting distributor!" };
         }
     
-        res.redirect('/Add_distributor/distributor_draft_list'); 
+        res.redirect('/distributor_draft_list'); 
+    }
+    catch(error){
+        res.redirect('/distributor_draft_list'); 
+    }
     
 }
 
@@ -127,6 +156,10 @@ const saveDraft = async (req, res) => {
         const user_id = req.cookies.user_id;
         reqBody.aseemail=aseemail;
         reqBody.user_id=user_id;
+
+        let distributor = await editDistributor.getDistributorById(id, req.cookies.email);
+
+        await editDistributor.insertProspectiveLog(distributor[0]);
 
         await editDistributor.updateDistributor(reqBody, id, "draft");
 

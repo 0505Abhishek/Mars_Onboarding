@@ -7,7 +7,7 @@ const { getNotification } = require('../../util/notify');
 const router = express.Router();
 
 router.route('/').get(userAuth, getDetails,getNotification,approveIndoxCtrl.approveIndoxView);
-router.route('/:id').get(userAuth, getDetails,getNotification,approveIndoxCtrl.approveViewById);
+router.route('/:id').get(userAuth, getDetails,getNotification,approveIndoxCtrl.approveViewById).post(approveIndoxCtrl.submitApproveById);
 
 module.exports = router;
 

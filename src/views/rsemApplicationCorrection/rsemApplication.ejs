@@ -1,0 +1,349 @@
+<%- include("../shared/header.ejs") %>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    .hidden { display: none; }
+</style>
+<style>
+    .scroll-section {
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      background: #f8f9fa;
+    }
+  </style>
+
+
+
+   
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body">
+            <form id="multiStepForm" method="post" action="/rsem_application_correction?id=<%= distributorData.id %>">
+                
+                <!-- Step 1: Add Distributor -->
+                <div class="step" id="step1">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h2 style="color: #41378d;">Distributor</h2>
+                    </div>
+                
+                    <!-- Application Type -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Application Type</label>
+                        <div class="d-flex gap-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="applicationType" id="new" value="New" 
+                                    <% if(distributorData.applicationType === 'New') { %> checked <% } %> required>
+                                <label class="form-check-label" for="new">New</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="applicationType" id="replacement" value="Replacement"
+                                    <% if(distributorData.applicationType === 'Replacement') { %> checked <% } %> required>
+                                <label class="form-check-label" for="replacement">Replacement</label>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <!-- DB Type -->
+                    <div class="mb-3">
+                        <label for="dbType" class="form-label fw-bold">DB Type</label>
+                        <select class="form-select" id="dbType" name="dbType" required>
+                            <option value="" disabled>Select DB Type</option>
+                            <option value="Hub" <% if(distributorData.dbType === 'Hub') { %> selected <% } %>>Hub</option>
+                            <option value="TT" <% if(distributorData.dbType === 'TT') { %> selected <% } %>>TT</option>
+                            <option value="MT" <% if(distributorData.dbType === 'MT') { %> selected <% } %>>MT</option>
+                            <option value="OOH" <% if(distributorData.dbType === 'OOH') { %> selected <% } %>>OOH</option>
+                            <option value="DCOM" <% if(distributorData.dbType === 'DCOM') { %> selected <% } %>>DCOM</option>
+                        </select>
+                    </div>
+                
+                    <!-- Two-Column Form Layout -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="firmName" class="form-label fw-bold">Firm's Name</label>
+                            <input type="text" class="form-control" id="firmName" name="firmName" value="<%= distributorData.firmName %>" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="distributorName" class="form-label fw-bold">Distributor's Name</label>
+                            <input type="text" class="form-control" id="distributorName" name="distributorName" value="<%= distributorData.distributorName %>" required>
+                        </div>
+                    </div>
+                
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label fw-bold">Email ID</label>
+                            <input type="email" class="form-control" id="email" name="email" value="<%= distributorData.email %>" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="contactNumber" class="form-label fw-bold">Contact Number</label>
+                            <input type="text" class="form-control" id="contactNumber" name="contactNumber" value="<%= distributorData.contactNumber %>" required>
+                        </div>
+                    </div>
+                
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="experienceDistribution" class="form-label fw-bold">Years of Experience in Distribution Business</label>
+                            <input type="number" class="form-control" id="experienceDistribution" name="experienceDistribution" value="<%= distributorData.experienceDistribution %>" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="experienceFMCG" class="form-label fw-bold">Years of Experience in FMCG Distribution</label>
+                            <input type="number" class="form-control" id="experienceFMCG" name="experienceFMCG" value="<%= distributorData.experienceFMCG %>" required>
+                        </div>
+                    </div>
+                
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="outletsCovered" class="form-label fw-bold">Number of Outlets Covered</label>
+                            <input type="number" class="form-control" id="outletsCovered" name="outletsCovered" value="<%= distributorData.outletsCovered %>" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="monthlyTurnover" class="form-label fw-bold">Total Monthly Turnover</label>
+                            <input type="number" class="form-control" id="monthlyTurnover" name="monthlyTurnover" value="<%= distributorData.monthlyTurnover %>" required>
+                        </div>
+                    </div>
+                
+                    <div class="d-flex justify-content-between w-100">
+                        <button style="width:150px" type="button" class="btn btn-primary" id="saveDraft">Save Draft</button>
+                        <button style="width:150px" type="button" class="btn btn-primary next">Next</button>
+                    </div>
+                </div>
+                
+                
+                <!-- Step 2: Questions -->
+                <div class="step hidden" id="step2">
+                    <div class="container mt-4">
+                        <h2>Distributor Evaluation Form</h2>
+                
+                        <!-- Scroll 1: Commercial Structure -->
+                        <div class="scroll-section">
+                            <h4>Commercial Structure</h4>
+                            <div class="mb-3">
+                                <label class="form-label" for="stores_covered">How many stores does the DTR cover?</label>
+                                <input type="number" id="stores_covered" name="stores_covered" class="form-control" placeholder="Enter number of stores" value="<%=distributorData.stores_covered %>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="roi">What is the Annual Return of Investment (ROI %)?</label>
+                                <input type="number" id="roi" name="roi" class="form-control" placeholder="Enter ROI percentage" value="<%=distributorData.roi %>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="fmcg_companies">Does the distributor work with other FMCG companies?</label>
+                                <input type="number" id="fmcg_companies" name="fmcg_companies" class="form-control" placeholder="Enter number of FMCG companies" value="<%=distributorData.fmcg_companies %>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="fmcg_experience">How many years of FMCG experience does the distributor have?</label>
+                                <input type="number" id="fmcg_experience" name="fmcg_experience" class="form-control" placeholder="Enter years of experience" value="<%= distributorData.fmcg_experience %>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="stores_mars">How many stores does the DB cover with Mars Wrigley?</label>
+                                <input type="number" id="stores_mars" name="stores_mars" class="form-control" placeholder="Enter number of stores" value="<%= distributorData.stores_mars %>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="sales_reps">How many sales reps (DSR, KAE, ISR, etc.) does the distributor have?</label>
+                                <input type="number" id="sales_reps" name="sales_reps" class="form-control" placeholder="Enter number of sales reps" value="<%= distributorData.sales_reps %>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="growth_percentage">Existing Business Growth - Same Manufacturer Growth</label>
+                                <input type="number" id="growth_percentage" name="growth_percentage" class="form-control" placeholder="Enter growth percentage" value="<%= distributorData.growth_percentage %>">
+                            </div>
+                        </div>
+                
+                        <!-- Scroll 2: Commercial WoW -->
+                        <div class="scroll-section">
+                            <h4>Commercial WoW</h4>
+                            <div class="mb-3">
+                                <label class="form-label" for="perfect_store_score">What is the average Perfect Store Overall score?</label>
+                                <input type="number" id="perfect_store_score" name="perfect_store_score" class="form-control" placeholder="Enter store score" value="<%= distributorData.perfect_store_score %>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="selling_model">What selling model does the distributor operate with?</label>
+                                <input type="text" id="selling_model" name="selling_model" class="form-control" placeholder="Enter selling model" value="<%= distributorData.selling_model %>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="mw_compliance">Is the distributor compliant with MW standards?</label>
+                                <input type="text" id="mw_compliance" name="mw_compliance" class="form-control" placeholder="Enter compliance details" value="<%= distributorData.mw_compliance %>">
+                            </div>
+                        </div>
+                
+                        <!-- Scroll 3: Data Sharing -->
+                        <div class="scroll-section">
+                            <h4>Data Sharing</h4>
+                            <div class="mb-3">
+                                <label class="form-label" for="cost_structure">Does the distributor provide visibility on cost structure?</label>
+                                <input type="number" id="cost_structure" name="cost_structure" class="form-control" placeholder="Enter percentage" value="<%= distributorData.cost_structure %>">
+                            </div>
+                        </div>
+                
+                        <!-- Scroll 4: Platform to Scale Up -->
+                        <div class="scroll-section">
+                            <h4>Digital Readiness</h4>
+                            <div class="mb-3">
+                                <label class="form-label" for="data_operator">Does the DB have a data operator for DMS?</label>
+                                <input type="text" id="data_operator" name="data_operator" class="form-control" placeholder="Enter Yes or No" value="<%= distributorData.data_operator %>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="internet_access">Does the DB have an internet connection?</label>
+                                <input type="text" id="internet_access" name="internet_access" class="form-control" placeholder="Enter Yes or No" value="<%= distributorData.internet_access %>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="printer_use">Does the DB use a printer?</label>
+                                <input type="text" id="printer_use" name="printer_use" class="form-control" placeholder="Enter Yes or No" value="<%= distributorData.printer_use %>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="dms_count">How many DMS systems does the DB use?</label>
+                                <input type="text" id="dms_count" name="dms_count" class="form-control" placeholder="Enter number of DMS" value="<%= distributorData.dms_count %>">
+                            </div>
+                        </div>
+                
+                        <div class="scroll-section">
+                            <h4>Logistics</h4>
+                            <div class="mb-3">
+                                <label class="form-label" for="logistics_dms">How many DMS for other companies does the DB use?</label>
+                                <input type="text" id="logistics_dms" name="logistics_dms" class="form-control" placeholder="Enter number of DMS" value="<%= distributorData.logistics_dms %>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="delivery_time">What is the average delivery time?</label>
+                                <input type="text" id="delivery_time" name="delivery_time" class="form-control" placeholder="Enter delivery time in days" value="<%= distributorData.delivery_time %>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="returns_rate">What is the average returns rate?</label>
+                                <input type="text" id="returns_rate" name="returns_rate" class="form-control" placeholder="Enter returns percentage" value="<%= distributorData.returns_rate %>">
+                            </div>
+                        </div>
+                
+                        <div class="scroll-section">
+                            <h4>Partnership</h4>
+                            <div class="mb-3">
+                                <label class="form-label" for="mw_sales_share">What is the share of MW sales on total confectionery sales?</label>
+                                <input type="text" id="mw_sales_share" name="mw_sales_share" class="form-control" placeholder="Enter percentage" value="<%= distributorData.mw_sales_share %>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="openness_change">What is the openness to change of the distributor?</label>
+                                <input type="text" id="openness_change" name="openness_change" class="form-control" placeholder="Describe openness" value="<%= distributorData.openness_change %>">
+                            </div>
+                        </div>
+
+                        <div class="scroll-section">
+                            <h4>Digital Readiness</h4>
+                            <div class="mb-3">
+                                <label class="form-label" for="capital_infrastructure">Does the distributor have sufficient capital and infrastructure?</label>
+                                <input type="text" id="capital_infrastructure" name="capital_infrastructure" class="form-control" placeholder="Enter Yes or No" value="<%= distributorData.capital_infrastructure %>">
+                            </div>
+                        </div>
+                
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex gap-2"> 
+                            <button style="width: 160px;" type="button" class="btn btn-primary prev">Back</button> 
+                            <button style="width: 160px;" type="button" class="btn btn-primary" id="saveDraft">Save Draft</button> 
+                        </div>
+                        <button style="width: 160px;" type="submit" class="btn btn-primary">Send to RSEM</button>
+                    </div>                                     
+                </div>                               
+            </form>
+        </div>
+    </div>
+</div>
+  <!-- Add this inside your <head> or before closing </body> -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <script>
+    $(document).ready(function () {
+    let currentStep = 1;
+
+    $(".next").click(function () {
+        let isValid = true;
+
+        $("#step" + currentStep + " :input[required]").each(function () {
+            let inputType = $(this).attr("type");
+
+            if (inputType === "radio") {
+                let radioName = $(this).attr("name");
+                if ($("input[name='" + radioName + "']:checked").length === 0) {
+                    isValid = false;
+                    $("input[name='" + radioName + "']").addClass("is-invalid"); 
+                } else {
+                    $("input[name='" + radioName + "']").removeClass("is-invalid");
+                }
+            }
+            else {
+                if (!$(this).val()) {
+                    isValid = false;
+                    $(this).addClass("is-invalid"); 
+                } else {
+                    $(this).removeClass("is-invalid");
+                }
+            }
+        });
+
+        if (isValid) {
+            $("#step" + currentStep).addClass("hidden");
+            currentStep++;
+            $("#step" + currentStep).removeClass("hidden");
+        } else {
+            alert("Please fill all required fields before proceeding.");
+        }
+    });
+
+    $(".prev").click(function () {
+        $("#step" + currentStep).addClass("hidden");
+        currentStep--;
+        $("#step" + currentStep).removeClass("hidden");
+    });
+
+    $(document).on("click", "#saveDraft", function () {
+    let distributorId = new URLSearchParams(window.location.search).get("id"); 
+    let formData = new FormData($("#multiStepForm")[0]); 
+    formData.append("id", distributorId); 
+
+
+    $.ajax({
+        url: "/rsem_application_correction/saveDraft", 
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (response) {
+            Swal.fire({
+                icon: "success",
+                title: "Draft Saved Successfully!",
+                showConfirmButton: false,
+                timer: 2000
+            });
+        },
+        error: function (error) {
+            console.error("AJAX Error:", error);
+            Swal.fire({
+                icon: "error",
+                title: "Failed to save draft!",
+                text: error.responseText || "An error occurred",
+                showConfirmButton: true
+            });
+        }
+      });
+    });
+  });
+
+  </script>
+
+
+<script>
+    document.querySelector("form").addEventListener("submit", function (event) {
+    let submitButton = document.querySelector("button[type='submit']");
+    
+    submitButton.disabled = true;
+    submitButton.textContent = "Processing...";
+    
+    setTimeout(() => {
+        submitButton.classList.add("btn-secondary"); 
+    }, 100);
+
+});
+</script>
+
+
+<%- include("../shared/footer.ejs") %>

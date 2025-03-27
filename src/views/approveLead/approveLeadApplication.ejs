@@ -38,7 +38,7 @@
 <div class="container mt-5">
     <div class="card">
         <div class="card-body">
-            <form id="multiStepForm" method="post" action="/edit_distributor?id=<%= distributorData.id %>">
+            <form id="multiStepForm" method="post" action="/edit_distributor?id=<%= distributorData?.id %>">
                 
                 <div class="step" id="step1">
                     <div class="d-flex justify-content-between align-items-center">
@@ -52,12 +52,12 @@
                         <div class="d-flex gap-3">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="applicationType" id="new" value="New" 
-                                    <% if(distributorData.applicationType === 'New') { %> checked <% } %> readonly>
+                                    <% if(distributorData?.applicationType === 'New') { %> checked <% } %> readonly>
                                 <label class="form-check-label" for="new">New</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="applicationType" id="replacement" value="Replacement"
-                                    <% if(distributorData.applicationType === 'Replacement') { %> checked <% } %> readonly>
+                                    <% if(distributorData?.applicationType === 'Replacement') { %> checked <% } %> readonly>
                                 <label class="form-check-label" for="replacement">Replacement</label>
                             </div>
                         </div>
@@ -67,55 +67,55 @@
                         <label for="dbType" class="form-label fw-bold">DB Type</label>
                         <select class="form-select" id="dbType" name="dbType" disabled>
                             <option value="" disabled>Select DB Type</option>
-                            <option value="Hub" <% if(distributorData.dbType === 'Hub') { %> selected <% } %>>Hub</option>
-                            <option value="TT" <% if(distributorData.dbType === 'TT') { %> selected <% } %>>TT</option>
-                            <option value="MT" <% if(distributorData.dbType === 'MT') { %> selected <% } %>>MT</option>
-                            <option value="OOH" <% if(distributorData.dbType === 'OOH') { %> selected <% } %>>OOH</option>
-                            <option value="DCOM" <% if(distributorData.dbType === 'DCOM') { %> selected <% } %>>DCOM</option>
+                            <option value="Hub" <% if(distributorData?.dbType === 'Hub') { %> selected <% } %>>Hub</option>
+                            <option value="TT" <% if(distributorData?.dbType === 'TT') { %> selected <% } %>>TT</option>
+                            <option value="MT" <% if(distributorData?.dbType === 'MT') { %> selected <% } %>>MT</option>
+                            <option value="OOH" <% if(distributorData?.dbType === 'OOH') { %> selected <% } %>>OOH</option>
+                            <option value="DCOM" <% if(distributorData?.dbType === 'DCOM') { %> selected <% } %>>DCOM</option>
                         </select>
                     </div>
                 
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="firmName" class="form-label fw-bold">Firm's Name</label>
-                            <input type="text" class="form-control" id="firmName" name="firmName" value="<%= distributorData.firmName %>" readonly>
+                            <input type="text" class="form-control" id="firmName" name="firmName" value="<%= distributorData?.firmName %>" readonly>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="distributorName" class="form-label fw-bold">Distributor's Name</label>
-                            <input type="text" class="form-control" id="distributorName" name="distributorName" value="<%= distributorData.distributorName %>" readonly>
+                            <input type="text" class="form-control" id="distributorName" name="distributorName" value="<%= distributorData?.distributorName %>" readonly>
                         </div>
                     </div>
                 
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="email" class="form-label fw-bold">Email ID</label>
-                            <input type="email" class="form-control" id="email" name="email" value="<%= distributorData.email %>" readonly>
+                            <input type="email" class="form-control" id="email" name="email" value="<%= distributorData?.email %>" readonly>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="contactNumber" class="form-label fw-bold">Contact Number</label>
-                            <input type="text" class="form-control" id="contactNumber" name="contactNumber" value="<%= distributorData.contactNumber %>" readonly>
+                            <input type="text" class="form-control" id="contactNumber" name="contactNumber" value="<%= distributorData?.contactNumber %>" readonly>
                         </div>
                     </div>
                 
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="experienceDistribution" class="form-label fw-bold">Years of Experience in Distribution Business</label>
-                            <input type="number" class="form-control" id="experienceDistribution" name="experienceDistribution" value="<%= distributorData.experienceDistribution %>" readonly>
+                            <input type="number" class="form-control" id="experienceDistribution" name="experienceDistribution" value="<%= distributorData?.experienceDistribution %>" readonly>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="experienceFMCG" class="form-label fw-bold">Years of Experience in FMCG Distribution</label>
-                            <input type="number" class="form-control" id="experienceFMCG" name="experienceFMCG" value="<%= distributorData.experienceFMCG %>" readonly>
+                            <input type="number" class="form-control" id="experienceFMCG" name="experienceFMCG" value="<%= distributorData?.experienceFMCG %>" readonly>
                         </div>
                     </div>
                 
                     <div class="row">
                         <div class="col-md-6 mb-3">
                             <label for="outletsCovered" class="form-label fw-bold">Number of Outlets Covered</label>
-                            <input type="number" class="form-control" id="outletsCovered" name="outletsCovered" value="<%= distributorData.outletsCovered %>" readonly>
+                            <input type="number" class="form-control" id="outletsCovered" name="outletsCovered" value="<%= distributorData?.outletsCovered %>" readonly>
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="monthlyTurnover" class="form-label fw-bold">Total Monthly Turnover</label>
-                            <input type="number" class="form-control" id="monthlyTurnover" name="monthlyTurnover" value="<%= distributorData.monthlyTurnover %>" readonly>
+                            <input type="number" class="form-control" id="monthlyTurnover" name="monthlyTurnover" value="<%= distributorData?.monthlyTurnover %>" readonly>
                         </div>
                     </div>
                     
@@ -140,31 +140,31 @@
                             <h5>Commercial Structure</h5>
                             <div class="mb-3">
                                 <label class="form-label" for="stores_covered">How many stores does the DTR cover?</label>
-                                <input type="number" id="stores_covered" name="stores_covered" class="form-control" placeholder="Enter number of stores" value="<%=distributorData.stores_covered %>" readonly>
+                                <input type="number" id="stores_covered" name="stores_covered" class="form-control" placeholder="Enter number of stores" value="<%=distributorData?.stores_covered %>" readonly>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="roi">What is the Annual Return of Investment (ROI %)?</label>
-                                <input type="number" id="roi" name="roi" class="form-control" placeholder="Enter ROI percentage" value="<%=distributorData.roi %>" readonly>
+                                <input type="number" id="roi" name="roi" class="form-control" placeholder="Enter ROI percentage" value="<%=distributorData?.roi %>" readonly>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="fmcg_companies">Does the distributor work with other FMCG companies?</label>
-                                <input type="number" id="fmcg_companies" name="fmcg_companies" class="form-control" placeholder="Enter number of FMCG companies" value="<%=distributorData.fmcg_companies %>" readonly>
+                                <input type="number" id="fmcg_companies" name="fmcg_companies" class="form-control" placeholder="Enter number of FMCG companies" value="<%=distributorData?.fmcg_companies %>" readonly>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="fmcg_experience">How many years of FMCG experience does the distributor have?</label>
-                                <input type="number" id="fmcg_experience" name="fmcg_experience" class="form-control" placeholder="Enter years of experience" value="<%= distributorData.fmcg_experience %>" readonly>
+                                <input type="number" id="fmcg_experience" name="fmcg_experience" class="form-control" placeholder="Enter years of experience" value="<%= distributorData?.fmcg_experience %>" readonly>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="stores_mars">How many stores does the DB cover with Mars Wrigley?</label>
-                                <input type="number" id="stores_mars" name="stores_mars" class="form-control" placeholder="Enter number of stores" value="<%= distributorData.stores_mars %>" readonly>
+                                <input type="number" id="stores_mars" name="stores_mars" class="form-control" placeholder="Enter number of stores" value="<%= distributorData?.stores_mars %>" readonly>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="sales_reps">How many sales reps (DSR, KAE, ISR, etc.) does the distributor have?</label>
-                                <input type="number" id="sales_reps" name="sales_reps" class="form-control" placeholder="Enter number of sales reps" value="<%= distributorData.sales_reps %>" readonly>
+                                <input type="number" id="sales_reps" name="sales_reps" class="form-control" placeholder="Enter number of sales reps" value="<%= distributorData?.sales_reps %>" readonly>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="growth_percentage">Existing Business Growth - Same Manufacturer Growth</label>
-                                <input type="number" id="growth_percentage" name="growth_percentage" class="form-control" placeholder="Enter growth percentage" value="<%= distributorData.growth_percentage %>" readonly>
+                                <input type="number" id="growth_percentage" name="growth_percentage" class="form-control" placeholder="Enter growth percentage" value="<%= distributorData?.growth_percentage %>" readonly>
                             </div>
                         </div>
                 
@@ -173,15 +173,15 @@
                             <h5>Commercial WoW</h5>
                             <div class="mb-3">
                                 <label class="form-label" for="perfect_store_score">What is the average Perfect Store Overall score?</label>
-                                <input type="number" id="perfect_store_score" name="perfect_store_score" class="form-control" placeholder="Enter store score" value="<%= distributorData.perfect_store_score %>" readonly>
+                                <input type="number" id="perfect_store_score" name="perfect_store_score" class="form-control" placeholder="Enter store score" value="<%= distributorData?.perfect_store_score %>" readonly>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="selling_model">What selling model does the distributor operate with?</label>
-                                <input type="text" id="selling_model" name="selling_model" class="form-control" placeholder="Enter selling model" value="<%= distributorData.selling_model %>" readonly>
+                                <input type="text" id="selling_model" name="selling_model" class="form-control" placeholder="Enter selling model" value="<%= distributorData?.selling_model %>" readonly>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="mw_compliance">Is the distributor compliant with MW standards?</label>
-                                <input type="text" id="mw_compliance" name="mw_compliance" class="form-control" placeholder="Enter compliance details" value="<%= distributorData.mw_compliance %>" readonly>
+                                <input type="text" id="mw_compliance" name="mw_compliance" class="form-control" placeholder="Enter compliance details" value="<%= distributorData?.mw_compliance %>" readonly>
                             </div>
                         </div>
                 
@@ -190,7 +190,7 @@
                             <h5>Data Sharing</h5>
                             <div class="mb-3">
                                 <label class="form-label" for="cost_structure">Does the distributor provide visibility on cost structure?</label>
-                                <input type="number" id="cost_structure" name="cost_structure" class="form-control" placeholder="Enter percentage" value="<%= distributorData.cost_structure %>" readonly>
+                                <input type="number" id="cost_structure" name="cost_structure" class="form-control" placeholder="Enter percentage" value="<%= distributorData?.cost_structure %>" readonly>
                             </div>
                         </div>
                 
@@ -199,19 +199,19 @@
                             <h5>Digital Readiness</h5>
                             <div class="mb-3">
                                 <label class="form-label" for="data_operator">Does the DB have a data operator for DMS?</label>
-                                <input type="text" id="data_operator" name="data_operator" class="form-control" placeholder="Enter Yes or No" value="<%= distributorData.data_operator %>" readonly>
+                                <input type="text" id="data_operator" name="data_operator" class="form-control" placeholder="Enter Yes or No" value="<%= distributorData?.data_operator %>" readonly>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="internet_access">Does the DB have an internet connection?</label>
-                                <input type="text" id="internet_access" name="internet_access" class="form-control" placeholder="Enter Yes or No" value="<%= distributorData.internet_access %>" readonly>
+                                <input type="text" id="internet_access" name="internet_access" class="form-control" placeholder="Enter Yes or No" value="<%= distributorData?.internet_access %>" readonly>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="printer_use">Does the DB use a printer?</label>
-                                <input type="text" id="printer_use" name="printer_use" class="form-control" placeholder="Enter Yes or No" value="<%= distributorData.printer_use %>" readonly>
+                                <input type="text" id="printer_use" name="printer_use" class="form-control" placeholder="Enter Yes or No" value="<%= distributorData?.printer_use %>" readonly>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="dms_count">How many DMS systems does the DB use?</label>
-                                <input type="text" id="dms_count" name="dms_count" class="form-control" placeholder="Enter number of DMS" value="<%= distributorData.dms_count %>" readonly>
+                                <input type="text" id="dms_count" name="dms_count" class="form-control" placeholder="Enter number of DMS" value="<%= distributorData?.dms_count %>" readonly>
                             </div>
                         </div>
                 
@@ -219,15 +219,15 @@
                             <h5>Logistics</h5>
                             <div class="mb-3">
                                 <label class="form-label" for="logistics_dms">How many DMS for other companies does the DB use?</label>
-                                <input type="text" id="logistics_dms" name="logistics_dms" class="form-control" placeholder="Enter number of DMS" value="<%= distributorData.logistics_dms %>" readonly>
+                                <input type="text" id="logistics_dms" name="logistics_dms" class="form-control" placeholder="Enter number of DMS" value="<%= distributorData?.logistics_dms %>" readonly>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="delivery_time">What is the average delivery time?</label>
-                                <input type="text" id="delivery_time" name="delivery_time" class="form-control" placeholder="Enter delivery time in days" value="<%= distributorData.delivery_time %>" readonly>
+                                <input type="text" id="delivery_time" name="delivery_time" class="form-control" placeholder="Enter delivery time in days" value="<%= distributorData?.delivery_time %>" readonly>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="returns_rate">What is the average returns rate?</label>
-                                <input type="text" id="returns_rate" name="returns_rate" class="form-control" placeholder="Enter returns percentage" value="<%= distributorData.returns_rate %>" readonly>
+                                <input type="text" id="returns_rate" name="returns_rate" class="form-control" placeholder="Enter returns percentage" value="<%= distributorData?.returns_rate %>" readonly>
                             </div>
                         </div>
                 
@@ -235,11 +235,11 @@
                             <h5>Partnership</h5>
                             <div class="mb-3">
                                 <label class="form-label" for="mw_sales_share">What is the share of MW sales on total confectionery sales?</label>
-                                <input type="text" id="mw_sales_share" name="mw_sales_share" class="form-control" placeholder="Enter percentage" value="<%= distributorData.mw_sales_share %>" readonly>
+                                <input type="text" id="mw_sales_share" name="mw_sales_share" class="form-control" placeholder="Enter percentage" value="<%= distributorData?.mw_sales_share %>" readonly>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="openness_change">What is the openness to change of the distributor?</label>
-                                <input type="text" id="openness_change" name="openness_change" class="form-control" placeholder="Describe openness" value="<%= distributorData.openness_change %>" readonly>
+                                <input type="text" id="openness_change" name="openness_change" class="form-control" placeholder="Describe openness" value="<%= distributorData?.openness_change %>" readonly>
                             </div>
                         </div>
 
@@ -247,7 +247,7 @@
                             <h5>Digital Readiness</h5>
                             <div class="mb-3">
                                 <label class="form-label" for="capital_infrastructure">Does the distributor have sufficient capital and infrastructure?</label>
-                                <input type="text" id="capital_infrastructure" name="capital_infrastructure" class="form-control" placeholder="Enter Yes or No" value="<%= distributorData.capital_infrastructure %>" readonly>
+                                <input type="text" id="capital_infrastructure" name="capital_infrastructure" class="form-control" placeholder="Enter Yes or No" value="<%= distributorData?.capital_infrastructure %>" readonly>
                             </div>
                         </div>
                 
@@ -272,14 +272,13 @@
                             <input type="text" class="form-control" id="remark" name="remark">
                     </div>
                     <div  class="d-flex justify-content-between align-items-center" style="margin: 18px">
-                        <!-- Left Button (Approve) -->
-                        <button type="button" class="btn btn-primary">Approve</button>
+                        
+                        <button type="button" class="btn btn-primary final" value="Approved">Approve</button>
                     
-                        <!-- Center Button (Correction) -->
-                        <button type="button" class="btn btn-primary">Correction</button>
+                        <button type="button" class="btn btn-primary final" value="Correction">Correction</button>
                     
-                        <!-- Right Button (Reject) -->
-                        <button type="button" class="btn btn-primary">Reject</button>
+                        <button type="button" class="btn btn-primary final" value="Reject">Reject</button>
+
                     </div>              
                 </div>
             </form>
@@ -294,7 +293,7 @@
     let currentStep = 1;
 
     $(".next").click(function () {
-        let isValid = true; // Add validation logic if needed
+        let isValid = true; 
 
         if (isValid) {
             $("#step" + currentStep).addClass("hidden");
@@ -306,20 +305,57 @@
     });
 
     $(".prev").click(function (e) {
-        e.preventDefault(); // Prevent default behavior (for <a> tags)
+        e.preventDefault();
 
-        if (currentStep > 1) { // Prevent going to step 0
+        if (currentStep > 1) { 
             $("#step" + currentStep).addClass("hidden");
             currentStep--;
             $("#step" + currentStep).removeClass("hidden");
         } else {
-            history.back(); // Go to the previous page if on the first step
+            history.back(); 
         }
     });
 });
 
   </script>
-</body>
+
+<script>
+    document.querySelectorAll('.final').forEach(button => {
+    button.addEventListener('click', function () {
+        const action = this.value;
+        const remark = document.getElementById('remark').value;
+        const id = '<%= distributorData?.id %>'; 
+
+        // Disable all buttons
+        document.querySelectorAll('.final').forEach(btn => {
+            btn.disabled = true;
+            btn.textContent = "Processing..."; // Change text for all buttons
+        });
+
+        fetch(`/approve_lead/Rsem_approval`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action, remark, id })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(`${data.message} !`);
+            window.location.href = `/approve_lead`;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Re-enable buttons if API fails
+            document.querySelectorAll('.final').forEach(btn => {
+                btn.disabled = false;
+                btn.textContent = btn.value; // Restore original button text
+            });
+        });
+    });
+});
+
+</script>
+
+
 
 
 <%- include("../shared/footer.ejs") %>

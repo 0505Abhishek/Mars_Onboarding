@@ -4,8 +4,8 @@ const mysql = require("mysql");
 const connection = mysql.createPool({
   host: "localhost",
   user: "root",
-  password: "root",
-  database: "onboarding_adani",
+  password: "",
+  database: "onboarding_adani1",
 });
 
 // const connection = mysql.createPool({

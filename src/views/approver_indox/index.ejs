@@ -17,6 +17,34 @@
       border-radius: 5px;
       background: #f8f9fa;
     }
+    .modal-backdrop {
+        display: none !important;
+    }
+
+    .modal-body {
+        max-height: 440px;
+        overflow-y: auto;
+    }
+    .modal-dialog{
+        width:75%;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: center;
+    }
+
+    .view-icon {
+        cursor: pointer;
+        font-size: 20px;
+    }
   </style>
   <style>
 
@@ -76,18 +104,15 @@
             <thead class="table-dark">
                 <tr>
                     <th>ID</th>
-                    <th>Business Name</th>
-                    <th>Score</th>
-                    <th>Type</th>
-                    <th>Status</th>
-                    <th>Territory</th>
-                    <th>Last Updated</th>
-                    <th>Census Code</th>
-                    <th>City</th>
-                    <th>PAN</th>
-                    <th>SAP Dummy Code</th>
+                    <th>Firm Name</th>
+                    <th>DB Type</th>
+                    <th>Application Type</th>
+                    <th>Distributor Name</th>
+                    <th>email</th>
+                    <th>contactNumber</th>
+                    <th>Start Date</th>
                     <th>Initiator Email</th>
-                    <th>Initiator Role</th>
+                    <th>Status</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -96,27 +121,35 @@
                     <% distributors.forEach((distributor) => { %>
                         <tr data-status="<%= distributor?.status ?? 'N/A' %>">
                             <td><%= distributor?.id ?? 'N/A' %></td> 
-                            <td><%= distributor?.businessName ?? 'N/A' %></td>
-                            <td><%= distributor?.score ?? 'N/A' %></td>
-                            <td><%= distributor?.type ?? 'N/A' %></td>
-                            <td><%= distributor?.status ?? 'N/A' %></td>
-                            <td><%= distributor?.territory ?? 'N/A' %></td>
-                            <td><%= distributor?.last_updated_date ? new Date(distributor?.last_updated_date).toLocaleDateString('en-GB') : 'N/A' %></td>
-                            <td><%= distributor?.census_code ?? 'N/A' %></td>
-                            <td><%= distributor?.city ?? 'N/A' %></td>
-                            <td><%= distributor?.pan ?? 'N/A' %></td>
-                            <td><%= distributor?.sap_dummy_code ?? 'N/A' %></td>
-                            <td><%= distributor?.initiator_email ?? 'N/A' %></td>
-                            <td><%= distributor?.initiator_role ?? 'N/A' %></td>
+                            <td><%= distributor?.firmName ?? 'N/A' %></td>
+                            <td><%= distributor?.dbType ?? 'N/A' %></td>
+                            <td><%= distributor?.applicationType ?? 'N/A' %></td>
+                            <td><%= distributor?.distributorName ?? 'N/A' %></td>
+                            <td><%= distributor?.email ?? 'N/A' %></td>
+                            <td><%= distributor?.contactNumber ?? 'N/A' %></td>
+                            <td><%= distributor?.created_at ? new Date(distributor?.last_updated_date).toLocaleDateString('en-GB') : 'N/A' %></td>
+                            <td><%= distributor?.aseemail ?? 'N/A' %></td>
                             <td>
-                                <% if (true) { %>
-                                    <a href="/approver_indox/<%=distributor.id %>">
+                                <% if ((distributor.lower_pending == 1 || distributor.lower_pending == 0) && distributor.is_final_approver == 0 && distributor.flag == 0) { %>
+                                    <span class="badge bg-warning text-dark">Pending</span>
+                                <% } else if (distributor.lower_pending == 0 && distributor.is_final_approver == 1) { %>
+                                    <span class="badge bg-success">Approved</span> 
+                                <% } else if (distributor.lower_pending == 0 && distributor.is_final_approver == 0 && distributor.flag == 3 && distributor.applicationStatus == 'Correction') { %>
+                                    <span class="badge bg-warning text-dark">Correction</span>  
+                                <% } else if (distributor.flag === 2){ %>
+                                    <span class="badge bg-danger text-white">Rejected</span>
+                                <% } %>
+                            </td>
+                            <td>
+                                <% if (distributor.lower_pending == 0 && distributor.is_final_approver == 0 && distributor.flag == 0) { %>
+                                    <a href="/approver_indox/<%= distributor.id %>">
                                         <button class="btn btn-primary">
                                             <i class="fa fa-eye"></i>
                                         </button>
                                     </a>
                                 <% } %>
                             </td>
+                            
                         </tr>
                     <% }) %>
                 <% } else { %>

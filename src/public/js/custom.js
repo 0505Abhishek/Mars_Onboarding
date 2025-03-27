@@ -20,7 +20,6 @@ let fileFlag = 0;
 
 fileInput.addEventListener("click", () => {
     fileInput.value = '';
-    console.log(fileInput.value);
 });
 
 fileInput.addEventListener("change", e => {
@@ -87,8 +86,6 @@ if (isAdvancedUpload) {
 
         let files = e.dataTransfer.files;
         fileInput.files = files;
-        console.log(files[0].name + " " + files[0].size);
-        console.log(document.querySelector(".default-file-input").value);
         fileName.innerHTML = files[0].name;
         fileSize.innerHTML = (files[0].size / 1024).toFixed(1) + " KB";
         uploadedFile.style.cssText = "display: flex;";

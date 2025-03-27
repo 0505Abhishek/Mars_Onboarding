@@ -1,0 +1,81 @@
+<%- include("../shared/header.ejs") %>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<div class="container mt-4">
+    <form id="correctionForm" method="post" action="/correction/<%=correction?.application_id%>">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Application Name</th>
+                    <th>Page Name</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+    
+                <% let hasBasicPage = pageNames?.includes('basicDetails') || pageNames?.includes('additionalDetails'); %>
+                <% let hasDocumentPage = pageNames?.includes('documentDetails'); %>
+                <% let allCompleted = (correction?.basic_page_status == 1) && (correction?.document_page_status == 1); %>
+    
+                <% if (hasBasicPage) { %>
+                    <tr>
+                        <td><%= correction?.application_id %></td>
+                        <td>Basic Details</td>
+                        <% if( correction?.basic_page_status == 0){%>
+                        <td>
+                            <a href="/correctionPage/basicPage?applicationId=<%= correction.application_id %>" class="btn btn-primary">
+                                Basic Page
+                            </a>
+                        </td>
+                        <% } else {%>
+                            <td>Completed</td>
+                        <% } %>
+                    </tr>
+                <% } %>
+    
+                <% if (hasDocumentPage) { %>
+                    <tr>
+                        <td><%= correction?.application_id %></td>
+                        <td>Document Details</td>
+                        <% if( correction?.document_page_status == 0){%>
+                        <td>
+                            <a href="/correctionPage/documentPage?applicationId=<%= correction.application_id %>" class="btn btn-primary">
+                                Document Page
+                            </a>
+                        </td>
+                        <% } else {%>
+                            <td>Completed</td>
+                        <% } %>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    
+        <% if (allCompleted) { %>
+            <div class="text-center mt-3">
+                <button type="submit" class="btn btn-primary btn-lg w-25 py-1">Submit</button>
+            </div>
+        <% } %>
+    </form>
+        
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector("form");
+        const submitBtn = document.getElementById("submitBtn");
+    
+        form.addEventListener("submit", function (event) {
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Submitting...";
+    
+            submitBtn.classList.add("btn-secondary");
+            submitBtn.classList.remove("btn-primary");
+    
+        });
+    });
+    </script>
+
+<%- include("../shared/footer.ejs") %>

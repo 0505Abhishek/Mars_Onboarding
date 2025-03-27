@@ -8,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
+
         .nav-tabs .nav-link.active {
             background-color: #007bff;
             color: white;
@@ -19,12 +20,35 @@
         #card-body3{
             margin-top: -30px;
         }
+        .modal-backdrop {
+        display: none !important;
+    }
+
+    .modal-body {
+        max-height: 440px;
+        overflow-y: auto;
+    }
+    .modal-dialog{
+        width:75%;
+    }
+    .view-icon {
+        font-size: 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+    }
+    .custom-width {
+      width: 150px;
+    }
+
     </style>
 
     <style>
         .list-group-item {
-            font-size: 18px; /* Increased font size */
-            cursor: pointer; /* Add pointer effect */
+            font-size: 18px; 
+            cursor: pointer; 
         }
     </style>
 </head>
@@ -34,7 +58,7 @@
             <i class="fas fa-arrow-left text-black"></i>
             <h1 class="ms-2 h5">Application Details</h1>
         </div>
-        <a href="#" class="text-primary mb-3 d-block">Ashok General Store</a>
+        <a href="" class="text-primary mb-3 d-block"><%=distributor.firmName%></a>
 
         <div class="card">
             <!-- Navigation Tabs -->
@@ -53,15 +77,12 @@
             <!-- Tab Content -->
             <div class="card-body" id="card-body1">
                 <div id="overview" class="tab-content active">
-                    <p class="h6">Amit Kumar Mahawar</p>
-                    <p class="text-muted">
-                        <i class="fas fa-map-marker-alt me-2"></i> Ratnapur
-                    </p>
+                    <p class="h6"><%= distributor.distributorName%></p>
                     <p class="mt-3">
-                        <span class="text-primary">Application Type -</span> New Town
+                        <span class="text-primary">Application Type -</span> <%= distributor.applicationType%>
                     </p>
                     <p class="mt-2">
-                        <span class="text-primary">Application Start Date -</span> 11/02/2025
+                        <span class="text-primary">Application Start Date -</span> <%= new Date(distributor.created_at).toLocaleDateString('en-GB') %>
                     </p>
                 </div>
             </div> 
@@ -214,27 +235,71 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>Full Name</td>
-                                        <td><input type="text" class="form-control" id="fullName" value="Amit Kumar Mahawar"></td>
-                                        <td><input type="text" class="form-control" id="fullNameRemark" placeholder="Enter remark"></td>
-                                        <td><input type="checkbox" id="fullNameCheck"></td>
+                                        <td>Application Type</td>
+                                        <td><input type="text" class="form-control" id="applicationType" value="<%= distributor.applicationType %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="applicationTypeRemark" placeholder="Enter remark"></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>DB Type</td>
+                                        <td><input type="text" class="form-control" id="dbType" value="<%= distributor.dbType %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="dbTypeRemark" placeholder="Enter remark"></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Firm Name</td>
+                                        <td><input type="text" class="form-control" id="firmName" value="<%= distributor.firmName %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="firmNameRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="firmNameCheck"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Distributor Name</td>
+                                        <td><input type="text" class="form-control" id="distributorName" value="<%= distributor.distributorName %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="distributorNameRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="distributorNameCheck"></td>
                                     </tr>
                                     <tr>
                                         <td>Email</td>
-                                        <td><input type="email" class="form-control" id="email" value="amit@example.com"></td>
-                                        <td><input type="text" class="form-control" id="emailRemark" placeholder="Enter remark"></td>
-                                        <td><input type="checkbox" id="emailCheck"></td>
+                                        <td><input type="email" class="form-control" id="email" value="<%= distributor.email %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="emailRemark" placeholder="Enter remark" readonly></td>
+                                        <td></td>
                                     </tr>
                                     <tr>
-                                        <td>Phone Number</td>
-                                        <td><input type="text" class="form-control" id="phone" value="9876543210"></td>
-                                        <td><input type="text" class="form-control" id="phoneRemark" placeholder="Enter remark"></td>
-                                        <td><input type="checkbox" id="phoneCheck"></td>
+                                        <td>Contact Number</td>
+                                        <td><input type="text" class="form-control" id="contactNumber" value="<%= distributor.contactNumber %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="contactNumberRemark" placeholder="Enter remark"></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Experience in Distribution</td>
+                                        <td><input type="text" class="form-control" id="experienceDistribution" value="<%= distributor.experienceDistribution %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="experienceDistributionRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="experienceDistributionCheck"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Experience in FMCG</td>
+                                        <td><input type="text" class="form-control" id="experienceFMCG" value="<%= distributor.experienceFMCG %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="experienceFMCGRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="experienceFMCGCheck"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Outlets Covered</td>
+                                        <td><input type="text" class="form-control" id="outletsCovered" value="<%= distributor.outletsCovered %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="outletsCoveredRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="outletsCoveredCheck"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Monthly Turnover</td>
+                                        <td><input type="text" class="form-control" id="monthlyTurnover" value="<%= distributor.monthlyTurnover %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="monthlyTurnoverRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="monthlyTurnoverCheck"></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </form>
                     </div>
+                    
+                    
             
                     <!-- Additional Details Section -->
                     <li class="list-group-item text-primary" onclick="toggleDetails('additionalDetails')">Additional Details</li>
@@ -251,21 +316,222 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>Address</td>
-                                        <td><input type="text" class="form-control" id="address" value="New Delhi, India"></td>
-                                        <td><input type="text" class="form-control" id="addressRemark" placeholder="Enter remark"></td>
-                                        <td><input type="checkbox" id="addressCheck"></td>
+                                        <td>How many stores does the DTR cover?</td>
+                                        <td><input type="number" class="form-control" id="stores_covered" placeholder="Enter number" value="<%=distributor.stores_covered %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="stores_coveredRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="stores_coveredCheck"></td>
                                     </tr>
                                     <tr>
-                                        <td>City</td>
-                                        <td><input type="text" class="form-control" id="city" value="Delhi"></td>
-                                        <td><input type="text" class="form-control" id="cityRemark" placeholder="Enter remark"></td>
-                                        <td><input type="checkbox" id="cityCheck"></td>
+                                        <td>What is the Annual Return of Investment (ROI %)?</td>
+                                        <td><input type="number" class="form-control" id="roi" placeholder="Enter ROI" value="<%=distributor.roi %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="roiRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="roiCheck"></td>
                                     </tr>
+                                    <tr>
+                                        <td>Does the distributor work with other FMCG companies?</td>
+                                        <td><input type="number" class="form-control" id="fmcg_companies" placeholder="Enter number" value="<%=distributor.fmcg_companies %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="fmcg_companiesRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="fmcg_companiesCheck"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>How many years of FMCG experience does the distributor have?</td>
+                                        <td><input type="number" class="form-control" id="fmcg_experience" placeholder="Enter years" value="<%= distributor.fmcg_experience %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="fmcg_experienceRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="fmcg_experienceCheck"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>How many stores does the DB cover with Mars Wrigley?</td>
+                                        <td><input type="number" class="form-control" id="stores_mars" placeholder="Enter number" value="<%= distributor.stores_mars %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="stores_marsRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="stores_marsCheck"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>How many sales reps (DSR, KAE, ISR, etc.) does the distributor have?</td>
+                                        <td><input type="number" class="form-control" id="sales_reps" placeholder="Enter number" value="<%= distributor.sales_reps %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="sales_repsRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="sales_repsCheck"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Existing Business Growth - Same Manufacturer Growth</td>
+                                        <td><input type="number" class="form-control" id="growth_percentage" placeholder="Enter growth" value="<%= distributor.growth_percentage %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="growth_percentageRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="growth_percentageCheck"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>What is the average Perfect Store Overall score?</td>
+                                        <td><input type="number" class="form-control" id="perfect_store_score" placeholder="Enter score" value="<%= distributor.perfect_store_score %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="perfect_store_scoreRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="perfect_store_scoreCheck"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>What selling model does the distributor operate with?</td>
+                                        <td><input type="text" class="form-control" id="selling_model" placeholder="Enter model" value="<%= distributor.selling_model %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="selling_modelRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="selling_modelCheck"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Is the distributor compliant with MW standards?</td>
+                                        <td><input type="text" class="form-control" id="mw_compliance" placeholder="Enter compliance details" value="<%= distributor.mw_compliance %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="mw_complianceRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="mw_complianceCheck"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Does the distributor provide visibility on cost structure?</td>
+                                        <td><input type="number" class="form-control" id="cost_structure" placeholder="Enter percentage"  value="<%= distributor.cost_structure %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="cost_structureRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="cost_structureCheck"></td>
+                                    </tr>
+                                    <!-- Digital Readiness -->
+                                    <tr>
+                                        <td>Does the DB have a data operator for DMS?</td>
+                                        <td><input type="text" class="form-control" id="data_operator" placeholder="Enter Yes or No" value="<%= distributor.data_operator %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="data_operatorRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="data_operatorCheck"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Does the DB have an internet connection?</td>
+                                        <td><input type="text" class="form-control" id="internet_access" placeholder="Enter Yes or No" value="<%= distributor.internet_access %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="internet_accessRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="internet_accessCheck"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Does the DB use a printer?</td>
+                                        <td><input type="text" class="form-control" id="printer_use" placeholder="Enter Yes or No" value="<%= distributor.printer_use %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="printer_useRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="printer_useCheck"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>How many DMS systems does the DB use?</td>
+                                        <td><input type="text" class="form-control" id="dms_count" placeholder="Enter number of DMS" value="<%= distributor.dms_count %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="dms_countRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="dms_countCheck"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Which system is used to print final in-market bill?</td>
+                                        <td>
+                                            <input type="radio" name="print_system" value="Ivy DMS" id="ivyDMS">
+                                            <label for="ivyDMS">Ivy DMS</label>
+                                            <input type="radio" name="print_system" value="Tally" id="tally">
+                                            <label for="tally">Tally</label>
+                                            <input type="radio" name="print_system" value="Others" id="others">
+                                            <label for="others">Others</label>
+                                        </td>
+                                        <td><input type="text" class="form-control" id="print_systemRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="print_systemCheck"></td>
+                                    </tr>
+
+                                    <!-- Logistics -->
+                                    <tr>
+                                        <td>How many DMS for other companies does the DB use?</td>
+                                        <td><input type="text" class="form-control" id="logistics_dms" placeholder="Enter number of DMS" value="<%= distributor.logistics_dms %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="logistics_dmsRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="logistics_dmsCheck"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>What is the average delivery time?</td>
+                                        <td><input type="text" class="form-control" id="delivery_time" placeholder="Enter delivery time in days" value="<%= distributor.delivery_time %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="delivery_timeRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="delivery_timeCheck"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>What is the average returns rate?</td>
+                                        <td><input type="text" class="form-control" id="returns_rate" placeholder="Enter returns percentage" value="<%= distributor.returns_rate %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="returns_rateRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="returns_rateCheck"></td>
+                                    </tr>
+
+                                    <!-- Partnership -->
+                                    <tr>
+                                        <td>What is the share of MW sales on total confectionery sales?</td>
+                                        <td><input type="text" class="form-control" id="mw_sales_share" placeholder="Enter percentage" value="<%= distributor.mw_sales_share %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="mw_sales_shareRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="mw_sales_shareCheck"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>What is the openness to change of the distributor?</td>
+                                        <td><input type="text" class="form-control" id="openness_change" placeholder="Describe openness" value="<%= distributor.openness_change %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="openness_changeRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="openness_changeCheck"></td>
+                                    </tr>
+
+                                    <!-- Digital Readiness -->
+                                    <tr>
+                                        <td>Does the distributor have sufficient capital and infrastructure?</td>
+                                        <td><input type="text" class="form-control" id="capital_infrastructure" placeholder="Enter Yes or No" value="<%= distributor.capital_infrastructure %>" readonly></td>
+                                        <td><input type="text" class="form-control" id="capital_infrastructureRemark" placeholder="Enter remark"></td>
+                                        <td><input type="checkbox" id="capital_infrastructureCheck"></td>
+                                    </tr>
+
                                 </tbody>
                             </table>
                         </form>
                     </div>
+                    
+                     <!-- Additional Details Section -->
+                     <li class="list-group-item text-primary" onclick="toggleDetails('documentDetails')">Document Details</li>
+                     <div id="documentDetails" class="details d-none">
+                        <form id="additionalDetailsForm">
+                            <table class="table table-bordered mt-2">
+                                <thead>
+                                    <tr>
+                                        <th>Field Name</th>
+                                        <th>Document</th>
+                                        <th>Remarks</th>
+                                        <th>Verified</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% const documents = {
+                                        crf_form: distributor.crf_form,
+                                        gst_certificate: distributor.gst_certificate,
+                                        fssai_certificate: distributor.fssai_certificate,
+                                        pan_card: distributor.pan_card,
+                                        cancelled_cheque: distributor.cancelled_cheque,
+                                        db_agreement: distributor.db_agreement,
+                                        godown_insurance: distributor.godown_insurance,
+                                        rsm_email_approval: distributor.rsm_email_approval,
+                                    };
+                                
+                                    if (distributor.applicationType === "replacement") {
+                                        documents.replacement_noc = distributor.replacement_noc;
+                                    }
+                                
+                                    if (distributor.dbType === "Hub") {
+                                        documents.freight_sheet = distributor.freight_sheet;
+                                    }
+                                
+                                    if (distributor.dbType === "Credit") {
+                                        documents.bank_statement = distributor.bank_statement;
+                                    }
+                                
+                                    documents.fssai_amendment_copy = distributor.fssai_amendment_copy;
+                                    %>
+                                
+                                    <% for (let key in documents) { %>
+                                        <tr>
+                                            <td><%= key.replace(/_/g, ' ').toUpperCase() %></td>
+                                            <td class="custom-width">
+                                                <% if (documents[key]) { 
+                                                    let fileUrl = "/uploads/" + documents[key];
+                                                    let fileType = documents[key].endsWith(".pdf") ? "pdf" : "image"; 
+                                                %>
+                                                    <a href="#" class="view-icon" data-url="<%= fileUrl %>" data-type="<%= fileType %>" style="text-decoration:none;">
+                                                        👁
+                                                    </a>
+                                                <% } else { %>
+                                                    <span style="color: red;">No Image</span>
+                                                <% } %>
+                                            </td>                                            
+                                            <td><input type="text" class="form-control" id="<%= key %>" placeholder="Enter remark"></td>
+                                            <td><input type="checkbox" id="<%= key %>Check"></td>
+                                        </tr>
+                                    <% } %>
+                                </tbody>
+                                
+                            </table>
+                        </form>
+                    </div>
+                    
 
                     <li class="list-group-item text-primary">Decision Panel</li>
                     <div id="additionalDeta" class="details d-none">
@@ -300,23 +566,81 @@
 
                     <!-- Submit Button -->
                     <div class="text-center mt-3">
-                        <button type="submit" class="btn btn-primary px-4">SUBMIT</button>
+                        <button type="submit" id="submitButton" class="btn btn-primary px-4">SUBMIT</button>
                     </div>
                 </div>
-
             </div>
             
             <script>
                 function toggleDetails(id) {
+                    let detailsSections = document.querySelectorAll('.details');
+
+                    detailsSections.forEach(section => {
+                        if (section.id !== id) {
+                            section.classList.add('d-none');
+                        }
+                    });
+
                     let element = document.getElementById(id);
                     element.classList.toggle('d-none');
                 }
             </script>
-             
-
         </div>
     </div>
+                      
+    <div class="modal" id="fileModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Document Preview</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <div id="filePreview"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const viewIcons = document.querySelectorAll(".view-icon");
+        const modalElement = document.getElementById("fileModal");
+        const modalBody = document.getElementById("filePreview");
+        const modalInstance = new bootstrap.Modal(modalElement);
         
+        viewIcons.forEach((icon) => {
+            icon.addEventListener("click", function (event) {
+                event.preventDefault();
+
+                const fileUrl = this.getAttribute("data-url");
+                const fileType = this.getAttribute("data-type");
+
+                if (fileUrl && fileType) {
+                    if (fileType === "image") {
+                        modalBody.innerHTML = `<img src="${fileUrl}" style="width: 100%; height: auto;">`;
+                    } else if (fileType === "pdf") {
+                        modalBody.innerHTML = `<embed src="${fileUrl}" type="application/pdf" width="100%" height="500px" />`;
+                    } else {
+                        modalBody.innerHTML = `<p>Unsupported file type</p>`;
+                    }
+
+                    modalInstance.show();
+                }
+            });
+        });
+
+    });
+    </script>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const tabs = document.querySelectorAll(".nav-link[data-bs-toggle='tab']");
@@ -326,9 +650,8 @@
                 tab.addEventListener("click", function (e) {
                     e.preventDefault();
 
-                    // Remove active class from all tabs
                     tabs.forEach(t => t.classList.remove("active"));
-                    // Hide all tab contents
+
                     tabContents.forEach(content => content.classList.add("d-none"));
 
                     // Activate the clicked tab
@@ -340,19 +663,119 @@
         });
     </script>
 
+    
 
-    <script>
-        function toggleDetails(id) {
-            var element = document.getElementById(id);
-            if (element.classList.contains('d-none')) {
-                element.classList.remove('d-none');
-            } else {
-                element.classList.add('d-none');
+<script>
+  let submitButton = document.getElementById("submitButton");
+
+// Check if submission was in progress before refresh
+if (localStorage.getItem("isSubmitting") === "true") {
+    submitButton.disabled = true;
+    submitButton.innerText = "Processing...";
+}
+
+submitButton.addEventListener("click", function (event) {
+    event.preventDefault(); 
+
+    if (submitButton.disabled) {
+        return; 
+    }
+    
+    submitButton.disabled = true; 
+    submitButton.innerText = "Processing..."; 
+
+    // Mark submission in progress
+    localStorage.setItem("isSubmitting", "true");
+
+    let approvalStatus1 = document.getElementById("approvalStatus").value.trim();
+    let remarkInput = document.getElementById("remarkInput").value.trim();
+
+    if (approvalStatus1 === "") {
+        alert("Please select an Approval Status.");
+        resetButton();
+        return;
+    }
+
+    let checkedFields = [];
+    let affectedPages = new Set();
+
+    document.querySelectorAll("tbody tr").forEach(row => { 
+        let checkbox = row.querySelector("input[type='checkbox']");
+        
+        if (checkbox && checkbox.checked) {  
+            let inputField = row.querySelector("input.form-control");  
+            let fieldName = inputField ? inputField.name || inputField.id : ""; 
+            let remarkInput = row.querySelector("input[type='text']:not([readonly])");
+            let remark = remarkInput ? remarkInput.value.trim() : ""; 
+
+            if (fieldName) {
+                checkedFields.push({ fieldName, remark });
+
+                let pageSection = row.closest(".details"); 
+                if (pageSection) {
+                    affectedPages.add(pageSection.id);
+                }
             }
         }
-    </script>
+    });
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    let approvalStatus = document.getElementById("approvalStatus").value;
+
+    if (approvalStatus === "correction" && checkedFields.length === 0) {
+        Swal.fire({
+            icon: "warning",
+            title: "Correction Required",
+            text: "For 'Correction', you must select at least one field.",
+            confirmButtonText: "OK"
+        });
+        resetButton();
+        return;
+    }
+
+    if (approvalStatus === "approve" && checkedFields.length > 0) {
+        Swal.fire({
+            icon: "error",
+            title: "Invalid Selection",
+            text: "You have selected fields for correction, but also chose 'Approve'. Please deselect fields or change the approval status.",
+            confirmButtonText: "OK"
+        });
+        resetButton();
+        return;
+    }
+
+    let id = "<%= applicationID %>"; 
+    fetch(`/approver_indox/${id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+            fields: checkedFields, 
+            status: approvalStatus, 
+            pages: [...affectedPages],
+            overallremark: remarkInput 
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        localStorage.removeItem("isSubmitting"); 
+        alert("Data submitted successfully!");
+        window.location.href = "/approver_indox";
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("An error occurred. Please try again.");
+        resetButton();
+    });
+});
+
+function resetButton() {
+    submitButton.disabled = false;
+    submitButton.innerText = "Submit";
+    localStorage.removeItem("isSubmitting"); 
+}
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 
 <%- include("../shared/footer.ejs") %>

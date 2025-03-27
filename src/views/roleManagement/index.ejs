@@ -114,7 +114,7 @@
 
                             </div>
                             <div class="col-md-6 col-sm-6 my-1 d-flex justify-content-md-end justify-content-sm-end">
-                                <a href="/role_managment/createrole" class="role-btn">CREATE ROLE</a>
+                                <!-- <a href="/role_managment/createrole" class="role-btn">CREATE ROLE</a> -->
                             </div>
                             
                         </div>
@@ -128,7 +128,6 @@
                                     <thead>
                                         <tr>
                                             <th>ROLE NAME</th>
-
                                             <th>DISPLAY NAME</th>
                                             <th>PERMISSION (S)</th>
                                             <th>Action</th>
@@ -136,11 +135,10 @@
                                     </thead>
                                     <tbody id="search_table_data">
 
-                                        <% const AWS_="AWL_" ; %>
                                             <% roleManagment.forEach((data)=> { %>
                                                 <tr>
                                                     <td class="text_uppercase">
-                                                        <%= AWS_ + `${data.role}` %>
+                                                        <%= data.role %>
                                                     </td>
 
                                                     <td>
@@ -151,10 +149,10 @@
                                                     </td>
 
                                                     <td class="role-icon">
-                                                        <a href="/role_managment/editrole?role=<%= data.role %>"
+                                                        <!-- <a href="/role_managment/editrole?role=<%= data.role %>"
                                                             class="d-flex align-items-center"><i
                                                                 class="mdi mdi-lead-pencil"></i><span
-                                                                class="mx-2">Edit</span></a>
+                                                                class="mx-2">Edit</span></a> -->
 <!-- 
                                                         <a href="#" class="d-flex align-items-center"
                                                             data-bs-toggle="modal" data-bs-target="#deleteModal"

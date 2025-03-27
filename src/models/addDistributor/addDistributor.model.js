@@ -9,9 +9,7 @@ const getDistributor = async (email_id) => {
                 console.error("Database error:", error);
                 return reject(error);
             }
-            if (results.length === 0) {
-                return reject(new Error("User not found"));
-            }
+
             return resolve(results[0]);
         });
     });
@@ -46,14 +44,15 @@ const updateDistributor = async (data, id, status) => {
         data_operator = ?, 
         internet_access = ?, 
         printer_use = ?, 
-        dms_count = ?, 
+        dms_count = ?,
+        print_system = ?, 
         logistics_dms = ?, 
         delivery_time = ?, 
         returns_rate = ?, 
         mw_sales_share = ?, 
         openness_change = ?, 
         capital_infrastructure = ?,
-        application_status = ?,
+        applicationStatus = ?,
         invitesend = ?,
         invite_send_flag = ?,
         invitecheckstatus = ?
@@ -87,6 +86,7 @@ const updateDistributor = async (data, id, status) => {
     data.internet_access,
     data.printer_use,
     data.dms_count,
+    data.print_system,
     data.logistics_dms,
     data.delivery_time,
     data.returns_rate,
@@ -102,6 +102,99 @@ const updateDistributor = async (data, id, status) => {
 
     return new Promise((resolve, reject) => {
         dbconn.query(query,values, (error, results) => {
+            if (error) {
+                console.error("Database error:", error);
+                return reject(error);
+            }
+            return resolve(results);
+        });
+    });
+};
+
+const addDistributor = async (data, status) => {
+
+    let query = `INSERT INTO prospective_info (
+        user_id, 
+        aseemail, 
+        applicationType, 
+        dbType, 
+        firmName, 
+        distributorName, 
+        email, 
+        contactNumber, 
+        experienceDistribution, 
+        experienceFMCG, 
+        outletsCovered, 
+        monthlyTurnover, 
+        stores_covered, 
+        roi, 
+        fmcg_companies, 
+        fmcg_experience, 
+        stores_mars, 
+        sales_reps, 
+        growth_percentage, 
+        perfect_store_score, 
+        selling_model, 
+        mw_compliance, 
+        cost_structure, 
+        data_operator, 
+        internet_access, 
+        printer_use, 
+        dms_count,
+        print_system, 
+        logistics_dms, 
+        delivery_time, 
+        returns_rate, 
+        mw_sales_share, 
+        openness_change, 
+        capital_infrastructure,
+        invitesend,
+        invite_send_flag,
+        invitecheckstatus
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?)`;
+    
+    let values = [
+        data?.user_id,
+        data?.aseemail,
+        data?.applicationType,
+        data?.dbType,
+        data?.firmName,
+        data?.distributorName,
+        data?.email,
+        data?.contactNumber,
+        data?.experienceDistribution,
+        data?.experienceFMCG,
+        data?.outletsCovered,
+        data?.monthlyTurnover,
+        data?.stores_covered,
+        data?.roi,
+        data?.fmcg_companies,
+        data?.fmcg_experience,
+        data?.stores_mars,
+        data?.sales_reps,
+        data?.growth_percentage,
+        data?.perfect_store_score,
+        data?.selling_model,
+        data?.mw_compliance,
+        data?.cost_structure,
+        data?.data_operator,
+        data?.internet_access,
+        data?.printer_use,
+        data?.dms_count,
+        data?.print_system,
+        data?.logistics_dms,
+        data?.delivery_time,
+        data?.returns_rate,
+        data?.mw_sales_share,
+        data?.openness_change,
+        data?.capital_infrastructure,
+        data?.invite_send_flag,
+        data?.invitecheckstatus
+    ];
+    
+
+    return new Promise((resolve, reject) => {
+        dbconn.query(query, values, (error, results) => {
             if (error) {
                 console.error("Database error:", error);
                 return reject(error);
@@ -202,10 +295,8 @@ const insertApprovalWorkflow = async (application_id, approver_id, approver_role
 
 
 const updateDistributorHierarchy = async(user_id, application_id, approval_sequence, status)=>{
+try{
    let query = `update tbl_approval_workflow set is_final_approver = ?,status = ? where application_id = ? and approver_id = ? and approval_sequence = ?`;
-
-
-
 
    return new Promise((resolve, reject) => {
     dbconn.query(query, [1,status,application_id,user_id,approval_sequence], (error, results) => {
@@ -216,6 +307,10 @@ const updateDistributorHierarchy = async(user_id, application_id, approval_seque
         return resolve(results);
     });
 });
+}catch(error){
+    console.log(error);
+    throw error;
+}
 }
 
 
@@ -235,4 +330,36 @@ const getDistributorDraftList = async(id, email) => {
         });
     });
 };
-module.exports = { getDistributorDraftList, insertApprovalWorkflow, getUserById, getDistributor, getDistributorById, getDistributorByEmail, updateDistributor, deleteDistributor, updateDistributorHierarchy };
+
+
+const updateProspectiveInfo = async (her, len, first, lastApprover, email) => {
+    try {
+        let userIdsString = JSON.stringify(her); 
+
+        let query = `UPDATE prospective_info 
+                     SET total_approval_action_user_ids = ?, 
+                         total_approval_level = ?, 
+                         total_complete_approval_level = ?, 
+                         approval_action_user_id = ?, 
+                         final_approver = ? 
+                     WHERE email = ?`;
+
+        return new Promise((resolve, reject) => {
+            dbconn.query(query, [userIdsString, len, 0, first, lastApprover, email], (error, results) => {
+                if (error) {
+                    console.error("Database error:", error);
+                    return reject(error);
+                }
+                return resolve(results);
+            });
+        });
+    } catch (error) {
+        console.log(error);
+        throw error;
+    }
+};
+
+
+
+
+module.exports = {updateProspectiveInfo, addDistributor, getDistributorDraftList, insertApprovalWorkflow, getUserById, getDistributor, getDistributorById, getDistributorByEmail, updateDistributor, deleteDistributor, updateDistributorHierarchy };

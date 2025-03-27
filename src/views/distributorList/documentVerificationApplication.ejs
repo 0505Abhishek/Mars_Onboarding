@@ -16,6 +16,9 @@
         max-height: 440px;
         overflow-y: auto;
     }
+    .modal-dialog{
+        width:75%;
+    }
 
     table {
         width: 100%;
@@ -78,7 +81,7 @@
 </style>
 
 
-<div class="container mt-4">
+<div class="container mt-4 mb-4">
 
     <div class="d-flex justify-content-between align-items-center">
         <a href="/distributorList" class="back-link">
@@ -98,38 +101,63 @@
                 </tr>
             </thead>
             <tbody>
-                <% const documents = [
-                    { id: 1, name: "Aadhaar Card", type: "image", url: "/uploads/aadhaar.jpg" },
-                    { id: 2, name: "PAN Card", type: "image", url: "/uploads/pan.jpg" },
-                    { id: 3, name: "Voter ID", type: "image", url: "/uploads/voter.jpg" },
-                    { id: 4, name: "Passport", type: "image", url: "/uploads/passport.jpg" },
-                    { id: 5, name: "Driving License", type: "image", url: "/uploads/license.jpg" },
-                    { id: 6, name: "Electricity Bill", type: "pdf", url: "/uploads/bill.pdf" },
-                    { id: 7, name: "Bank Statement", type: "pdf", url: "/uploads/statement.pdf" },
-                    { id: 8, name: "Income Tax Return", type: "pdf", url: "/uploads/itr.pdf" }
-                ]; %>
-
-                <% documents.forEach((doc, index) => { %>
-                <tr>
-                    <td><%= index + 1 %></td>
-                    <td><%= doc.name %></td>
-                    <td>
-                        <span class="view-icon" data-url="<%= doc.url %>" data-type="<%= doc.type %>">👁</span>
-                    </td>
-                    <td>
-                        <input type="radio" name="doc_<%= doc.id %>" value="tick">
-                    </td>
-                    <td>
-                        <input type="radio" name="doc_<%= doc.id %>" value="cross">
-                    </td>
-                    <td>
-                        <input type="text" placeholder="Enter remarks">
-                    </td>
-                </tr>
+                <% 
+                const documentMappings = [
+                    { key: "crf_form", name: "CRF Form", mandatory: true },
+                    { key: "gst_certificate", name: "GST Certificate", mandatory: true },
+                    { key: "fssai_certificate", name: "FSSAI Certificate", mandatory: true },
+                    { key: "pan_card", name: "PAN Card", mandatory: true },
+                    { key: "cancelled_cheque", name: "Cancelled Cheque", mandatory: true },
+                    { key: "db_agreement", name: "DB Agreement", mandatory: true },
+                    { key: "godown_insurance", name: "Godown Insurance", mandatory: true },
+                    { key: "rsm_email_approval", name: "RSM Email Approval", mandatory: true },
+                    { key: "replacement_noc", name: "Replacement NOC", mandatory: distributor.applicationType === "replacement" },
+                    { key: "fssai_amendment_copy", name: "FSSAI Amendment Copy", mandatory: true},
+                    { key: "freight_sheet", name: "Freight Sheet", mandatory: distributor.dbType == "Hub" },
+                    { key: "bank_statement", name: "Bank Statement", mandatory: distributor.dbType == "Credit" }
+                ];
+            
+                documentMappings.forEach((doc, index) => { 
+                    // If the document is conditional and does not meet the requirement, skip it
+                    if (doc.mandatory === false || doc.mandatory === undefined) return;
+            
+                    const file = distributor[doc.key]; 
+                    let remarks = "";
+                %>
+                    <tr>
+                        <td><%= index + 1 %></td>
+                        <td><%= doc.name %></td>
+                        <td>
+                            <% if (file) { 
+                                const fileExtension = file.split('.').pop().toLowerCase();
+                                const fileType = (fileExtension === "pdf") ? "pdf" : "image"; 
+                            %>
+                                <a href="#" class="view-icon" data-url="/uploads/<%= file %>" data-type="<%= fileType %>" style="text-decoration:none;">
+                                    👁
+                                </a>
+                            <% } else { %>
+                                <span style="color: red;">Not Uploaded</span>
+                            <% } %>
+                        </td>
+                        
+                        <td>
+                            <input type="radio" name="doc_<%= doc.key %>" value="tick">
+                        </td>
+                        <td>
+                            <input type="radio" name="doc_<%= doc.key %>" value="cross">
+                        </td>
+                        <td>
+                            <input type="text" placeholder="Enter remarks" value="<%= remarks %>">
+                        </td>
+                    </tr>
                 <% }); %>
             </tbody>
+            
+            
+            
         </table>
     </div>
+    
 
     <div class="action-buttons">
         <button class="btn btn-primary" id="correctionBtn">Correction</button>
@@ -159,48 +187,133 @@
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const viewIcons = document.querySelectorAll(".view-icon");
-        const modalElement = document.getElementById("fileModal");
-        const modalBody = document.getElementById("filePreview");
-        const modalInstance = new bootstrap.Modal(modalElement);
+   document.addEventListener("DOMContentLoaded", function () {
+    const viewIcons = document.querySelectorAll(".view-icon");
+    const modalElement = document.getElementById("fileModal");
+    const modalBody = document.getElementById("filePreview");
+    const modalInstance = new bootstrap.Modal(modalElement);
 
-        viewIcons.forEach((icon) => {
-            icon.addEventListener("click", function () {
-                const fileUrl = this.dataset.url;
-                const fileType = this.dataset.type;
+    viewIcons.forEach((icon) => {
+        icon.addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent default link action
 
-                if (fileUrl && fileType) {
-                    if (fileType === "image") {
-                        modalBody.innerHTML = `<img src="${fileUrl}" style="width: 100%; height: auto;">`;
-                    } else if (fileType === "pdf") {
-                        modalBody.innerHTML = `<embed src="${fileUrl}" type="application/pdf" width="100%" height="500px" />`;
-                    } else {
-                        modalBody.innerHTML = `<p>Unsupported file type</p>`;
-                    }
+            const fileUrl = this.getAttribute("data-url");
+            const fileType = this.getAttribute("data-type");
 
-                    modalInstance.show();
+            if (fileUrl && fileType) {
+                if (fileType === "image") {
+                    modalBody.innerHTML = `<img src="${fileUrl}" style="width: 100%; height: auto;">`;
+                } else if (fileType === "pdf") {
+                    modalBody.innerHTML = `<embed src="${fileUrl}" type="application/pdf" width="100%" height="500px" />`;
+                } else {
+                    modalBody.innerHTML = `<p>Unsupported file type</p>`;
                 }
-            });
-        });
 
-        // Action Buttons Event
-        document.getElementById("correctionBtn").addEventListener("click", function () {
-            Swal.fire({
-                icon: "warning",
-                title: "Correction Requested",
-                text: "The user has requested corrections."
-            });
-        });
-
-        document.getElementById("approveBtn").addEventListener("click", function () {
-            Swal.fire({
-                icon: "success",
-                title: "Approved",
-                text: "All documents have been verified."
-            });
+                modalInstance.show();
+            }
         });
     });
+
+});
+
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const approveBtn = document.getElementById("approveBtn");
+    const correctionBtn = document.getElementById("correctionBtn");
+
+    let isSubmitted = false;  // Prevent multiple submissions
+
+    function collectFormData() {
+        let documents = [];
+        document.querySelectorAll("#documentTable tbody tr").forEach(row => {
+            const radioSelected = row.querySelector('input[type="radio"]:checked');
+            const remarks = row.querySelector('input[type="text"]').value.trim();
+            
+            if (radioSelected) {
+                documents.push({
+                    doc_key: radioSelected.name.replace("doc_", ""), 
+                    status: radioSelected.value, 
+                    remarks: remarks || null
+                });
+            }
+        });
+        return documents;
+    }
+
+    function isAnyCrossChecked() {
+        return document.querySelectorAll('input[type="radio"][value="cross"]:checked').length > 0;
+    }
+
+    function sendDataToAPI(actionType) {
+        if (isSubmitted) return; // Prevent multiple submissions
+
+        isSubmitted = true;
+        approveBtn.disabled = true;
+        correctionBtn.disabled = true;
+
+        const documentsData = collectFormData();
+        
+        fetch("/distributorList/<%=application_id%>", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                action: actionType,
+                documents: documentsData
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            Swal.fire({
+                icon: "success",
+                title: actionType === "approve" ? "Approved" : "Correction Requested",
+                text: `The documents have been ${actionType === "approve" ? "approved" : "sent for correction"}.`
+            }).then(() => {
+                window.location.href = "/distributorList";  
+            });
+        })
+        .catch(error => {
+            Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: "Something went wrong while submitting."
+            });
+
+            // Re-enable buttons in case of an error
+            isSubmitted = false;
+            approveBtn.disabled = false;
+            correctionBtn.disabled = false;
+        });
+    }
+
+    correctionBtn.addEventListener("click", function () {
+        if (!isAnyCrossChecked()) {  
+            Swal.fire({
+                icon: "warning",
+                title: "Correction Not Allowed",
+                text: "Nothing is marked for correction."
+            });
+            return; 
+        }
+        sendDataToAPI("correction");
+    });
+
+    approveBtn.addEventListener("click", function () {
+        if (isAnyCrossChecked()) {   
+            Swal.fire({
+                icon: "warning",
+                title: "Approval Not Allowed",
+                text: "Some documents have been marked for correction."
+            });
+            return; 
+        }
+        sendDataToAPI("approve");
+    });
+});
+
 </script>
 
 <%- include("../shared/footer.ejs") %>

@@ -68,8 +68,10 @@
                             <td><%= distributor.contactNumber %></td>
                             <td><%= distributor.aseemail %></td>
                             <td>
-                                <% if (distributor.invite_send_flag === 1) { %>
+                                <% if (distributor.invite_send_flag === 1 && distributor.flag !== 2) { %>
                                     <span class="badge bg-success">Sent</span> 
+                                <% } else if(distributor.flag == 2){ %>
+                                    <span class="badge bg-danger text-white">Rejected</span>
                                 <% } else { %>
                                     <span class="badge bg-warning text-dark">Pending</span>
                                 <% } %>

@@ -15,103 +15,253 @@
         integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="../css/style.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .image-container {
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+        }
 
-<body class="vh-100">
-    <div class="container-fluid">
-        <div class="row vh-100 ">
-            <div class="col-md-7 col-lg-4 col-xl-4 bg-light pt-5">
-                <div class="mt-5 pt-5 p-3 z-index-0">
-                    <div class=" text-center pt-4">
-                        <img src="../images/logo-main.svg" width="200" alt="" loading="lazy">
-                        <h2>Reset Password </h2>
+        .image-container .col {
+            display: inline-block !important;
+            vertical-align: top;
+            white-space: normal;
+            animation: scrollImages 8s linear infinite alternate;
+        }
+
+        @keyframes scrollImages {
+            0% {
+                transform: translateX(0);
+            }
+
+            150% {
+                transform: translateX(-150%);
+            }
+
+            75% {
+                transform: translateX(-75%);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+
+        .ICON {
+            font-size: 50px;
+            color: #0000a0;
+        }
+
+        .login-wrapper {
+            background-color: #080678;
+            background-repeat: no-repeat;
+            background-size: cover;
+            width: 100%;
+            height: 100vh;
+        }
+
+        .login-userset {
+            overflow: hidden;
+            width: 100%;
+            border-radius: 25px;
+            padding: 5px;
+            background-color: #fff;
+            /* opacity: 0.8; */
+            box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+        }
+
+        .login-brand-img .col {
+            border-right: 1.5px solid #a1a7a2;
+            height: 75px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .form-login label {
+            /* width: 100%; */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #0001a4;
+            font-size: 35px;
+            font-weight: 500;
+        }
+
+        .form-login input {
+            width: 100%;
+            height: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            border: 1px solid rgba(145, 158, 171, 0.32);
+            border-bottom: 8px solid #0001a4;
+            border-radius: 5px;
+            padding: 0 15px;
+            transition: all 0.2s ease;
+        }
+
+        .form-login input:hover,
+        .form-login input:focus {
+            border: 1px solid #0001a4;
+            border-bottom: 1px solid #0001a4;
+        }
+
+        .form-login .btn-login {
+            float: inline-end;
+            width: 80%;
+            /* width: 50%; */
+            font-size: 18px;
+            letter-spacing: 4px;
+            font-weight: 900;
+            background: #0001a4;
+            border-color: #0001a4;
+            padding: 12px;
+            -webkit-transition: all 0.5s ease;
+            -ms-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+            /* margin-top: 15px; */
+            color: #fff;
+        }
+
+        .form-login .btn-login:hover {
+            box-shadow: 0 50px #fff inset !important;
+            color: #0001a4;
+        }
+
+        .mars-logo {
+            width: 300px;
+            border-radius: 25px;
+            top: 10px;
+            position: relative;
+        }
+
+        .kyc b {
+            color: #080678;
+            font-weight: revert !important;
+        }
+    </style>
+
+<body class="login-wrapper ">
+    <div>
+       <div class=" d-flex justify-content-center align-items-center">
+            <div class="container-fluid">
+
+                <div class="row  ">
+                    <div class="col-lg-11 col-md-12 col-11 mx-auto ">
+                        <div class="mt-0">
+                            <div class=" ">
+                                <img src="../images/mars-logo.svg" class="mars-logo" alt="" loading="lazy">
+                            </div>
+
+                            <div class="login-userset  mt-1 ">
+                                <div class="col-lg-5 col-md-7 col-10   mx-auto  z-index-0"
+                                    style="height: 45vh;">
+                                    <div class="login-top-icon text-center pt-2 mt-2">
+                                        <i class="fa fa-user-circle ICON" aria-hidden="true"></i>
+                                    </div>
+                                    <div class=" text-center mb-3 ">
+                                        <h1 class="kyc"><b><strong>KYC PROCESS</strong> </b> </h1>
+                                    </div>
+
+                                    <form role="form text-left" method="POST" action="/account/reset-password">
+                                        <div class="form-login mb-3 mx-2 d-flex justify-content-center align-items-center">
+                                            <label class="me-2 mr-2"><i class="fa fa-user" aria-hidden="true"></i></label>
+                                            <div class="form-addons w-100">
+                                                <input type="text" name="email" id="email" class="focus:outline-none focus:border-blue-400 focus:shadow" required="" autofocus="" placeholder="Email">
+                                            </div>
+                                        </div>
+                                    
+                                        <div class="row form-login my-3 mx-2">
+                                            <button class="btn btn-login w-100" type="submit">SENT MAIL</button>
+                                        </div>
+                                    
+                                        <div class="text-center mt-2">
+                                            <a href="/" class="text-muted font-weight-bold">Back To Login ?</a>
+                                        </div>
+                                    </form>
+                                    
+
+
+                                </div>
+                                <div class="pt-5 mt-3">
+                                    <div class="row pt-5 justify-content-center align-items-center login-brand-img my-4 image-container"
+                                        id="imageContainer">
+                                        <div class="col">
+                                            <img src="../images/snickers.jpg" alt="img" class="img-fluid">
+                                        </div>
+                                        <div class="col">
+                                            <img src="../images/twix.jpg" alt="img" class="img-fluid">
+                                        </div>
+                                        <div class="col">
+                                            <img src="../images/doublemint.jpg" alt="img" class="img-fluid">
+                                        </div>
+                                        <div class="col">
+                                            <img src="../images/boomer.jpg" alt="img" class="img-fluid">
+                                        </div>
+                                        <div class="col">
+                                            <img src="../images/glaxy.jpg" alt="img" class="img-fluid">
+                                        </div>
+                                        <div class="col">
+                                            <img src="../images/orbit.jpg" alt="img" class="img-fluid">
+                                        </div>
+                                        <div class="col">
+                                            <img src="../images/mars.jpg" alt="img" class="img-fluid">
+                                        </div>
+                                        <div class="col">
+                                            <img src="../images/skittles.jpg" alt="img" class="img-fluid">
+                                        </div>
+                                        <div class="col">
+                                            <img src="../images/m&amp;ms.jpg" alt="img" class="img-fluid">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-                    <form role="form text-left" action="./reset-password" method="post" id="reset-password-form">
-                        <div class="mb-3">
-                            <div class="form-group">
-                                <label for="password">Password</label>
-                                <input type="password" name="password" id="password" class="form-control"
-                                    placeholder="Your password" required>
-                                <div id="password-validation"></div>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <div class="form-group">
-                                <label for="confirmPassword">Confirm Password</label>
-                                <input type="password" name="confirmPassword" id="confirmPassword" class="form-control"
-                                    placeholder="Your confirm password" required>
-                                <div id="confirm-password-validation"></div>
-                            </div>
-                        </div>
-
-                        <div class="text-center">
-                            <button type="submit" class="btn login-btn w-100 my-4 mb-2">Submit</button>
-                        </div>
-                    </form>
-                    <div class=" mt-5 pt-5">
-                        <div class="mt-5 pt-5 text-center">
-                            <div class="app-footer-right">
-                                <p class="mb-0 text-center">© 2024. All right reserved.</p>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- <div class="col-md-8 col-lg-7 col-xl-8 text-center ">
+                    <img src="../images/authentication.jpg" class="img-fluid custom-img" alt="Phone image">
+                </div> -->
                 </div>
             </div>
-            <div class="col-md-8 col-lg-7 col-xl-8 text-center pt-5 mt-4">
-                <img src="../images/authentication.jpg" class="img-fluid custom-img" alt="Phone image">
-            </div>
-
-        </div>
+       </div>
     </div>
-    <script>
-        $(document).ready(function () {
-            $('#password').keyup(function () {
-                var password = $(this).val();
-                var passwordValidation = $('#password-validation');
-                var passwordStrength = checkStrength(password);
 
-                if (passwordStrength) {
-                    passwordValidation.removeClass('text-danger').addClass('text-success')
-                        .text('Password Strength: ' + passwordStrength);
-                } else {
-                    passwordValidation.removeClass('text-success').addClass('text-danger')
-                        .text('Password too weak');
-                }
-            });
-
-            $('#confirmPassword').keyup(function () {
-                var password = $('#password').val();
-                var confirmPassword = $(this).val();
-                var confirmPasswordValidation = $('#confirm-password-validation');
-
-                if (password === confirmPassword) {
-                    confirmPasswordValidation.removeClass('text-danger').addClass('text-success')
-                        .text('Passwords match');
-                } else {
-                    confirmPasswordValidation.removeClass('text-success').addClass('text-danger')
-                        .text('Passwords do not match');
-                }
-            });
-
-            function checkStrength(password) {
-                // Your password strength checking logic here
-                // Example logic:
-                if (password.length >= 8) {
-                    return 'Strong';
-                } else if (password.length >= 6) {
-                    return 'Moderate';
-                } else {
-                    return 'Weak';
-                }
-            }
-        });
-    </script>
     <script src='https://code.jquery.com/jquery-1.12.4.min.js'></script>
     <script src='https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js'></script>
     <script src='https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap.js'></script>
     <script src="../js/main.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    // Function to get query parameters from URL
+    function getQueryParam(name) {
+        let urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(name);
+    }
+
+    // Get 'error' message from URL
+    let errorMessage = getQueryParam("error");
+
+    if (errorMessage) {
+        Swal.fire({
+            toast: true,
+            position: "top-start",  
+            icon: "error",
+            title: errorMessage,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+        });
+
+        let newUrl = window.location.origin + window.location.pathname;
+        window.history.replaceState({}, document.title, newUrl);
+    }
+</script>
+
+
 </body>
 
 </html>

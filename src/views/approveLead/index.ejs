@@ -66,27 +66,31 @@
                     <% distributors.forEach((distributor, index) => { %>
                         <tr>
                             <td><%= index + 1 %></td> 
-                            <td><%= distributor?.application_type || 'N/A' %></td>
-                            <td><%= distributor?.db_type || 'N/A' %></td>
+                            <td><%= distributor?.applicationType || 'N/A' %></td>
+                            <td><%= distributor?.dbType || 'N/A' %></td>
                             <td><%= distributor?.firmName || 'N/A' %></td>
-                            <td><%= distributor?.distributor_name || 'N/A' %></td>
+                            <td><%= distributor?.distributorName || 'N/A' %></td>
                             <td><%= distributor?.email || 'N/A' %></td>
                             <td><%= distributor?.contactNumber || 'N/A' %></td>
-                            <td><%= distributor?.start_date ? new Date(distributor.start_date).toLocaleDateString('en-GB') : 'N/A' %></td>
+                            <td><%= distributor?.create_date ? new Date(distributor.create_date).toLocaleDateString('en-GB') : 'N/A' %></td>
                             <td>
                                 <% if (distributor?.is_final_approver === 1) { %>
                                     <span class="badge bg-success">Sent</span> 
+                                <% } else if(distributor?.flag == 3 && distributor?.is_final_approver === 0){ %>
+                                    <span class="badge bg-success"><%= distributor.applicationStatus%></span> 
                                 <% } else { %>
                                     <span class="badge bg-warning text-dark">Pending</span>
                                 <% } %>
                             </td>
-                            <td><%= distributor?.created_by || 'N/A' %></td>
+                            <td><%= distributor?.aseemail || 'N/A' %></td>
                             <td>
-                                <a href="/approve_lead/<%= distributor?.application_id %>">
-                                    <button class="btn btn-primary">
-                                        <i class="fa fa-eye"></i>
-                                    </button>
-                                </a>
+                                <% if (distributor?.is_final_approver === 0 && distributor?.flag == 0) { %>
+                                    <a href="/approve_lead/<%= distributor?.application_id %>">
+                                        <button class="btn btn-primary">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+                                    </a>
+                                <% } %>
                             </td>                            
                         </tr>
                     <% }) %>

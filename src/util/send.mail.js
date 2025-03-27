@@ -19,19 +19,30 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-const sendLinkOnMail = async (Email, token) => {
-    var mailOptions = {
+const sendLinkOnMail = async (Email, token) => {    
+    console.log(Email, "..........................", token);
+
+    let transporter = nodemailer.createTransport({
+        service: SERVICE,
+        auth: {
+            user: USER_MAIL,
+            pass: PASSWORD
+        }
+    });
+
+    let mailOptions = {
         from: USER_MAIL,
         to: Email,
         subject: 'Reset Password',
-        html: `<p>Click <a href='${HOST}/account/reset-password?token=${token}'>here</a> to reset your password</p>`
+        html: `<p>Click <a href='${HOST}/account/change-password?token=${token}'>here</a> to reset your password</p>`
     };
 
     try {
-        const info = await transporter.sendMail(mailOptions);
-        return info.response;
+        let info = await transporter.sendMail(mailOptions);
+        console.log('Preview URL: %s', nodemailer.getTestMessageUrl(info));
+        return "done";
     } catch (error) {
-        throw error;
+        console.error('Error sending email:', error);
     }
 };
 

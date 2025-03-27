@@ -41,9 +41,6 @@ const selectQuery = async (email) => {
           console.error("Database error:", error);
           return reject(error);
         }
-        if (results.length === 0) {
-          return reject(new Error("User not found"));
-        }
         return resolve(results[0]); 
       });
     });

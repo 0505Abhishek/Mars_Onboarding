@@ -55,6 +55,7 @@
                     <th>Business Name</th>
                     <th>Email ID</th>
                     <th>Mobile Number</th>
+                    <th>Remark</th>
                     <th>Initiator Email</th>
                     <th>Status</th>
                     <th>Create Date</th>
@@ -66,26 +67,24 @@
                     <% distributors.forEach((distributor, index) => { %>
                         <tr>
                             <td><%= index + 1 %></td> 
-                            <td><%= distributor.firmName %></td>
-                            <td><%= distributor.email %></td>
-                            <td><%= distributor.contactNumber %></td>
-                            <td><%= distributor.aseemail %></td>
+                            <td><%= distributor?.firmName %></td>
+                            <td><%= distributor?.email %></td>
+                            <td><%= distributor?.contactNumber %></td>
+                            <td><%= distributor?.rsem_remark %></td>
+                            <td><%= distributor?.aseemail %></td>
                             <td>
-                                <% if (distributor.is_final_approver === 1) { %>
-                                    <span class="badge bg-success">Sent</span> 
-                                <% } else { %>
-                                    <span class="badge bg-warning text-dark">Pending</span>
+                                <% if (distributor?.flag === 3) { %>
+                                    <span class="badge bg-warning text-dark"><%= distributor.applicationStatus %></span>
                                 <% } %>
                             </td>
-                            <td><%= new Date(distributor.create_date).toLocaleDateString('en-GB') %></td>
+                            <td><%= new Date(distributor?.create_date).toLocaleDateString('en-GB') %></td>
                             <td>
-                                <% if (distributor.canApprove) { %>
-                                    <a href="/approve/<%= distributor.application_id %>">
-                                        <button>
+                                <% if (distributor?.flag === 3 && distributor?.applicationPhase_Flag == 0 ) { %>
+                                    <a href="/rsem_application_correction/<%= distributor?.id %>">
+                                        <button class="btn btn-primary">
                                             <i class="fa fa-eye"></i>
                                         </button>
                                     </a>
-                                <% } else { %>
                                 <% } %>
                             </td>                            
                         </tr>

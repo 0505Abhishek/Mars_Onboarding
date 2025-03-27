@@ -6,7 +6,7 @@ const userAuth = async (req, res, next) => {
     let token = req.headers.authorization || req.body.authorization || req.cookies.token;
     
     if (!token) {
-        return res.redirect('/account');
+        return res.redirect('/');
     }
 
     // let result = await selectQueryByToken(token);
@@ -15,11 +15,32 @@ const userAuth = async (req, res, next) => {
     // }
     jwt.verify(token, TOKEN_SECRET_KEY, (err, decoded) => {
         if (err) {
-            return res.redirect('/account');
+            console.log(err);
+            return res.redirect('/');
         }
         req.user = { userId: decoded };
         next();
     });
 }
 
-module.exports = { userAuth }
+
+
+const emailAuth = async (req, res, next) => {
+    let token = req.query.token ;
+
+    console.log(req.query,"req.queryreq.queryreq.queryreq.queryreq.query");
+    if (!token) {
+        console.log({ message: ' Token has expired!' });
+        return res.redirect('/account/token'); 
+    }
+    jwt.verify(token, TOKEN_SECRET_KEY, (err, decoded) => {
+        if (err) {
+            console.log(err);
+            return res.redirect('/account/token'); 
+        }
+        req.user = { userId: decoded };
+        next();
+    });
+}
+
+module.exports = { userAuth, emailAuth }

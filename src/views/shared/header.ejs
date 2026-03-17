@@ -276,6 +276,8 @@
                             'OFFBOARDAPPROVER',
                             'APPROVERINDOX',
                             'CORRECTION',
+                            'CURRENT_STATUS', 
+                            'ROLE_MANAGEMENT',  
                             'OFFBOARDSTATUS'
                         ];
 
@@ -369,15 +371,15 @@
                                                <span class="menu-title">Offboard Approver</span>
                                                </div>
                                             </a>           
-                                         <% } else if (item.module_name === 'OFFBOARDSTATUS') { %>
-                                            <a class="nav-link" href="/offboard_status">
-                                                <div class="icon-container">
-                                               <img class="nav-icon default-icon" src="../../public/images/Approve Offboarding_W.png" alt="Lead Icon">
-                                               <img class="nav-icon active-icon" src="../../public/images/Approve Offboarding.png" alt="Lead Icon">
-                                               <span class="menu-title">Offboarding Status</span>
-                                               </div>
-                                            </a>           
-                                        <% } %>
+                                            <% } else if (item.module_name === 'OFFBOARDSTATUS') { %>
+                                                <a class="nav-link" href="/offboard_status">
+                                                    <div class="icon-container">
+                                                        <img class="nav-icon default-icon" src="../../public/images/Approve Offboarding_W.png" alt="Status Icon">
+                                                        <img class="nav-icon active-icon" src="../../public/images/Approve Offboarding.png" alt="Status Icon">
+                                                        <span class="menu-title">Offboarding Status</span>
+                                                    </div>
+                                                </a>
+                                            <% } %>
                                 </li>
                             <% } %>
                         <% }); %>

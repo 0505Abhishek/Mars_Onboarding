@@ -1237,9 +1237,100 @@ const nextapproval_action_user_idN = async (
 
 const deleteMainOffboardStatus = async (application_id) => {
   try {
+
     const insertQuery = `
-      INSERT INTO offboardingdistributors_history 
-      SELECT * FROM offboardingdistributors 
+      INSERT INTO offboardingdistributors_history (
+        application_id,
+        offboard_type,
+        reason_text,
+        initiator_role,
+        initiator_id,
+        current_step,
+        initiated_at,
+        resignation_date,
+        noc_certificate,
+        regination_letter,
+        status,
+        rsem_status,
+        last_approval_start_date,
+        last_approval_action_user_id,
+        total_approval_action_user_ids,
+        approval_action_user_id,
+        total_approval_level,
+        total_complete_approval_level,
+        flag,
+        applicationStatus,
+        approver_id,
+        approval_role,
+        final_approver,
+        fnf_flag,
+        dt_team_flag,
+        confirm_asset_status,
+        db_replace_status,
+        replacementstatus,
+        rsm_action_btn,
+        exit_interview_remarks,
+        gst_reversal,
+        created_at,
+        updated_at,
+        db_response_status,
+        db_deadline,
+        db_action_taken_at,
+        db_override_by,
+        db_override_at,
+        ap_assigned_at,
+        ap_deadline,
+        ap_action_status,
+        ap_action_taken_at,
+        snf_takeover_allowed,
+        exit_interview_completed
+      )
+      SELECT
+        application_id,
+        offboard_type,
+        reason_text,
+        initiator_role,
+        initiator_id,
+        current_step,
+        initiated_at,
+        resignation_date,
+        noc_certificate,
+        regination_letter,
+        status,
+        rsem_status,
+        last_approval_start_date,
+        last_approval_action_user_id,
+        total_approval_action_user_ids,
+        approval_action_user_id,
+        total_approval_level,
+        total_complete_approval_level,
+        flag,
+        applicationStatus,
+        approver_id,
+        approval_role,
+        final_approver,
+        fnf_flag,
+        dt_team_flag,
+        confirm_asset_status,
+        db_replace_status,
+        replacementstatus,
+        rsm_action_btn,
+        exit_interview_remarks,
+        gst_reversal,
+        created_at,
+        updated_at,
+        db_response_status,
+        db_deadline,
+        db_action_taken_at,
+        db_override_by,
+        db_override_at,
+        ap_assigned_at,
+        ap_deadline,
+        ap_action_status,
+        ap_action_taken_at,
+        snf_takeover_allowed,
+        exit_interview_completed
+      FROM offboardingdistributors
       WHERE application_id = ?
     `;
 
@@ -1251,23 +1342,62 @@ const deleteMainOffboardStatus = async (application_id) => {
     });
 
     const deleteQuery = `DELETE FROM offboardingdistributors WHERE application_id = ?`;
+
     return new Promise((resolve, reject) => {
       dbconn.query(deleteQuery, [application_id], (err) => {
         if (err) return reject(err);
         resolve();
       });
     });
+
   } catch (error) {
-    console.error("Error in updateMainOffboardStatus:", error);
+    console.error("Error in deleteMainOffboardStatus:", error);
     throw error;
   }
 };
 
 const deleteMainOffboardStatusresign = async (application_id) => {
   try {
+
     const insertQuery = `
-      INSERT INTO offboarding_resignation_details_history
-      SELECT * FROM offboarding_resignation_details
+      INSERT INTO offboarding_resignation_details_history (
+        application_id,
+        firm_name,
+        distributor_name,
+        email,
+        contact_no,
+        noc_file_path,
+        resignation_letter,
+        resignation_reasons,
+        gsv_average,
+        low_turnover,
+        low_roi,
+        limitation_in_investment,
+        db_going_out_of_business,
+        increasing_cost,
+        not_ready_for_additional_infrastructure,
+        submitted_at,
+        submitted_by_role
+      )
+      SELECT
+        application_id,
+        firm_name,
+        distributor_name,
+        email,
+        contact_no,
+        noc_file_path,
+        resignation_letter,
+        resignation_reasons,
+        gsv_average,
+        low_turnover,
+        low_roi,
+        limitation_in_investment,
+        db_going_out_of_business,
+        increasing_cost,
+        not_ready_for_additional_infrastructure,
+        submitted_at,
+        submitted_by_role
+      FROM offboarding_resignation_details
       WHERE application_id = ?
     `;
 
@@ -1289,8 +1419,9 @@ const deleteMainOffboardStatusresign = async (application_id) => {
         resolve();
       });
     });
+
   } catch (error) {
-    console.error("Error in deleteMainOffboardStatus:", error);
+    console.error("Error in deleteMainOffboardStatusresign:", error);
     throw error;
   }
 };

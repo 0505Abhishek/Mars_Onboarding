@@ -1,0 +1,169 @@
+   
+                                <style>
+                                    .custom-select-wrapper {
+                                      position: relative;
+                                      width: 100%;
+                                    }
+                                    
+                                    .custom-select-box {
+                                      border: 1px solid #ccc;
+                                      padding: 10px;
+                                      cursor: pointer;
+                                      background: #fff;
+                                      border-radius: 4px;
+                                    }
+                                    
+                                    .custom-select-dropdown {
+                                      position: absolute;
+                                      top: 100%;
+                                      left: 0;
+                                      right: 0;
+                                      background: #fff;
+                                      border: 1px solid #ccc;
+                                      z-index: 999;
+                                      max-height: 200px;
+                                      overflow-y: auto;
+                                      display: none;
+                                      border-top: none;
+                                    }
+                                    
+                                    .custom-select-dropdown input {
+                                      width: 100%;
+                                      padding: 8px;
+                                      border: none;
+                                      border-bottom: 1px solid #ddd;
+                                      outline: none;
+                                    }
+                                    
+                                    .custom-select-item {
+                                      padding: 8px 12px;
+                                      cursor: pointer;
+                                    }
+                                    
+                                    .custom-select-item:hover {
+                                      background-color: #f0f0f0;
+                                    }
+                                    </style>
+<%- include("../shared/super_header.ejs") %>
+    
+<div class="main-panel distributors-details">
+        <div class="content-wrapper">
+            <div class="row">
+                <div class="col-12 grid-margin stretch-card">
+                    <div class="card p-3 table-responsive">
+                        <div class="d-flex justify-content-between my-4">
+                            <div class="business-hading d-flex justify-content-between">
+                                <h4>User Edit</h4>
+
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <form action="/user_management/updateuser" method="post" enctype="multipart/form-data">
+                                <input type="hidden" name="id" value="<%= userDetailById?.id %>" />
+                                <div class="form-group">
+                                    <label for="dbId">User Id</label>
+                                    <input type="text" class="form-control" id="dbId" value="CB000<%= userDetailById?.id %>" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="parent_id">Parent</label>
+                                    <div class="custom-select-wrapper" id="customSelect">
+                                        <!-- Show selected name or default -->
+                                        <div class="custom-select-box" id="selectedValue">
+                                          <%= user.find(u => u.id === userDetailById?.parent_id)?.employee_name || "Select Parent" %>
+                                        </div>
+                                      
+                                        <!-- Dropdown with search -->
+                                        <div class="custom-select-dropdown" id="dropdown">
+                                          <input type="text" id="searchInput" placeholder="Search...">
+                                          <div id="optionsList">
+                                            <% user.forEach(function(user) { %>
+                                              <% if (user.id !== userDetailById?.id) { %>
+                                                <div class="custom-select-item" data-id="<%= user.id %>"><%= user.employee_name %></div>
+                                              <% } %>
+                                            <% }) %>
+                                          </div>
+                                        </div>
+                                      
+                                        <!-- Hidden input for form submission -->
+                                        <input type="hidden" name="parent_id" id="parent_id" value="<%= userDetailById?.parent_id || '' %>">
+                                      </div>
+                                      
+                                    </div>
+                                
+                                <div class="form-group">
+                                    <label for="employee_name">Employee Name</label>
+                                    <input type="text" class="form-control" id="employee_name" name="employee_name" value="<%= userDetailById?.employee_name %>" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email_id" value="<%= userDetailById?.email_id %>" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="role">Role</label>
+                                    <select class="form-control" id="role" name="role_id">
+                                        <option value="">Select Role</option>
+                                        <% getrole.forEach(function(role) { %>
+                                            <option value="<%= role.id %>" <%= userDetailById?.role_id == role?.id ? 'selected' : '' %>><%= role.display_name %></option>
+                                        <% }) %>
+                                    </select>
+                                </div>
+                             
+                               
+                                 
+                               
+                               <div class="mt-2">
+                                <button type="submit" class="btn btn-primary">Update</button>
+                               </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    <script>
+        const customSelect = document.getElementById('customSelect');
+        const selectedValue = document.getElementById('selectedValue');
+        const dropdown = document.getElementById('dropdown');
+        const searchInput = document.getElementById('searchInput');
+        const optionsList = document.getElementById('optionsList');
+        const hiddenInput = document.getElementById('parent_id');
+        
+        // Toggle dropdown
+        selectedValue.addEventListener('click', () => {
+          dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+          searchInput.focus();
+        });
+        
+        // Filter options
+        searchInput.addEventListener('input', () => {
+          const filter = searchInput.value.toLowerCase();
+          const items = optionsList.querySelectorAll('.custom-select-item');
+        
+          items.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            item.style.display = text.includes(filter) ? 'block' : 'none';
+          });
+        });
+        
+        // Select option
+        optionsList.addEventListener('click', (e) => {
+          if (e.target.classList.contains('custom-select-item')) {
+            const name = e.target.textContent;
+            const id = e.target.getAttribute('data-id');
+            selectedValue.textContent = name;
+            hiddenInput.value = id;
+            dropdown.style.display = 'none';
+          }
+        });
+        
+        // Close on outside click
+        document.addEventListener('click', function (e) {
+          if (!customSelect.contains(e.target)) {
+            dropdown.style.display = 'none';
+          }
+        });
+        </script>
+        
+    <%- include("../shared/super_footer.ejs") %>

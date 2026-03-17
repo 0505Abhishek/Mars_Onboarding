@@ -1,0 +1,290 @@
+<%- include("../shared/header.ejs") %>
+
+<style>
+    .toggle-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+  
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+  
+    .toggle-container input[type="radio"] {
+      display: none;
+    }
+  
+    .toggle-container label {
+      display: inline-block;
+      width: 40px;
+      height: 24px;
+      background: #ccc;
+      border-radius: 12px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+  
+    .toggle-container label::before {
+      content: "";
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      top: 3px;
+      left: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: 0.3s;
+    }
+  
+    .toggle-container input[type="radio"]:checked + label {
+      background: #28a745; /* green */
+    }
+  
+    .toggle-container input[type="radio"]:checked + label::before {
+      transform: translateX(16px);
+    }
+  
+    .toggle-text {
+      font-weight: 600;
+    }
+  
+    .question-label {
+      font-weight: 500;
+      flex: 1;
+    }
+  
+    .question-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .form-check-input {
+      appearance: none; 
+      -webkit-appearance: none;
+      border: 2px solid #0000a8;
+      width: 1.5em;
+      height: 1.5em;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+      position: relative;
+      background-color: #fff;
+    }
+
+    .form-check-input:checked {
+      background-color: #0000a8;
+      border-color: #0000a8;
+    }
+
+    .form-check-input:checked::after {
+      color: white;
+      font-size: 1em;
+      position: absolute;
+      top: 0;
+      left: 3px;
+    }
+
+    .form-label {
+      font-weight: 500;
+    }
+</style>
+
+  
+<div class="container mt-5 mb-5">
+
+  <div style="background-color: #F8F9FA;" class="p-4 mb-4">
+      <h5 class="text-center fw-bold text-primary mb-4" style="color: #0000a8 !important;">Details filled by ASM</h5>
+    
+      <div class="question-row">
+        <label class="question-label">1. Replacement DB is Available or Not?</label>
+        <div class="toggle-group">
+          <div class="toggle-container">
+            <span class="toggle-text">YES</span>
+            <input type="radio" name="replacement_db" id="replacement_yes" value="yes"
+            <%= distributor?.replacement_db === 'yes' ? 'checked' : '' %> disabled />
+            <label for="replacement_yes"></label>
+          </div>
+          <div class="toggle-container">
+            <span class="toggle-text">NO</span>
+            <input type="radio" name="replacement_db" id="replacement_no" value="no"
+            <%= distributor?.replacement_db === 'no' ? 'checked' : '' %> disabled />
+            <label for="replacement_no"></label>
+          </div>
+        </div>
+      </div>
+    
+      <div class="question-row">
+        <label class="question-label">2. The average L3P DB sale is less than 5 lakhs?</label>
+        <div class="toggle-group">
+          <div class="toggle-container">
+            <span class="toggle-text">YES</span>
+            <input type="radio" name="avg_l3p" id="avg_l3p_yes" value="yes"
+              <%= distributor?.avg_sale === 'yes' ? 'checked' : '' %> disabled />
+            <label for="avg_l3p_yes"></label>
+          </div>
+          <div class="toggle-container">
+            <span class="toggle-text">NO</span>
+            <input type="radio" name="avg_l3p" id="avg_l3p_no" value="no"
+              <%= distributor?.avg_sale === 'no' ? 'checked' : '' %> disabled />
+            <label for="avg_l3p_no"></label>
+          </div>
+        </div>
+      </div>
+      
+  </div>
+  
+
+  <div style="background-color: #F8F9FA; max-height: 220px; overflow-y: auto;" class="p-4">
+    <h5 class="text-center fw-bold mb-4" style="color: #0000a8 !important;">Details filled by DB</h5>
+  
+    <!-- Form Inputs -->
+    <div class="mb-3">
+      <label class="form-label">Firm's Name</label>
+      <input type="text" class="form-control" value="<%=distributor?.firmName%>" readonly>
+    </div>
+  
+    <div class="mb-3">
+      <label class="form-label">Distributor's Name</label>
+      <input type="text" class="form-control"value="<%=distributor?.distributorName%>" readonly>
+    </div>
+  
+    <div class="mb-3">
+      <label class="form-label">Email ID</label>
+      <input type="text" class="form-control" value="<%=distributor?.email%>" readonly>
+    </div>
+  
+    <div class="mb-3">
+      <label class="form-label">Contact Number</label>
+      <input type="text" class="form-control" value="<%=distributor?.contact_no%>" readonly>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Contact Number</label>
+      <input type="text" class="form-control" value="<%=distributor?.gsvAverage%>" readonly>
+    </div>
+  
+    <label style="display: inline-block; margin-bottom: 10px;">
+      <b>B. Please select Reason to exit (Multiple can be selected)</b>
+    </label>    <div class="mb-2 d-flex justify-content-between align-items-center">
+      <span>1. Low turnover</span>
+      <input class="form-check-input" type="checkbox" value="1" id="reason1" name="low_turnover_disabled"
+        <%= distributor?.low_turnover === 1 ? 'checked' : '' %> disabled>
+      <input type="hidden" name="low_turnover" value="<%= distributor?.low_turnover %>">
+    </div>
+    
+    <div class="mb-2 d-flex justify-content-between align-items-center">
+      <span>2. Low ROI%</span>
+      <input class="form-check-input" type="checkbox" value="1" id="reason2" name="low_roi_disabled"
+        <%= distributor?.low_roi === 1 ? 'checked' : '' %> disabled>
+      <input type="hidden" name="low_roi" value="<%= distributor?.low_roi %>">
+    </div>
+    
+    <div class="mb-2 d-flex justify-content-between align-items-center">
+      <span>3. Limitation in Investment</span>
+      <input class="form-check-input" type="checkbox" value="1" id="reason3" name="limitation_in_investment_disabled"
+        <%= distributor?.limitation_in_investment === 1 ? 'checked' : '' %> disabled>
+      <input type="hidden" name="limitation_in_investment" value="<%= distributor?.limitation_in_investment %>">
+    </div>
+    
+    <div class="mb-2 d-flex justify-content-between align-items-center">
+      <span>4. DB going out of business</span>
+      <input class="form-check-input" type="checkbox" value="1" id="reason4" name="db_going_out_of_business_disabled"
+        <%= distributor?.db_going_out_of_business === 1 ? 'checked' : '' %> disabled>
+      <input type="hidden" name="db_going_out_of_business" value="<%= distributor?.db_going_out_of_business %>">
+    </div>
+    
+    <div class="mb-2 d-flex justify-content-between align-items-center">
+      <span>5. Increasing Cost</span>
+      <input class="form-check-input" type="checkbox" value="1" id="reason5" name="increasing_cost_disabled"
+        <%= distributor?.increasing_cost === 1 ? 'checked' : '' %> disabled>
+      <input type="hidden" name="increasing_cost" value="<%= distributor?.increasing_cost %>">
+    </div>
+    
+    <div class="mb-2 d-flex justify-content-between align-items-center">
+      <span>6. Not ready for additional infrastructure needed (warehouse/delivery vehicle, etc)</span>
+      <input class="form-check-input" type="checkbox" value="1" id="reason6" name="not_ready_for_additional_infrastructure_disabled"
+        <%= distributor?.not_ready_for_additional_infrastructure === 1 ? 'checked' : '' %> disabled>
+      <input type="hidden" name="not_ready_for_additional_infrastructure" value="<%= distributor?.not_ready_for_additional_infrastructure %>">
+    </div>
+    
+  </div>
+    
+
+  <div class="mt-4">
+    <div class="flex-grow-1 me-3 mb-3">
+      <label class="form-label">Remarks</label>
+      <input type="text" class="form-control" id= "remarks" placeholder="Enter remarks" required>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+      <button type="button" class="btn btn-success px-4 py-2 action-btn" data-action="Approve">Approve</button>
+      <button type="button" class="btn btn-danger px-4 py-2 action-btn" data-action="Reject">Reject</button>
+    </div>
+  </div>
+  
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  document.querySelectorAll('.action-btn').forEach(button => {
+    button.addEventListener('click', async () => {
+      const action = button.getAttribute('data-action');
+      const applicationId = <%- distributor.application_id %>;
+      const remark = document.getElementById("remarks");
+
+      if(remark.value=="")
+      {
+        Swal.fire({
+          icon: 'warning',
+          title: "Please provide remark",
+          timer: 2000,
+          showConfirmButton: false
+        })
+        return;
+      }
+      const remarkMsg = remark.value;
+
+      try {
+        const response = await fetch(`/offboardResignation/${applicationId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ action, applicationId, remarkMsg })
+        });
+
+        const result = await response.json();
+
+        Swal.fire({
+          icon: result.type,
+          title: result.message,
+          timer: 2000,
+          showConfirmButton: false
+        }).then(() => {
+          // Optional: reload page or redirect
+          window.location.href = '/offboardResignation';
+        });
+
+      } catch (error) {
+        console.error('Error calling API:', error);
+        Swal.fire({
+          icon: 'error',
+          title: `Error while trying to ${action}`,
+          text: 'Please try again later.',
+        });
+      }
+    });
+  });
+</script>
+
+
+
+<%- include("../shared/footer.ejs") %>

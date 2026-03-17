@@ -1,0 +1,574 @@
+<%- include("../shared/header.ejs") %>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    .hidden { display: none; }
+</style>
+<style>
+    .scroll-section {
+      max-height: 600px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      background: #f8f9fa;
+    }
+  </style>
+<style>
+    .back-link {
+        font-size: 18px;
+        font-weight: bold;
+        text-decoration: none;
+        color: #1a1a1a; /* Adjust color as per your design */
+        display: flex;
+        align-items: center;
+        margin-bottom:20px;
+    }
+
+    .back-link i {
+        font-size: 20px;
+        margin-right: 8px;
+    }
+</style>
+
+
+   
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body">
+            <form id="multiStepForm" method="post" action="/edit_distributor?id=<%= distributorData?.id %>">
+                
+                <div class="step" id="step1">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="/approve_lead" class="back-link">
+                            <i class="fa fa-angle-left"></i> Approve Lead
+                        </a>
+                    </div>
+                
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Application Type</label>
+                        <div class="d-flex gap-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="applicationType" id="new" value="New" 
+                                    <% if(distributorData?.applicationType === 'New') { %> checked <% } %> disabled>
+                                <label class="form-check-label" for="new">New</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="applicationType" id="replacement" value="Replacement"
+                                    <% if(distributorData?.applicationType === 'Replacement') { %> checked <% } %> disabled>
+                                <label class="form-check-label" for="replacement">Replacement</label>
+                            </div>
+                        </div>                        
+                    </div>
+                
+
+                    <div class="mb-3" id="replacement-options-container" style="display: none;">
+                        <label for="replacementOption" class="form-label fw-bold">Choose Replacement Option</label>
+                        <select id="replacementOption" name="replacedFirmName" class="form-select" disabled>
+                            <option value="<%= distributorData?.replacedFirmName ? 'selected' : '' %>"><%= distributorData?.replacedFirmName %></option>
+                        </select>
+                        <div class="text-danger error-message" id="replacementOptionError"></div>
+                    </div>
+
+                    <div class="row">
+                       <div class="col-md-6 mb-3">
+                        <label for="dbType" class="form-label fw-bold">DB Type</label>
+                            <select class="form-select" id="dbType" name="dbType" disabled>
+                                <option value="" disabled>Select DB Type</option>
+                                <option value="Hub" <% if(distributorData?.dbType === 'Hub') { %> selected <% } %>>Hub</option>
+                                <option value="TT" <% if(distributorData?.dbType === 'TT') { %> selected <% } %>>TT</option>
+                                <option value="MT" <% if(distributorData?.dbType === 'MT') { %> selected <% } %>>MT</option>
+                                <option value="OOH" <% if(distributorData?.dbType === 'OOH') { %> selected <% } %>>OOH</option>
+                                <option value="DCOM" <% if(distributorData?.dbType === 'DCOM') { %> selected <% } %>>DCOM</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="Territory" class="form-label fw-bold">Territory</label>
+                            <select class="form-select" id="territory_id" name="territory_id" disabled>
+                                <option value="<%= distributorData?.territory_name %>" selected><%= distributorData?.territory_name %></option>
+                            </select>
+                            <input type="hidden" name="territory_id" value="<%= distributorData?.territory_name %>">
+                            <div class="text-danger error-message" id="TerritoryError"></div>
+                        </div>
+                        
+                        
+                    </div>
+                
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="firmName" class="form-label fw-bold">Firm's Name</label>
+                            <input type="text" class="form-control" id="firmName" name="firmName" value="<%= distributorData?.firmName %>" readonly>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="distributorName" class="form-label fw-bold">Distributor's Name</label>
+                            <input type="text" class="form-control" id="distributorName" name="distributorName" value="<%= distributorData?.distributorName %>" readonly>
+                        </div>
+                    </div>
+                
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label fw-bold">Email ID</label>
+                            <input type="email" class="form-control" id="email" name="email" value="<%= distributorData?.email %>" readonly>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="contactNumber" class="form-label fw-bold">Contact Number</label>
+                            <input type="text" class="form-control" id="contactNumber" name="contactNumber" value="<%= distributorData?.contactNumber %>" readonly>
+                        </div>
+                    </div>
+                
+                    <div class="row">
+                        <!-- Years of Experience in Distribution Business -->
+                        <div class="col-md-6 mb-3">
+                            <label for="experienceDistribution" class="form-label fw-bold">Years of Experience in Distribution Business</label>
+                            <input type="text" class="form-control" id="experienceDistribution" name="experienceDistribution" 
+                                value="<%= distributorData.experienceDistribution %>" disabled>
+                        </div>
+                    
+                        <!-- Years of Experience in FMCG Distribution Business -->
+                        <div class="col-md-6 mb-3">
+                            <label for="experienceFMCG" class="form-label fw-bold">Years of Experience in FMCG Distribution Business</label>
+                            <input type="text" class="form-control" id="experienceFMCG" name="experienceFMCG" 
+                                value="<%= distributorData.experienceFMCG %>" disabled>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="row">
+                        <!-- Number of Outlets Covered -->
+                        <div class="col-md-6 mb-3">
+                            <label for="outletsCovered" class="form-label fw-bold">Number of Outlets Covered</label>
+                            <input type="text" class="form-control" id="outletsCovered" name="outletsCovered"
+                                value="<%= distributorData.outletsCovered %>" disabled>
+                        </div>
+                        
+                    
+                        <!-- Total Monthly Turnover -->
+                        <div class="col-md-6 mb-3">
+                            <label for="monthlyTurnover" class="form-label fw-bold">Total Monthly Turnover</label>
+                            <input type="text" class="form-control" id="monthlyTurnover" name="monthlyTurnover" placeholder="Enter Monthly Turnover" value="<%= distributorData?.monthlyTurnover%>" readonly/>
+                            <div class="text-danger error-message" id="monthlyTurnoverError"></div>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary next" style="width: 125px;">Next</button>
+                    </div>
+                </div>
+                
+                
+                
+                
+                <!-- Step 2: Questions -->
+                <div class="step hidden" id="step2">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="#" class="back-link prev"> 
+                            <i class="fa fa-angle-left"></i> Approve Lead
+                        </a>                                               
+                    </div>  
+                    <div class="container mt-4">                
+                        <!-- Scroll 1: Commercial Structure -->
+                        <div class="scroll-section">
+                            <h4>Commercial Structure</h4>
+                        
+                            <div class="mb-3">
+                                <label class="form-label" for="stores_covered">How many stores does the DTR cover?</label>
+                                <select id="stores_covered" name="stores_covered" class="form-control" disabled>
+                                    <option value="">Select</option>
+                                    <option value="Less than 1k" <%= distributorData.stores_covered === 'Less than 1k' ? 'selected' : '' %>>Less than 1k</option>
+                                    <option value="1k-3k" <%= distributorData.stores_covered === '1k-3k' ? 'selected' : '' %>>1k-3k</option>
+                                    <option value="3k-5k" <%= distributorData.stores_covered === '3k-5k' ? 'selected' : '' %>>3k-5k</option>
+                                    <option value="Above 5k" <%= distributorData.stores_covered === 'Above 5k' ? 'selected' : '' %>>Above 5k</option>
+                                </select>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label class="form-label" for="roi">What is the Annual Return of Investment (ROI %)?</label>
+                                <input type="number" id="roi" name="roi" class="form-control" placeholder="Enter ROI percentage" value="<%= distributorData.roi || '' %>" readonly>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label class="form-label">Does the distributor work with other FMCG companies?</label>
+                                <div class="d-flex align-items-center">
+                                    <input type="radio" id="fmcg_yes" name="fmcg_companies" value="Yes" <%= distributorData.fmcg_companies === 'Yes' ? 'checked' : '' %> disabled>
+                                    <label for="fmcg_yes" class="ms-2 me-3">Yes</label>
+                        
+                                    <input type="radio" id="fmcg_no" name="fmcg_companies" value="No" <%= distributorData.fmcg_companies === 'No' ? 'checked' : '' %> disabled>
+                                    <label for="fmcg_no" class="ms-2">No</label>
+                                </div>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label class="form-label" for="fmcg_experience">How many years of FMCG experience does the distributor have?</label>
+                                <select id="fmcg_experience" name="fmcg_experience" class="form-control" disabled>
+                                    <option value="">Select</option>
+                                    <option value="1" <%= distributorData.fmcg_experience === '1' ? 'selected' : '' %>>1</option>
+                                    <option value="2" <%= distributorData.fmcg_experience === '2' ? 'selected' : '' %>>2</option>
+                                    <option value="3" <%= distributorData.fmcg_experience === '3' ? 'selected' : '' %>>3</option>
+                                    <option value="4" <%= distributorData.fmcg_experience === '4' ? 'selected' : '' %>>4</option>
+                                    <option value="5" <%= distributorData.fmcg_experience === '5' ? 'selected' : '' %>>5</option>
+                                    <option value="Above 5 Years" <%= distributorData.fmcg_experience === 'Above 5 Years' ? 'selected' : '' %>>Above 5 Years</option>
+                                </select>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label class="form-label" for="stores_mars">How many stores does the DB cover with Mars Wrigley?</label>
+                                <select id="stores_mars" name="stores_mars" class="form-control" disabled>
+                                    <option value="">Select</option>
+                                    <option value="Less than 1k" <%= distributorData.stores_mars === 'Less than 1k' ? 'selected' : '' %>>Less than 1k</option>
+                                    <option value="1k-3k" <%= distributorData.stores_mars === '1k-3k' ? 'selected' : '' %>>1k-3k</option>
+                                    <option value="3k-5k" <%= distributorData.stores_mars === '3k-5k' ? 'selected' : '' %>>3k-5k</option>
+                                    <option value="Above 5k" <%= distributorData.stores_mars === 'Above 5k' ? 'selected' : '' %>>Above 5k</option>
+                                </select>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label class="form-label" for="sales_reps">How many sales reps (DSR, KAE, ISR, etc.) does the distributor have?</label>
+                                <select id="sales_reps" name="sales_reps" class="form-control" disabled>
+                                    <option value="">Select</option>
+                                    <option value="1-10" <%= distributorData.sales_reps === '1-10' ? 'selected' : '' %>>1-10</option>
+                                    <option value="Above 10" <%= distributorData.sales_reps === 'Above 10' ? 'selected' : '' %>>Above 10</option>
+                                </select>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label class="form-label" for="growth_percentage">Existing Business Growth - Same Manufacturer Growth</label>
+                                <p>
+                                    If Growth > 10% → Score: 1 <br>
+                                    If Growth 0% - 10% → Score: 0.5 <br>
+                                    If Growth < 0% → Score: 0
+                                </p>
+                                <select id="growth_percentage" name="growth_percentage" class="form-control" disabled>
+                                    <option value="">Select</option>
+                                    <option value="1" <%= distributorData.growth_percentage === '1' ? 'selected' : '' %>>1</option>
+                                    <option value="0.5" <%= distributorData.growth_percentage === '0.5' ? 'selected' : '' %>>0.5</option>
+                                    <option value="0" <%= distributorData.growth_percentage === '0' ? 'selected' : '' %>>0</option>
+                                </select>
+                            </div>
+                        
+                
+                        <!-- Scroll 2: Commercial WoW -->
+                            <h5>Commercial WoW</h5>
+                            <div class="mb-3">
+                                <label class="form-label" for="perfect_store_score">What is the average Perfect Store Overall score in the stores covered by the distributor?</label>
+                                <input type="number" id="perfect_store_score" name="perfect_store_score" class="form-control" placeholder="Enter store score" value="<%= distributorData?.perfect_store_score %>" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="selling_model">What selling model does the distributor operate with?</label>
+                                <input type="text" id="selling_model" name="selling_model" class="form-control" placeholder="Enter selling model" value="<%= distributorData?.selling_model %>" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label" for="mw_compliance">Is the distributor compliant with MW standards?</label>
+                                <input type="text" id="mw_compliance" name="mw_compliance" class="form-control" placeholder="Enter compliance details" value="<%= distributorData?.mw_compliance %>" readonly>
+                            </div>
+                
+                        <!-- Scroll 3: Data Sharing -->
+                            <h4>Data Sharing</h4>
+                            <div class="mb-3">
+                                <label class="form-label">Does the distributor provide visibility on distributor cost structure to MW?</label>
+                                <div>
+                                    <input type="radio" id="cost_structure_yes" name="cost_structure" value="Yes" 
+                                        <%= distributorData.cost_structure === 'Yes' ? 'checked' : '' %> disabled>
+                                    <label for="cost_structure_yes">Yes</label>
+                        
+                                    <input type="radio" id="cost_structure_no" name="cost_structure" value="No" 
+                                        <%= distributorData.cost_structure === 'No' ? 'checked' : '' %> disabled>
+                                    <label for="cost_structure_no">No</label>
+                                </div>
+                            </div>
+                        
+                
+                        <!-- Scroll 4: Platform to Scale Up -->
+                            <h4>Digital Readiness</h4>
+                        
+                            <div class="mb-3">
+                                <label class="form-label">Does the DB have a data operator for DMS?</label>
+                                <div>
+                                    <input type="radio" id="data_operator_yes" name="data_operator" value="Yes" <%= distributorData.data_operator === "Yes" ? "checked" : "" %> disabled>
+                                    <label for="data_operator_yes">Yes</label>
+                                    <input type="radio" id="data_operator_no" name="data_operator" value="No" <%= distributorData.data_operator === "No" ? "checked" : "" %> disabled>
+                                    <label for="data_operator_no">No</label>
+                                </div>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label class="form-label">Does the DB have an internet connection?</label>
+                                <div>
+                                    <input type="radio" id="internet_access_yes" name="internet_access" value="Yes" <%= distributorData.internet_access === "Yes" ? "checked" : "" %> disabled>
+                                    <label for="internet_access_yes">Yes</label>
+                                    <input type="radio" id="internet_access_no" name="internet_access" value="No" <%= distributorData.internet_access === "No" ? "checked" : "" %> disabled>
+                                    <label for="internet_access_no">No</label>
+                                </div>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label class="form-label">Does the DB use a printer?</label>
+                                <div>
+                                    <input type="radio" id="printer_use_yes" name="printer_use" value="Yes" <%= distributorData.printer_use === "Yes" ? "checked" : "" %> disabled>
+                                    <label for="printer_use_yes">Yes</label>
+                                    <input type="radio" id="printer_use_no" name="printer_use" value="No" <%= distributorData.printer_use === "No" ? "checked" : "" %> disabled>
+                                    <label for="printer_use_no">No</label>
+                                </div>
+                            </div>
+                        
+                            <!-- Readonly (Disabled) Fourth Field -->
+                            <div class="mb-3">
+                                <label class="form-label" for="dms_count">How many DMS for other companies including does the DB use?</label>
+                                <select id="dms_count" name="dms_count" class="form-control" disabled>
+                                    <option value="">Select an option</option>
+                                    <option value="1" <%= distributorData.dms_count === "1" ? "selected" : "" %>>1</option>
+                                    <option value="2" <%= distributorData.dms_count === "2" ? "selected" : "" %>>2</option>
+                                    <option value="3" <%= distributorData.dms_count === "3" ? "selected" : "" %>>3</option>
+                                    <option value="4" <%= distributorData.dms_count === "4" ? "selected" : "" %>>4</option>
+                                    <option value="5" <%= distributorData.dms_count === "5" ? "selected" : "" %>>5</option>
+                                    <option value="Above 5" <%= distributorData.dms_count === "Above 5" ? "selected" : "" %>>Above 5</option>
+                                </select>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label class="form-label">Which system is used to print final in-market bill?</label>
+                                <div>
+                                    <input type="radio" name="print_system" value="Ivy DMS" id="ivyDMS" <%= distributorData.print_system === "Ivy DMS" ? "checked" : "" %> disabled>
+                                    <label for="ivyDMS">Ivy DMS</label>
+                                </div>
+                                <div>
+                                    <input type="radio" name="print_system" value="Own system" id="ownSystem" <%= distributorData.print_system === "Own system" ? "checked" : "" %> disabled>
+                                    <label for="ownSystem">Own system</label>
+                                </div>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label class="form-label">If DB is not using Ivy DMS, is DB ok to integrate their system with Mars DMS for final in-market bill?</label>
+                                <div>
+                                    <input type="radio" name="mars_integration" value="Yes" id="marsIntegrationYes" <%= distributorData.mars_integration === "Yes" ? "checked" : "" %> disabled>
+                                    <label for="marsIntegrationYes">Yes</label>
+                                </div>
+                                <div>
+                                    <input type="radio" name="mars_integration" value="No" id="marsIntegrationNo" <%= distributorData.mars_integration === "No" ? "checked" : "" %> disabled>
+                                    <label for="marsIntegrationNo">No</label>
+                                </div>
+                            </div>
+                        
+                        
+                
+                            <h4>Logistics</h4>
+                        
+                            <div class="mb-3">
+                                <label class="form-label">Does the distributor have controlled temperature storage and transportation?</label>
+                                <div>
+                                    <input type="radio" id="temp_storage_yes" name="temp_storage" value="Yes" <%= distributorData.temp_storage === "Yes" ? "checked" : "" %> disabled>
+                                    <label for="temp_storage_yes">Yes</label>
+                                    <input type="radio" id="temp_storage_no" name="temp_storage" value="No" <%= distributorData.temp_storage === "No" ? "checked" : "" %> disabled>
+                                    <label for="temp_storage_no">No</label>
+                                </div>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label class="form-label" for="delivery_time">What is the average delivery time for the distributor?</label>
+                                <input type="number" id="delivery_time" name="delivery_time" class="form-control" value="<%= distributorData.delivery_time %>" readonly>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label class="form-label" for="returns_rate">What is the average returns rate on total sales for the distributor?</label>
+                                <input type="number" id="returns_rate" name="returns_rate" class="form-control" value="<%= distributorData.returns_rate %>" readonly>
+                            </div>
+                        
+                            <h4>Partnership</h4>
+                        
+                            <div class="mb-3">
+                                <label class="form-label" for="mw_sales_share">What is the share of MW sales on total confectionery sales for the distributor?</label>
+                                <input type="number" id="mw_sales_share" name="mw_sales_share" class="form-control" min="0" max="100" value="<%= distributorData.mw_sales_share %>" readonly>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label class="form-label" for="openness_change">What is the openness to change of the distributor?</label>
+                                <select id="openness_change" name="openness_change" class="form-control" disabled>
+                                    <option value="" disabled>Select an option</option>
+                                    <option value="Ready to change" <%= distributorData.openness_change === "Ready to change" ? "selected" : "" %>>Ready to change</option>
+                                    <option value="Somewhat ready to change" <%= distributorData.openness_change === "Somewhat ready to change" ? "selected" : "" %>>Somewhat ready to change</option>
+                                    <option value="Not ready to change" <%= distributorData.openness_change === "Not ready to change" ? "selected" : "" %>>Not ready to change</option>
+                                </select>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label class="form-label" for="confectionery_sales_share">What is the share of confectionery on total distributors' sales?</label>
+                                <input type="number" id="confectionery_sales_share" name="confectionery_sales_share" class="form-control" min="0" max="100" value="<%= distributorData.confectionery_sales_share %>" readonly>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label class="form-label" for="fte_dedicated">How many of distributors' FTEs are dedicated to MW?</label>
+                                <select id="fte_dedicated" name="fte_dedicated" class="form-control" disabled>
+                                    <option value="" disabled>Select an option</option>
+                                    <option value="1-10" <%= distributorData.fte_dedicated === "1-10" ? "selected" : "" %>>1-10</option>
+                                    <option value="Above 10" <%= distributorData.fte_dedicated === "Above 10" ? "selected" : "" %>>Above 10</option>
+                                </select>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label class="form-label" for="mw_influence">What is the level of MW influence / sharing in the distributor's business planning process?</label>
+                                <select id="mw_influence" name="mw_influence" class="form-control" disabled>
+                                    <option value="" disabled>Select an option</option>
+                                    <option value="High" <%= distributorData.mw_influence === "High" ? "selected" : "" %>>High</option>
+                                    <option value="Average" <%= distributorData.mw_influence === "Average" ? "selected" : "" %>>Average</option>
+                                    <option value="Low" <%= distributorData.mw_influence === "Low" ? "selected" : "" %>>Low</option>
+                                </select>
+                            </div>
+                        
+
+                            <h5>Digital Readiness</h5>
+                            <div class="mb-3">
+                                <label class="form-label" for="capital_infrastructure">
+                                    Does the distributor have sufficient capital and/or infrastructure to increase coverage?
+                                </label>
+                                <select id="capital_infrastructure" name="capital_infrastructure" class="form-control" disabled>
+                                    <option value="">Select an option</option>
+                                    <option value="Yes" <%= distributorData.capital_infrastructure === 'Yes' ? 'selected' : '' %>>Yes</option>
+                                    <option value="No" <%= distributorData.capital_infrastructure === 'No' ? 'selected' : '' %>>No</option>
+                                </select>
+                            </div>
+                        
+                            <div class="mb-3">
+                                <label class="form-label" for="dtr_nps_score">
+                                    What is the DTR NPS score from their customers (stores)?
+                                </label>
+                                <input type="number" id="dtr_nps_score" name="dtr_nps_score" class="form-control" 
+                                    placeholder="Enter numeric score" value="<%= distributorData.dtr_nps_score %>" readonly>
+                            </div>
+                        </div>
+                
+                    </div>
+                    
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-primary next" style="width: 125px; margin-right: 15px">Next</button>
+                    </div>
+                                                        
+                </div> 
+                
+                <div class="step hidden" id="step3">
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <a href="#" class="back-link prev"> 
+                            <i class="fa fa-angle-left"></i> Approve Lead
+                        </a>
+                                               
+                    </div>  
+                    <div class="mb-3">
+                            <label for="firmName" class="form-label fw-bold">Remarks</label>
+                            <input type="text" class="form-control" id="remark" name="remark" required>
+                    </div>
+                    <div  class="d-flex justify-content-between align-items-center" style="margin: 18px">
+                        
+                        <button type="button" class="btn btn-primary final" value="Approved">Approve</button>
+                    
+                        <button type="button" class="btn btn-primary final" value="Correction">Need More Information</button>
+                    
+                        <button type="button" class="btn btn-primary final" value="Reject">Reject</button>
+
+                    </div>              
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+  <!-- Add this inside your <head> or before closing </body> -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <script>
+   $(document).ready(function () {
+    let currentStep = 1;
+
+    $(".next").click(function () {
+        let isValid = true; 
+
+        if (isValid) {
+            $("#step" + currentStep).addClass("hidden");
+            currentStep++;
+            $("#step" + currentStep).removeClass("hidden");
+        } else {
+            alert("Please fill all required fields before proceeding.");
+        }
+    });
+
+    $(".prev").click(function (e) {
+        e.preventDefault();
+
+        if (currentStep > 1) { 
+            $("#step" + currentStep).addClass("hidden");
+            currentStep--;
+            $("#step" + currentStep).removeClass("hidden");
+        } else {
+            history.back(); 
+        }
+    });
+});
+
+  </script>
+
+<script>
+    document.querySelectorAll('.final').forEach(button => {
+    button.addEventListener('click', function () {
+        const action = this.value;
+        const remark = document.getElementById('remark').value.trim();
+        const id = '<%= distributorData?.id %>'; 
+
+        if (!remark) {
+            alert("Please enter a remark before proceeding.");
+            return; 
+        }
+
+        // Disable all buttons
+        document.querySelectorAll('.final').forEach(btn => {
+            btn.disabled = true;
+        });
+
+        fetch(`/approve_lead/Rsem_approval`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action, remark, id })
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(`${data.message} !`);
+            window.location.href = `/approve_lead`;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Re-enable buttons if API fails
+            document.querySelectorAll('.final').forEach(btn => {
+                btn.disabled = false;
+                btn.textContent = btn.value;
+            });
+        });
+    });
+});
+
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const replacementRadio = document.getElementById("replacement");
+        const replacementOptionsContainer = document.getElementById("replacement-options-container");
+        const radios = document.querySelectorAll('input[name="applicationType"]');
+    
+        function toggleReplacementOptions() {
+            if (replacementRadio.checked) {
+                replacementOptionsContainer.style.display = "block";
+            } else {
+                replacementOptionsContainer.style.display = "none";
+            }
+        }
+    
+        toggleReplacementOptions();
+    
+        radios.forEach(radio => {
+            radio.addEventListener("change", toggleReplacementOptions);
+        });
+    });
+</script>
+
+
+
+<%- include("../shared/footer.ejs") %>

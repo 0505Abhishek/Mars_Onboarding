@@ -28,6 +28,7 @@ const getDetails = async (req, res, next) => {
         res.userDetail = decoded.userData;
         next()
     } catch (error) {
+        console.log(error,'error');
         return res.render('account', { message: 'Invalid Token' });
     }
 }
@@ -38,7 +39,6 @@ const getEmailTokenDetails = async (req,res,token) => {
         let data  = decoded.userData;
         return data;
     } catch (error) {
-        console.log(error,".....................error");
          res.redirect('/account/token'); 
     }
 }
@@ -53,5 +53,20 @@ const createResetToken = async (userData) => {
       }
     );
     return token;
+};
+
+
+const tokenForWebPage = async (applicationId) => {
+    try {
+      const token = jwt.sign({ applicationId }, process.env.TOKEN_SECRET_KEY, {
+        expiresIn: '6d',
+      });
+
+      return token; 
+    } catch (error) {
+      console.error('Error generating token:', error);
+      throw new Error('Token generation failed');
+    }
   };
-module.exports = { createToken, verifyToken, getDetails, getEmailTokenDetails, createResetToken }
+
+module.exports = { createToken, verifyToken, getDetails, getEmailTokenDetails, createResetToken, tokenForWebPage }

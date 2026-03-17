@@ -1,0 +1,325 @@
+<%- include("../shared/header.ejs") %>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    .hidden { display: none; }
+</style>
+<style>
+    .scroll-section {
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      background: #f8f9fa;
+    }
+  </style>
+  <style>
+
+    .table-dark th {
+        color: #0000A0 !important; 
+        background-color: #E0E0FC;
+        border: 1px solid rgb(224, 203, 203);
+    }
+
+    #distributorTable tbody tr:nth-child(odd) td {
+        background: #FFFFFF !important; 
+    }
+
+    #distributorTable tbody tr:nth-child(even) td {
+        background: #EFEFFF !important; 
+    }
+
+</style>
+
+
+   
+<div class="container mt-4">
+    <h4 class="mb-4" style="color: #41378d;">Lead Status</h4>
+
+    <div class="d-flex flex-wrap justify-content-end align-items-center mb-3 gap-3">
+
+    <!-- Filter by Status -->
+    <div>
+        <label for="statusFilter" class="form-label mb-0">Filter by Status:</label>
+        <select id="statusFilter" class="form-select" style="width: 200px;">
+        <option value="">All</option>
+        <option value="Document upload needed">Document upload needed</option>
+        <option value="Sent to rsem">Sent to rsem</option>
+        <option value="Need More Information">Need More Information</option>
+        <option value="Rejected">Rejected</option>
+        </select>
+    </div>
+
+    <!-- Filter by Region -->
+    <div>
+        <label for="regionFilter" class="form-label mb-0">Filter by Region:</label>
+        <select id="regionFilter" class="form-select" style="width: 200px;">
+            <option value="">All</option>
+            <% regions.forEach(region => { %>
+            <option value="<%= region.id %>"
+                    data-name="<%= region.region_name %>"><%= region.region_name %></option>  
+            <% }) %>
+
+        </select>
+    </div>
+
+    <!-- Filter by Territory -->
+    <div>
+        <label for="territoryFilter" class="form-label mb-0">Filter by Territory:</label>
+        <select id="territoryFilter" class="form-select" style="width: 200px;">
+        <option value="">All</option>
+        <% territory.forEach(t => { %>
+            <option value="<%= t.territory_id %>" data-name="<%= t.territory_name %>"><%= t.territory_name %></option>
+        <% }) %>
+        </select>
+    </div>
+
+    </div>
+
+    <div class="table-responsive">
+        <table id="distributorTable" class="table table-hover table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>Unique Application code</th>
+                    <th>Application Type</th>
+                    <th>DB Channel</th>
+                    <th>Firm's Name</th>
+                    <th>Distributor's Name</th>
+                    <th>Email ID</th>
+                    <th>Mobile No.</th>
+                    <th>Region</th>
+                    <th>Territory</th>
+                    <th>City</th>
+                    <th>Freight Expenses %</th>
+                    <th>Start Date</th>
+                    <th>Status</th>
+                    <th>Remarks by RSEM</th>
+                    <th>Created By</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (distributors.length > 0) { %>
+                    <% distributors.forEach((distributor, index) => { %>
+                        <tr>
+                            <td><%= distributor?.mars_code%></td> 
+                            <td><%= distributor?.applicationType || 'N/A' %></td>
+                            <td><%= distributor?.dbType || 'N/A' %></td>
+                            <td><%= distributor?.firmName || 'N/A' %></td>
+                            <td><%= distributor?.distributorName || 'N/A' %></td>
+                            <td><%= distributor?.email || 'N/A' %></td>
+                            <td><%= distributor?.contactNumber || 'N/A' %></td>
+                            <td><%= distributor?.region_name %></td>
+                            <td><%= distributor?.territory_name %></td>
+                            <td><%= distributor?.city %></td>
+                            <td><%= distributor?.FreightExpenses %></td>
+                            <td><%= distributor?.create_date ? new Date(distributor.create_date).toLocaleDateString('en-CA') : 'N/A' %></td>
+                            <td class="status-cell" data-status="<% if (distributor?.applicationPhase_Flag === 1 && distributor?.flag === 0 && distributor?.is_final_approver == 1) { %>
+                                        Pending at MIS
+                                    <% } else if (distributor?.applicationPhase_Flag === 1 && distributor?.flag === 0 && distributor?.is_final_approver == 0) { %>
+                                        Document upload needed
+                                    <% } else if (distributor?.applicationPhase_Flag === 0 && distributor?.flag !== 2) { %>
+                                        Sent to rsem
+                                    <% } else if (distributor?.applicationPhase_Flag === 1 && distributor?.flag === 3) { %>
+                                        Need More Information
+                                    <% } else if(distributor?.flag == 2){ %>
+                                        Rejected
+                                    <% } else if(distributor?.flag == 3) { %>}
+                                          Correction by <%=distributor.pending_role_name%>                                      
+                                    <% } else{ %>
+                                        Pending at <%=distributor.pending_role_name%>
+                                    <% } %>
+                                ">
+                                <% if (distributor?.applicationPhase_Flag === 1 && distributor?.flag === 0 && distributor?.is_final_approver == 1) { %>
+                                    <span class="badge bg-primary text-white">Pending at MIS</span>
+                                <% } else if (distributor?.applicationPhase_Flag === 1 && distributor?.flag === 0 && distributor?.is_final_approver == 0) { %>
+                                    <span class="badge bg-success">Document upload needed</span>
+                                <% } else if (distributor?.applicationPhase_Flag === 0 && distributor?.flag !== 2 && distributor?.flag !== 3) { %>
+                                    <span class="badge bg-danger">Sent to rsem</span>
+                                <% } else if (distributor?.applicationPhase_Flag === 1 && distributor?.flag === 3) { %>
+                                    <span class="badge bg-warning text-dark">Need More Information</span>
+                                <% } else if (distributor?.flag === 3 && distributor?.applicationPhase_Flag == 0 ) { %>
+                                    <span class="badge bg-warning text-dark">Need More Information</span>
+                                <% } else if(distributor?.flag == 2){ %>
+                                    <span class="badge bg-danger text-white">Rejected</span>
+                                <% } else if(distributor?.flag == 3){ %>
+                                    <span class="badge bg-warning text-dar">Correction by <%=distributor.pending_role_name%></span>     
+                                <% } else if(distributor?.final_flag !== 1){ %>
+                                    <span class="badge bg-primary text-white">Pending at <%=distributor.pending_role_name%></span>   
+                                <% } else{ %>
+                                    <span class="badge bg-success">Completed</span>
+                                <% } %>
+                            </td>
+                            
+                            <td><%= (distributor?.flag === 3 && distributor?.applicationPhase_Flag == 0 && distributor?.final_flag !== 1) ? distributor?.rsem_remark : '' %></td>
+
+                            <td><%= distributor?.aseemail || 'N/A' %></td>
+                            <td>
+                                <% if (distributor?.applicationPhase_Flag == 1 && distributor?.flag === 0 && distributor?.is_final_approver===0 && distributor?.final_flag !== 1) { %>
+                                    <a href="/lead_status/<%= distributor?.prospect_id %>">
+                                        <button class="btn btn-primary">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+                                    </a>
+                                <% } else if(distributor?.applicationPhase_Flag === 1 && distributor?.flag === 3 && distributor?.final_flag !== 1) { %>
+                                    <a href="/lead_status/correction/<%= distributor?.prospect_id %>">
+                                        <button class="btn btn-primary">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+                                    </a>
+                                <% } else if (distributor?.flag === 3 && distributor?.applicationPhase_Flag == 0 && distributor?.final_flag !== 1) { %>
+                                    <a href="/rsem_application_correction/<%= distributor?.prospect_id %>">
+                                        <button class="btn btn-primary">
+                                            <i class="fa fa-eye"></i>
+                                        </button>
+                                    </a>
+                                <% } %>
+                            </td>
+                                                        
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="11" class="text-center">No distributors found.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+        
+    </div>
+    </div>
+
+
+
+<script> 
+    $(document).ready(function () {
+        if ($('#distributorTable tbody tr').length > 1) {
+            const table = $('#distributorTable').DataTable({
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "order": [[10, 'desc']],
+                "info": true,
+                "lengthMenu": [5, 10, 25, 50],
+                "pageLength": 10
+            });
+
+            function customFilter(settings, data, dataIndex) {
+                const statusSelected = $('#statusFilter').val().toLowerCase().trim();
+                const regionSelected = $('#regionFilter').val() ? $('#regionFilter option:selected').text().toLowerCase().trim() : "";
+                const territorySelected = $('#territoryFilter').val() ? $('#territoryFilter option:selected').text().toLowerCase().trim() : "";
+
+                const row = settings.aoData[dataIndex].nTr;
+                const statusAttr = $(row).find('.status-cell').data('status')?.toLowerCase().trim() || "";
+                const regionText = data[7]?.toLowerCase().trim() || "";
+                const territoryText = data[8]?.toLowerCase().trim() || "";
+
+                const statusMatch = !statusSelected || statusAttr.includes(statusSelected);
+                const regionMatch = !regionSelected || regionText.includes(regionSelected);
+                const territoryMatch = !territorySelected || territoryText.includes(territorySelected);
+
+
+                return statusMatch && regionMatch && territoryMatch;
+            }
+                       
+            $.fn.dataTable.ext.search.push(customFilter);
+
+            // Trigger filter redraw on change
+            $('#statusFilter, #regionFilter, #territoryFilter').on('change', function () {
+                table.draw();
+            });
+        }
+    });
+</script>
+
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        if (<%- JSON.stringify(notification) %>) {
+            let notification = <%- JSON.stringify(notification) %>;
+
+            if (typeof notification === "string") {
+                notification = { type: "success", message: notification };
+            }
+
+            if (notification && notification.message) {
+                Swal.fire({
+                    icon: notification.type || "info",  
+                    title: notification.message,
+                    showConfirmButton: false,
+                    timer: 2000
+                });
+            } else {
+                console.warn("Notification object is empty or invalid.");
+            }
+        }
+    });
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const select = document.getElementById('statusFilter');
+  const rows = document.querySelectorAll('#distributorTable tbody tr');
+  const pendingAtSet = new Set();
+
+  rows.forEach(row => {
+    const statusCell = row.querySelector('.status-cell');
+    if (statusCell) {
+      const statusText = statusCell.getAttribute('data-status')?.trim();
+      if (statusText && statusText.startsWith('Pending at') && statusText !== 'Pending at') {
+        pendingAtSet.add(statusText);
+      }
+    }
+  });
+
+  pendingAtSet.forEach(pendingStatus => {
+    const option = document.createElement('option');
+    option.value = pendingStatus;
+    option.textContent = pendingStatus;
+    select.appendChild(option);
+    });
+
+});
+</script>
+
+<script>
+  const regionFilter = document.getElementById('regionFilter');
+  const territoryFilter = document.getElementById('territoryFilter');
+
+  regionFilter.addEventListener('change', () => {
+    const selectedRegion = regionFilter.value;
+
+    territoryFilter.innerHTML = '<option value="">All</option>';
+
+    if (!selectedRegion) return; 
+
+    fetch(`/lead_status/territories?region=${encodeURIComponent(selectedRegion)}`)
+      .then(response => response.json())
+      .then(data => {
+        data.territories.forEach(territory => {
+          const option = document.createElement('option');
+          option.value = territory.territory_id;
+          option.textContent = territory.territory_name;
+          territoryFilter.appendChild(option);
+        });
+      })
+      .catch(err => {
+        console.error('Error fetching territories:', err);
+      });
+  });
+</script>
+
+
+
+<%- include("../shared/footer.ejs") %>

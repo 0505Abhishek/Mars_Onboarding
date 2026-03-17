@@ -1,0 +1,2721 @@
+<%- include("../shared/header.ejs") %>
+
+<link
+  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+  rel="stylesheet"
+/>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+/>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link
+  rel="stylesheet"
+  href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"
+/>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<style>
+  .hidden {
+    display: none;
+  }
+</style>
+
+<style>
+  .scroll-section {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    background: #f8f9fa;
+  }
+</style>
+
+<style>
+  .table-dark th {
+    color: #0000a0 !important;
+    background-color: #e0e0fc;
+    border: 1px solid rgb(224, 203, 203);
+  }
+
+  #distributorTable tbody tr:nth-child(odd) td {
+    background: #ffffff !important;
+  }
+
+  #distributorTable tbody tr:nth-child(even) td {
+    background: #efefff !important;
+  }
+</style>
+
+<style>
+  /* Fullscreen overlay */
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Modal box styling */
+  .modal-box {
+    background: white;
+    border: 3px solid #0000a0;
+    border-radius: 25px;
+    padding: 30px;
+    width: 500px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .toggle-group {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 10px 0 20px 0;
+  }
+
+  .toggle-group label {
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
+  input[type="checkbox"] {
+    width: 40px;
+    height: 20px;
+    background: #ccc;
+    border-radius: 20px;
+    position: relative;
+    outline: none;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+
+  input[type="checkbox"]:checked {
+    background: #14e651;
+  }
+
+  input[type="checkbox"]:checked::before {
+    transform: translateX(20px);
+  }
+
+  /* Submit Button */
+  .submit-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .submit-btn:hover {
+    background-color: #0056b3;
+  }
+</style>
+
+<style>
+  .distributor-field {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .distributor-field label {
+    font-weight: bold;
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+
+  .distributor-field input[type="text"] {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+
+  .distributor-field input[type="text"]:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+  }
+
+  
+
+  .close {
+    float: right;
+    font-size: 14px;
+    cursor: pointer;
+    color: #888;
+    padding-top: 5px;
+  }
+
+  .resignation-header {
+    background: #0d2bb3;
+    padding: 25px;
+    color: #fff;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 8px 8px 0 0;
+  }
+
+  .resignation-body {
+    padding: 30px;
+  }
+
+  .reason-box {
+    border: 1px solid #0d2bb3;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn-primary-custom {
+    background: #0d2bb3;
+    border: none;
+    padding: 8px 25px;
+    color: #fff;
+    border-radius: 4px;
+  }
+
+  .btn-outline-custom {
+    border: 1px solid #0d2bb3;
+    padding: 8px 25px;
+    border-radius: 4px;
+    background: #fff;
+    color: #0d2bb3;
+  }
+
+  .resignationModal {
+    width: 687px !important;
+    padding: 1px !important;
+  }
+
+  .terminate-box {
+    width: 420px;
+  }
+
+  .reason-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+    cursor: pointer;
+  }
+
+  .reason-text {
+    flex: 1;
+    padding: 10px 14px;
+    border: 2px solid #002aff;
+    border-radius: 6px;
+    font-size: 15px;
+    color: #002aff;
+    display: flex;
+    align-items: center;
+  }
+
+  .reason-row input[type="checkbox"]:checked + .reason-text {
+    background: #e9edff;
+    border-color: #002aff;
+    font-weight: 500;
+  }
+
+  .close-btn {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    cursor: pointer;
+    color: #333;
+    font-size: 18px;
+  }
+
+  .rsem-action-btn {
+    padding: 6px 12px;
+    background: #1ca81c;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  .rsem-action-btn:hover {
+    background: #138813;
+  }
+
+  .action-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+
+  .approve-btn {
+    background: #0d6efd;
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 5px;
+    border: none;
+  }
+
+  /* .return-btn {
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 5px;
+  border: none;
+} */
+
+  #rsemModal {
+    width: 461px !important;
+    height: 650px;
+    overflow-x: scroll;
+  }
+  #assetModal {
+    width: 461px !important;
+  }
+
+  .modalwidth {
+    width: 461px !important;
+  }
+
+  .section-title {
+    font-weight: 600;
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+
+  .section-box {
+    background: #f8f9fb;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid #e4e6eb;
+  }
+  .section-box-textarea {
+    background: #f8f9fb;
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid #e4e6eb;
+  }
+
+  .action-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 18px;
+  }
+
+  .approve-btn {
+    background: #28a745;
+    color: #fff;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+  .return-btn {
+    background: #3f51b5;
+    color: #fff;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+  }
+
+  .modal-section {
+    margin-bottom: 18px;
+  }
+
+  .custom-modal::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .custom-modal::-webkit-scrollbar-track {
+    background: #e3e7ff;
+    border-radius: 10px;
+  }
+
+  .newmodalstyle {
+    width: 501px !important;
+  }
+
+  .custom-modal::-webkit-scrollbar-thumb {
+    background: #3f51b5;
+    border-radius: 10px;
+  }
+
+  .custom-modal::-webkit-scrollbar-thumb:hover {
+    background: #283593;
+  }
+  .hidden-field {
+    display: none;
+  }
+
+  .hidden-field.show {
+    display: block;
+  }
+
+  .custom-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(3px);
+    display: none;
+    z-index: 99998;
+  }
+
+  .custom-backdrop.show {
+    display: block;
+  }
+
+  /* Modal Box */
+  .custom-modal-box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    width: 400px;
+    max-width: 90%;
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    display: none;
+    transition: 0.2s ease;
+    z-index: 99999;
+  }
+
+  .custom-modal-box.show {
+    display: block;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  /* Inner close button */
+  .close-btn {
+    position: absolute;
+    right: 15px;
+    top: 8px;
+    cursor: pointer;
+    font-size: 20px;
+  }
+
+  #rsemReason li {
+    list-style: auto !important;
+  }
+
+  #rsemReason {
+    padding-left: 10px;
+  }
+</style>
+
+<div class="container mt-4">
+  <div class="table-responsive">
+    <div class="mb-3 d-flex justify-content-end">
+      <div>
+        <label for="statusFilter" class="form-label">Filter by Status:</label>
+        <select
+          id="statusFilter"
+          class="form-select"
+          onchange="filterTableByStatus()"
+        >
+          <option value="All">All</option>
+          <option value="Pending">Pending</option>
+          <option value="Approved">Approved</option>
+          <option value="Rejected">Rejected</option>
+        </select>
+      </div>
+    </div>
+
+    <table id="distributorTable" class="table table-hover table-bordered">
+      <thead class="table-dark">
+        <tr>
+          <th class="toggle-col no-sort">
+            Unique Application Code
+            <i class="px-2" style="cursor: pointer">
+              <img
+                id="toggleIcon"
+                class="default-icon"
+                src="../../public/images/marsoffboardarrow.png"
+                alt="Toggle"
+                width="16px"
+                style="cursor: pointer"
+              />
+            </i>
+          </th>
+          <th class="dummy-col">Firm's Name</th>
+          <th>DB Channel</th>
+          <th>DB Code</th>
+          <th>Distributor's Name</th>
+          <th>Email ID</th>
+          <th>Mobile Number</th>
+          <th>Freight Expenses %</th>
+          <th>Start Date</th>
+          <th>Created By</th>
+
+          <th class="dummy-col">ASM</th>
+          <th class="dummy-col">RSEM</th>
+          <th class="dummy-col">DT Team</th>
+          <th class="dummy-col">SNF</th>
+          <th class="dummy-col">TAX/GST</th>
+          <th class="dummy-col">OTC</th>
+          <th class="dummy-col">MDM</th>
+          <th class="dummy-col">RSM</th>
+          <th class="dummy-col">NSM</th>
+          <th class="dummy-col">AP Team</th>
+          <th class="dummy-col">RECORDS</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% if (data.length > 0) { %> <% data.forEach((distributor, index) => {
+        %>
+
+        <tr
+          data-application-id="<%= distributor.applicationId %>"
+          data-status="<%
+              if (distributor.is_final_approval == 0 && distributor.offboard_flag != 2 && distributor.distributor_flag == 1 && distributor.can_approve == 1) {
+            %>Pending<%
+              } else if (distributor.is_final_approval == 1 && distributor.offboard_flag != 2 && distributor.distributor_flag == 1) {
+            %>Approved<%
+              } else if (distributor.offboard_flag == 2 && distributor.distributor_flag == 1) {
+            %>Rejected<%
+              } else {
+            %>Pending<%
+              }
+            %>"
+        >
+          <td><%= distributor.mars_code %></td>
+          <td><%= distributor.firmName %></td>
+          <td class="hidden-col"><%= distributor.dbType %></td>
+          <td class="hidden-col"><%= distributor.distributor_code %></td>
+          <td class="hidden-col"><%= distributor.distributorName %></td>
+          <td class="hidden-col"><%= distributor.email %></td>
+          <td class="hidden-col"><%= distributor.contactNumber %></td>
+          <td class="hidden-col"><%= distributor.FreightExpenses %></td>
+
+          <td class="hidden-col">
+            <%= new
+            Date(distributor.created_at).toLocaleDateString('en-CA') %>
+          </td>
+
+          <td class="hidden-col"><%= distributor.aseemail %></td>
+
+          <td>
+              <% 
+                const appActions = get_action_button.find(
+                  item => item.applicationId == distributor.applicationId
+                );
+
+                const canShowASMAction =
+                  appActions && appActions.get_approvel_button.length > 0;
+
+                const flag_check = distributor.flag;
+                const status_check = distributor.status;
+                const dt_team_flag = distributor.dt_team_flag;
+                const db_replace_status = distributor.db_replace_status;
+                const confirm_asset_status = distributor.confirm_asset_status;
+              %>
+
+              <% if (role_name === 'ASM') { %>
+
+                <% if (status_check != 1) { %>
+                  <button
+                    class="btn openOption btn-primary"
+                    data-appActions="<%= flag_check %>"
+                    data-application-id="<%= distributor.applicationId %>"
+                    data-status_asm="<%= status_check %>"
+                    data-total_complete_approval_level="<%= distributor.total_complete_approval_level %>"
+                  >
+                    Action
+                  </button>
+                <% } %>
+
+              <% if (dt_team_flag == 1) { %>
+
+                  <% if (db_replace_status != 1) { %>
+                    <button
+                      onclick="openReplacementModal('<%= distributor.applicationId %>')"
+                      class="btn btn-primary"
+                    >
+                      DB Replacement
+                    </button>
+                  <% } %>
+
+                  <% if (confirm_asset_status != 1) { %>
+                    <button
+                      class="btn btn-outline-primary"
+                      onclick="openAssetModal('<%= distributor.applicationId %>')"
+                    >
+                      Confirm Asset Reconciliation
+                    </button>
+                  <% } %>
+
+                <% } %>
+
+              <% } %>
+           </td>
+
+          <td>
+            <% 
+            const canShowRSEMAction = appActions && appActions.get_approvel_button && appActions.get_approvel_button.some(btn => btn.role_name == 'RSEM');
+            %>
+            <% if (canShowRSEMAction) { %>
+            <button
+              class="rsem-action-btn btn btn-primary btn-sm"
+              data-application-id="<%= distributor.applicationId %>"
+              data-name="<%= distributor.distributorName %>"
+              data-dbtype="<%= distributor.dbType || '--' %>"
+              data-dbcode="<%= distributor.distributor_code || '--' %>"
+              data-offboarddate="<%= new Date(distributor.created_at).toLocaleDateString('en-CA') %>"
+              data-reasons='<%- JSON.stringify(distributor.final_reason_text || []) %>'
+              data-dist-noc="<%= distributor.noc_certificate || '' %>" 
+              data-resign-letter="<%= distributor.resignation_letter || '' %>"
+              data-resign-noc="<%= distributor.noc_file_path || '' %>"
+              data-total_complete_approval_level="<%= canShowRSEMAction.total_complete_approval_level %>"
+            >
+              Action
+            </button>
+            <% } %>
+          </td>
+          <td>
+            <% 
+            const canShowDTTeamAction = appActions && appActions.get_approvel_button && appActions.get_approvel_button.filter(btn => btn.role_name == 'DT Team');
+            const total_levelDTTeam = canShowDTTeamAction && canShowDTTeamAction.length > 0 && canShowDTTeamAction[0];
+
+            %>
+            <% if (canShowDTTeamAction && canShowDTTeamAction.length > 0) { %>
+            <button
+              class="btn btn-outline-primary"
+              onclick="openAssetTransferModal(this)" data-application-id="<%= distributor.applicationId %>"
+              data-total_complete_approval_level="<%= total_levelDTTeam.total_complete_approval_level %>"
+              data-is-replacement="<%= distributor.is_replacement %>"
+            >
+              Confirm Data Transfer
+            </button>
+            <% } %>
+          </td>
+          <td>
+            <% 
+            const canShowSNFAction = appActions && appActions.get_approvel_button && appActions.get_approvel_button.filter(btn => btn.role_name == 'SNF');
+             const total_levelSNF = canShowSNFAction && canShowSNFAction.length > 0 && canShowSNFAction[0];
+
+            %>
+            <% if (canShowSNFAction && canShowSNFAction.length > 0) { %>
+            <button class="btn btn-outline-primary" onclick="openClaimModal(this)" 
+             data-application-id="<%= distributor.applicationId %>"
+              data-total_complete_approval_level="<%= total_levelSNF.total_complete_approval_level %>">
+              Claim Clearance
+            </button>
+            <% } %>
+          </td>
+          <td>
+            <% 
+            const canShowTaxGSTAction = appActions && appActions.get_approvel_button && appActions.get_approvel_button.filter(btn => btn.role_name == 'TAX GST');
+            const total_levelTaxGST = canShowTaxGSTAction && canShowTaxGSTAction.length > 0 && canShowTaxGSTAction[0];
+
+            %>
+            <% if (canShowTaxGSTAction && canShowTaxGSTAction.length > 0) { %>
+            <button class="btn btn-outline-primary" onclick="openGSTModal(this)" 
+             data-application-id="<%= distributor.applicationId %>"
+            data-total_complete_approval_level="<%= total_levelTaxGST.total_complete_approval_level %>">
+              Validate GST & Adjust Ledger
+            </button>
+            <% } %>
+          </td>
+          <td>
+            <% 
+            const o2cActions = appActions && appActions.get_approvel_button && appActions.get_approvel_button.filter(btn => btn.role_name == 'O2C');
+            const firstO2CAction = o2cActions && o2cActions[0];
+            const secondO2CAction = o2cActions && o2cActions[1];
+            %>
+            <% if (firstO2CAction && firstO2CAction.fnf_flag == 0) { %>
+            <button class="btn btn-outline-primary" onclick="openFnfModal(this)" 
+             data-application-id="<%= distributor.applicationId %>" 
+             data-total_complete_approval_level="<%= firstO2CAction.total_complete_approval_level %>"
+>
+              F&F
+            </button>
+            <% } %>
+            <% if (firstO2CAction && firstO2CAction && firstO2CAction.fnf_flag == 1) { %>
+            <button
+              class="btn btn-outline-primary"
+              onclick="openZeroLedgerModal(this)"
+              data-application-id="<%= distributor.applicationId %>"
+              data-fnf_flag="<%= firstO2CAction.fnf_flag %>"
+              data-total_complete_approval_level="<%= firstO2CAction.total_complete_approval_level %>"
+            >
+              Open Zero Ledger
+            </button>
+            <% } %>
+          </td>
+          <td>
+            <% 
+            const canShowMDMAction = appActions && appActions.get_approvel_button && appActions.get_approvel_button.filter(btn => btn.role_name == 'MDM');
+            const total_level = canShowMDMAction && canShowMDMAction.length > 0 && canShowMDMAction[0];
+            %>
+            <% if (canShowMDMAction && canShowMDMAction.length > 0) { %>
+            <button
+              class="btn btn-outline-primary"
+              onclick="openBlockDbModal(this)" 
+               data-application-id="<%= distributor.applicationId %>"
+               data-total_complete_approval_level="<%= total_level ? total_level.total_complete_approval_level : '' %>"
+
+            >
+              Block DB Code
+            </button>
+            <% } %>
+          </td>
+          <td>
+            <% 
+            const canShowRSMAction = appActions && appActions.get_approvel_button && appActions.get_approvel_button.filter(btn => btn.role_name == 'RSM');
+             const total_levelRSM = canShowRSMAction && canShowRSMAction.length > 0 && canShowRSMAction[0];
+
+            %>
+            <% if (canShowRSMAction && canShowRSMAction.length > 0) { %>
+            <button id="openVerifyFNFBtn"
+             onclick="openVerifyFNFBtn(this)" 
+               data-application-id="<%= distributor.applicationId %>"
+               data-total_complete_approval_level="<%= total_levelRSM ? total_levelRSM.total_complete_approval_level : '' %>"
+               data-signed-fnf-path="<%= distributor.signed_fnf_path || '' %>"
+               class="btn btn-primary">
+              Verify F&F Letter
+            </button>
+            <% } %>
+          </td>
+         <td>
+            <% 
+            const canShowNSMction = appActions && appActions.get_approvel_button && appActions.get_approvel_button.filter(btn => btn.role_name == 'NSM');
+             const total_levelNSM = canShowNSMction && canShowNSMction.length > 0 && canShowNSMction[0];
+
+            %>
+            <% if (canShowNSMction && canShowNSMction.length > 0) { %>
+            <button id="openVerifyFNFBtn"
+             onclick="openVerifyFNFBtn(this)" 
+               data-application-id="<%= distributor.applicationId %>"
+               data-total_complete_approval_level="<%= total_levelRSM ? total_levelRSM.total_complete_approval_level : '' %>"
+               data-signed-fnf-path="<%= distributor.signed_fnf_path || '' %>"
+              class="btn btn-primary">
+              Verify F&F Letter
+            </button>
+            <% } %>
+          </td>
+          <td>
+            <% 
+            const canShowAPTeamAction = appActions && appActions.get_approvel_button && appActions.get_approvel_button.filter(btn => btn.role_name == 'AP TEAM');
+            const total_levelAPTeam = canShowAPTeamAction && canShowAPTeamAction.length > 0 && canShowAPTeamAction[0];
+            %>
+            <% if (canShowAPTeamAction && canShowAPTeamAction.length > 0) { %>
+            <button id="openPaymentModal"
+             onclick="openVerifyFNFBtnLetter(this)"  class="btn btn-primary"
+              data-application-id="<%= distributor.applicationId %>" 
+               data-total_complete_approval_level="<%= total_levelAPTeam.total_complete_approval_level %>"
+>
+              Process Payment
+            </button>
+            <% } %>
+          </td>
+          <td class="text-center">
+            <a
+              href="/newoffboardApprover/newoffboardApproverview/<%= distributor.applicationId %>"
+            >
+              <i class="fa fa-clipboard text-primary"></i>
+            </a>
+          </td>
+        </tr>
+
+        <% }) %> <% } else { %>
+        <tr>
+          <td colspan="23" class="text-center">No distributors found.</td>
+        </tr>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div id="replacementBackdrop" class="custom-modal-backdrop"></div>
+
+<div id="replacementModal" class="custom-modal">
+  <div class="custom-modal-content">
+    <span class="close-btn" onclick="closeReplacementModal()">✖</span>
+
+    <h4 class="mb-3">Enter Replacement Details</h4>
+
+    <div class="mb-3">
+      <label class="form-label">Is Replacement DB Available?</label>
+
+      <div>
+        <label class="form-check form-check-inline">
+          <input
+            type="radio"
+            class="form-check-input"
+            name="isReplacement"
+            value="yes"
+            id="repYes"
+          />
+          Yes
+        </label>
+
+        <label class="form-check form-check-inline">
+          <input
+            type="radio"
+            class="form-check-input"
+            name="isReplacement"
+            value="no"
+            id="repNo"
+          />
+          No
+        </label>
+      </div>
+    </div>
+
+    <div id="replacementFields" class="hidden">
+      <div class="mb-3">
+        <label class="form-label">Replacement DB Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="dbName"
+          placeholder="Enter Replacement DB Name"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Replacement DB Code</label>
+        <input
+          type="text"
+          class="form-control"
+          id="dbCode"
+          placeholder="Enter Replacement DB Code"
+        />
+      </div>
+    </div>
+
+    <button class="btn btn-primary w-100" onclick="submitReplacement()">
+      Submit
+    </button>
+  </div>
+</div>
+
+<div id="assetBackdrop" class="custom-modal-backdrop"></div>
+
+<div id="assetModal" class="custom-modal">
+  <div class="custom-modal-content">
+    <span class="close-btn" onclick="closeAssetModal()">✖</span>
+
+    <h5 class="mb-3">Confirm Asset Check & Reconciliation</h5>
+
+    <div class="mb-3">
+      <label class="form-label">Is Asset Reconciliation Done?</label>
+
+      <div>
+        <label class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="assetReconciliation"
+            value="yes"
+            id="assetYesasset"
+          />
+          Yes
+        </label>
+        <label class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="assetReconciliation"
+            value="no"
+            id="assetNoasset"
+          />
+          No
+        </label>
+      </div>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Is asset Transfer done ?</label>
+
+      <div>
+        <label class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="tranfertReconciliation"
+            value="yes"
+            id="tranferYes"
+          />
+          Yes
+        </label>
+        <label class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="tranfertReconciliation"
+            value="no"
+            id="tranferNo"
+          />
+          No
+        </label>
+      </div>
+    </div>
+
+    <div id="assetFields" class="hidden-field">
+      <div class="mb-3">
+        <label class="form-label">Add Remarks (Optional)</label>
+        <textarea
+          class="form-control"
+          id="assetRemarks"
+          rows="3"
+          placeholder="Enter remarks if needed"
+        ></textarea>
+      </div>
+    </div>
+
+    <button class="btn btn-primary w-100" onclick="submitAssetStatus()">
+      Submit
+    </button>
+  </div>
+</div>
+
+<div id="assetTransferBackdrop" class="custom-modal-backdrop"></div>
+
+<div id="assetTransferModal" class="custom-modal modalwidth">
+  <div class="custom-modal-content">
+    <span class="close-btn" onclick="closeAssetTransferModal()">✖</span>
+
+    <h4 class="mb-3">Confirm Data Transfer</h4>
+
+    <div class="modal-section">
+      <h5 class="section-title">Replacement DB Status</h5>
+
+      <div class="section-box">
+        <p>
+         <strong>Replacement DB Found:</strong>
+         <span id="replacementStatus">-</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <h5 class="section-title">DATA TRANFER</h5>
+
+      <label class="form-label">IS DATA TRANFER DONE ?</label>
+      <div>
+        <label class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="isAssetTransferred"
+            value="yes"
+            id="isAssetTransferredYes"
+          />
+          Yes
+        </label>
+        <label class="form-check form-check-inline">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="isAssetTransferred"
+            value="no"
+            id="isAssetTransferredNo"
+          />
+          No
+        </label>
+      </div>
+    </div>
+
+    <div id="assetRemarksBox" class="modal-section" style="display: none">
+      <h5 class="section-title">Remarks (Optional)</h5>
+      <textarea
+        id="isAssetTransferredtext"
+        class="form-control section-box-textarea"
+        rows="3"
+      ></textarea>
+    </div>
+
+    <button class="btn btn-primary w-100 mt-2" id="assetTransferSubmit">Submit</button>
+  </div>
+</div>
+
+<div class="custom-modal" id="optionModal">
+  <div class="custom-modal-content">
+    <span class="close" data-close="optionModal">✖</span>
+
+    <h5 class="text-center mb-4">Please Select an option to proceed</h5>
+
+    <div class="text-center">
+      <button class="btn-outline-custom me-2" id="btnTermination">
+        Termination
+      </button>
+      <button class="btn-outline-custom" id="btnResignation">
+        Resignation
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="claimModalBackdrop" class="custom-modal-backdrop"></div>
+
+<div id="claimModal" class="custom-modal">
+  <div class="custom-modal-content">
+    <span class="close-btn" onclick="closeClaimModal()">✖</span>
+
+    <!-- <h4 class="mb-3">Validate & Confirm DB Claims</h4> -->
+
+    <!-- <div class="modal-section">
+      <h5 class="section-title">Claim Raised By</h5>
+      <div>
+        <select id="claimRaisedBy" class="form-select">
+          <option value="">Select</option>
+          <option value="DT Team">DT Team</option>
+          <option value="ASM">ASM</option>
+        </select>
+      </div>
+    </div> -->
+    <div class="modal-section">
+      <h5 class="section-title">Claim Type</h5>
+      <div>
+        <select id="claimType" name="claimType" class="form-select">
+          <option value="">Select Claim Type</option>
+          <option value="credit">Credit</option>
+          <option value="debit">Debit</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <h5 class="section-title">Claim Amount</h5>
+      <div class="claim-input-wrapper">
+        <input
+          type="number"
+          id="claimAmount"
+          name="claimAmount"
+          class="form-control"
+          placeholder="Enter amount"
+        />
+
+        <select id="amountUnit" name="amountUnit" class="form-select mt-4">
+          <option value="thousand">Thousand</option>
+          <option value="lakh">Lakh</option>
+          <option value="crore">Crore</option>
+        </select>
+      </div>
+    </div>
+
+    <button id="claimSubmitBtn" class="btn btn-primary w-100 mt-3">
+      Submit
+    </button>
+  </div>
+</div>
+
+<div class="custom-modal newmodalstyle" id="terminationModal">
+  <form id="offboardForm">
+    <input type="hidden" name="application_id" id="application_id" />
+    <input type="hidden" name="offboard_type" id="offboard_type" />
+
+    <div class="custom-modal-content terminate-box">
+      <span class="close" data-close="terminationModal">✖</span>
+
+      <h5 class="text-center mb-4">Please Select reason of termination</h5>
+
+      <% if (terminationReasons && terminationReasons.length > 0) { %>
+        <% terminationReasons.forEach(function(reason) { %>
+          <label class="reason-row">
+            <input type="checkbox" name="reason[]" value="<%= reason.reason_value || reason.reason_text %>" />
+            <span class="reason-text"><%= reason.reason_text %></span>
+          </label>
+        <% }); %>
+      <% }  %>
+
+      <div class="text-center mt-4">
+        <button type="submit" class="btn-primary-custom me-3">SUBMIT</button>
+
+        <button
+          type="button"
+          class="btn-outline-custom"
+          data-back="terminationModal"
+          data-open="optionModal"
+        >
+          BACK
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div id="fnfBackdrop" class="custom-backdrop"></div>
+
+<div id="fnfModal" class="custom-modal-box">
+  <div class="modal-inner">
+    <span class="close-btn" onclick="closeFnfModal()">✖</span>
+
+    <h5 class="text-center mb-3">Please Upload F&F Letter</h5>
+
+    <div class="mb-3">
+      <label class="form-label fw-bold">Upload File</label>
+      <input type="file" id="fnfFile" class="form-control" accept=".pdf" />
+    </div>
+
+    <div class="text-center mt-3">
+      <button id="FnfSubmit" class="btn btn-primary px-4">Upload</button>
+    </div>
+  </div>
+</div>
+
+<div id="gstModalBackdrop" class="custom-modal-backdrop"></div>
+
+<div id="gstModal" class="custom-modal modalwidth">
+  <div class="custom-modal-content">
+    <span class="close-btn" onclick="closeGSTModal()">✖</span>
+
+    <h4 class="mb-3">Validate GST & Adjust Ledger</h4>
+
+    <div class="modal-section">
+      <h5 class="section-title">GST Number</h5>
+      <input
+        type="text"
+        id="gstNumber"
+        name="gstNumber"
+        class="form-control"
+        placeholder="Enter GST Number"
+      />
+    </div>
+
+    <div class="modal-section">
+      <h5 class="section-title">Is GST Matching?</h5>
+
+      <div class="d-flex gap-3 mt-2">
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="gstMatch"
+            id="gstYes"
+            value="yes"
+          />
+          <label class="form-check-label" for="gstYes">Yes</label>
+        </div>
+
+        <div class="form-check">
+          <input
+            class="form-check-input"
+            type="radio"
+            name="gstMatch"
+            id="gstNo"
+            value="no"
+          />
+          <label class="form-check-label" for="gstNo">No</label>
+        </div>
+      </div>
+    </div>
+
+    <div id="gstRemarkSection" class="modal-section d-none">
+      <h5 class="section-title">Remark</h5>
+      <textarea
+        class="form-control"
+        id="gstRemark"
+        rows="3"
+        placeholder="Enter reason if GST not matching"
+      ></textarea>
+    </div>
+
+    <button id="gstSubmitBtn" class="btn btn-primary w-100 mt-3">Submit</button>
+  </div>
+</div>
+
+<div id="verifyFNFBackdrop" class="custom-modal-backdrop"></div>
+
+<div id="verifyFNFModal" class="custom-modal modalwidth">
+  <div class="custom-modal-content">
+    <div class="modal-header-custom">
+      <h4 class="modal-title-custom">Verify F&F Letter</h4>
+      <span id="verifyFNFClose" class="close-btn">✖</span>
+    </div>
+
+    <div class="modal-section">
+      <h5 class="section-title">F&F Letter</h5>
+      <div class="section-box">
+        <a
+          href="#"
+          id="fnfLetterDownload"
+          class="btn btn-outline-primary btn-sm"
+        >
+          Download F&F Letter
+        </a>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <h5 class="section-title">Remarks (Required only for Reject)</h5>
+      <textarea
+        id="fnfRemarks"
+        name="fnfRemarks"
+        class="form-control section-box-textarea"
+        rows="3"
+      ></textarea>
+    </div>
+
+    <div class="action-buttons">
+      <input type="button"  id="fnfApproveBtn" name="fnfApproveBtn" class="approve-btn fnfApprove" value="Approve">
+      <input type="button" id="fnfRejectBtn" name="fnfRejectBtn" class="return-btn fnfApprove" value="Reject">
+    </div>
+  </div>
+</div>
+
+<div id="rsemModalBackdrop" class="custom-modal-backdrop"></div>
+
+<div id="rsemModal" class="custom-modal">
+  <div class="custom-modal-content">
+    <div class="modal-header-custom">
+      <h4 class="modal-title-custom">RSEM Review</h4>
+      <span id="rsemModalClose" class="close-btn">✖</span>
+    </div>
+
+    <div class="modal-section">
+      <h5 class="section-title">DB Details</h5>
+
+      <div class="section-box">
+        <p>
+          <strong>Distributor Name:</strong> <span id="rsemDistributor"></span>
+        </p>
+        <p><strong>DB Type:</strong> <span id="rsemDbType"></span></p>
+        <p>
+          <strong>Offboard Request Date:</strong>
+          <span id="rsemOffboardDate"></span>
+        </p>
+        <p><strong>DB Code:</strong> <span id="rsemDbCode"></span></p>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <h5 class="section-title">Resignation Reason</h5>
+
+      <div class="section-box">
+        <ul id="rsemReason" class="mb-0"></ul>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <h5 class="section-title">NOC / Resignation Letter</h5>
+
+     <div class="section-box">
+           <a
+            id="rsemDistNocDownload"
+            class="btn btn-outline-secondary btn-sm mt-1"
+            target="_blank"
+            download
+            style="display:none;"
+          >
+            Download NOC
+          </a>
+
+          <a
+            id="rsemResignationDownload"
+            class="btn btn-outline-secondary btn-sm ms-2 mt-1"
+            target="_blank"
+            download
+            style="display:none;"
+          >
+            Download Resignation Letter
+          </a>
+
+          <a
+            id="rsemResignationNocDownload"
+            class="btn btn-outline-secondary btn-sm ms-2 mt-1"
+            target="_blank"
+            download
+            style="display:none;"
+          >
+            Download Resignation NOC
+          </a>
+
+
+     </div>
+
+    </div>
+
+    <div class="modal-section">
+      <h5 class="section-title">Remarks (Optional)</h5>
+
+      <textarea
+        id="rsemRemarks"
+        class="form-control section-box-textarea"
+        rows="3"
+      ></textarea>
+    </div>
+
+    <div class="action-buttons">
+      <button id="rsemApproveBtn" class="approve-btn">Approve</button>
+      <button id="rsemReturnBtn" class="return-btn">
+        Return for Clarification
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="paymentBackdrop" class="custom-modal-backdrop"></div>
+
+<div id="paymentModal" class="custom-modal modalwidth">
+  <div class="custom-modal-content">
+    <div class="modal-header-custom">
+      <h4 class="modal-title-custom">Process Payment</h4>
+      <span id="paymentClose" class="close-btn">✖</span>
+    </div>
+
+    <div class="modal-section">
+      <h5 class="section-title">Payment Processed</h5>
+
+      <div class="section-box">
+        <label class="reason-box">
+          <input type="radio" name="paymentStatus" id="paymentYes" /> Yes
+        </label>
+
+        <label class="reason-box">
+          <input type="radio" name="paymentStatus" id="paymentNo" /> No
+        </label>
+      </div>
+    </div>
+
+    <div class="action-buttons">
+      <button id="paymentSubmitBtn" class="approve-btn">Submit</button>
+    </div>
+  </div>
+</div>
+
+<div id="zeroLedgerBackdrop" class="custom-modal-backdrop"></div>
+
+<div id="zeroLedgerModal" class="custom-modal modalwidth">
+  <div class="custom-modal-content">
+    <span class="close-btn" onclick="closeZeroLedgerModal()">✖</span>
+
+    <h4 class="mb-3">Confirm Zero Ledger (OTC Team)</h4>
+
+    <div class="modal-section">
+      <h5 class="section-title">Zero Ledger Status</h5>
+      <div>
+        <select id="zeroLedgerSelect" name="zeroLedgerSelect" class="form-select">
+          <option value="">Select</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="not_confirmed">Not Confirmed</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <h5 class="section-title">Remarks</h5>
+      <textarea
+        id="zeroLedgerRemarks" name="zeroLedgerRemarks"
+        class="form-control"
+        placeholder="Add remarks"
+      ></textarea>
+    </div>
+
+    <button id="zeroLedgerSubmit" class="btn btn-primary w-100 mt-3">
+      Submit
+    </button>
+  </div>
+</div>
+
+<div id="blockDbBackdrop" class="custom-modal-backdrop"></div>
+
+<div id="blockDbModal" class="custom-modal modalwidth">
+  <div class="custom-modal-content">
+    <span class="close-btn" onclick="closeBlockDbModal()">✖</span>
+
+    <h4 class="mb-3">Block DB Code (DT Team)</h4>
+
+    <div class="modal-section">
+      <h5 class="section-title">DB Code Action</h5>
+      <div>
+        <select id="blockDbSelect" name="blockDbSelect" class="form-select">
+          <option value="">Select</option>
+          <option value="blocked">Blocked</option>
+          <option value="not_blocked">Not Blocked</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="modal-section">
+      <h5 class="section-title">Remarks (Optional)</h5>
+      <textarea
+        id="blockDbRemarks"
+        name="blockDbRemarks"
+        class="form-control"
+        placeholder="Add remarks"
+      ></textarea>
+    </div>
+
+    <button id="blockDbSubmit" class="btn btn-primary w-100 mt-3">
+      Submit
+    </button>
+  </div>
+</div>
+
+<script>
+  function openGSTModal(element) {
+    selected = element.dataset.applicationId;
+    total_complete_approval_level = element.dataset.total_complete_approval_level;
+    document.getElementById("gstModalBackdrop").classList.add("show");
+    document.getElementById("gstModal").classList.add("show");
+  }
+
+  function closeGSTModal() {
+    document.getElementById("gstModalBackdrop").classList.remove("show");
+    document.getElementById("gstModal").classList.remove("show");
+  }
+
+  document.addEventListener("change", function () {
+    if (document.getElementById("gstNo").checked) {
+      document.getElementById("gstRemarkSection").classList.remove("d-none");
+    } else {
+      document.getElementById("gstRemarkSection").classList.add("d-none");
+    }
+  });
+    document.getElementById("gstSubmitBtn").onclick = async () => {
+    const gstYes = document.getElementById("gstYes");
+    const gstNo = document.getElementById("gstNo");
+    const gstRemark = document.getElementById("gstRemark");
+     const gstNumber = document.getElementById("gstNumber");
+    if (!gstYes.checked && !gstNo.checked && !gstNumber.value) {
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Please select asset transfer status",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
+      return;
+    }
+
+    
+    try {
+      const response = await fetch(
+        "/newoffboardApprover/gstsubmit",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+             application_id: selected,
+             gstNumber:gstNumber.value,
+            gstYes: gstYes.checked ? "yes" : "no",
+            gstRemark:gstRemark.value,
+            total_complete_approval_level:total_complete_approval_level
+          }),
+        }
+      );
+
+      const result = await response.json();
+
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: result.type === "success" ? "success" : "info",
+        title: result.message,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didClose: () => {
+          if (result.type === "success") {
+            closeModal("optionModal");
+            location.reload();
+          }
+        },
+      });
+    } catch (err) {
+      console.error("Error initiating resignation:", err);
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Failed to send email. Please try again.",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+      });
+    }
+  };
+
+</script>
+
+<script>
+  function openBlockDbModal(element) {
+    selected = element.dataset.applicationId;
+     total_complete_approval_level = element.dataset.total_complete_approval_level;
+    document.getElementById("blockDbBackdrop").classList.add("show");
+    document.getElementById("blockDbModal").classList.add("show");
+  }
+  function closeBlockDbModal() {
+    document.getElementById("blockDbBackdrop").classList.remove("show");
+    document.getElementById("blockDbModal").classList.remove("show");
+  }
+   document.getElementById("blockDbSubmit").onclick = async () => {
+    const blockDbRemarks = document.getElementById("blockDbRemarks").value;
+     const blockDbSelect = document.getElementById("blockDbSelect").value;
+     if (!blockDbRemarks || !blockDbSelect) {
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Please select",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
+      return;
+    }
+
+    
+    try {
+      const formData = new FormData();
+      formData.append('application_id', selected);
+      formData.append('blockDbRemarks', blockDbRemarks);
+      formData.append('blockDbSelect', blockDbSelect);
+      formData.append('total_complete_approval_level', total_complete_approval_level);
+      const response = await fetch(
+        "/newoffboardApprover/blockDbSubmit",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const result = await response.json();
+
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: result.type === "success" ? "success" : "info",
+        title: result.message,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didClose: () => {
+          if (result.type === "success") {
+            closeModal("optionModal");
+            location.reload();
+          }
+        },
+      });
+    } catch (err) {
+      console.error("Error uploading F&F file:", err);
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Failed to upload file. Please try again.",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+      });
+    }
+    closeBlockDbModal();
+  };
+</script>
+
+<script>
+  function openZeroLedgerModal(element) {
+     selected = element.dataset.applicationId;
+     fnf_flag = element.dataset.fnf_flag;
+     total_complete_approval_level = element.dataset.total_complete_approval_level;
+    document.getElementById("zeroLedgerBackdrop").classList.add("show");
+    document.getElementById("zeroLedgerModal").classList.add("show");
+  }
+  function closeZeroLedgerModal() {
+    document.getElementById("zeroLedgerBackdrop").classList.remove("show");
+    document.getElementById("zeroLedgerModal").classList.remove("show");
+  }
+   document.getElementById("zeroLedgerSubmit").onclick = async () => {
+    const zeroLedgerSelect = document.getElementById("zeroLedgerSelect").value;
+     const zeroLedgerRemarks = document.getElementById("zeroLedgerRemarks").value;
+     if (!zeroLedgerSelect || !zeroLedgerRemarks) {
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Please select",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
+      return;
+    }
+    const ss  = document.getElementById("zeroLedgerSubmit");
+    ss.disabled = true;
+
+    
+    try {
+      const formData = new FormData();
+      formData.append('application_id', selected);
+      formData.append('fnf_flag', fnf_flag);
+      formData.append('zeroLedgerSelect', zeroLedgerSelect);
+      formData.append('zeroLedgerRemarks', zeroLedgerRemarks);
+      formData.append('total_complete_approval_level', total_complete_approval_level);
+      const response = await fetch(
+        "/newoffboardApprover/zeroLedgerSubmit",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const result = await response.json();
+
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: result.type === "success" ? "success" : "info",
+        title: result.message,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didClose: () => {
+          if (result.type === "success") {
+            closeModal("optionModal");
+            location.reload();
+          }
+        },
+      });
+    } catch (err) {
+      console.error("Error uploading F&F file:", err);
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Failed to upload file. Please try again.",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+      });
+    }
+    closeZeroLedgerModal();
+  };
+</script>
+
+<script>
+  function openAssetTransferModal(element) {
+    selected = element.dataset.applicationId;
+    total_complete_approval_level = element.dataset.total_complete_approval_level;
+
+    const isReplacement = element.dataset.isReplacement;
+    const replacementText = document.getElementById("replacementStatus");
+
+    if (isReplacement == "1") {
+      replacementText.innerText = "Yes";
+    } else {
+      replacementText.innerText = "No";
+    }
+
+    document.getElementById("assetTransferBackdrop").classList.add("show");
+    document.getElementById("assetTransferModal").classList.add("show");
+    
+    const TranferassetYes = document.getElementById("isAssetTransferredYes");
+    const TranferassetNo = document.getElementById("isAssetTransferredNo");
+    const assetRemarksBox = document.getElementById("assetRemarksBox");
+    
+    TranferassetYes.removeEventListener("change", handleYesChange);
+    TranferassetNo.removeEventListener("change", handleNoChange);
+    
+    TranferassetYes.addEventListener("change", handleYesChange);
+    TranferassetNo.addEventListener("change", handleNoChange);
+    
+    function handleYesChange() {
+      assetRemarksBox.style.display = "block";
+    }
+    
+    function handleNoChange() {
+      assetRemarksBox.style.display = "none";
+    }
+  }
+
+  function closeAssetTransferModal() {
+    document.getElementById("assetTransferBackdrop").classList.remove("show");
+    document.getElementById("assetTransferModal").classList.remove("show");
+  }
+
+  document.getElementById("assetTransferSubmit").onclick = async () => {
+    const TranferassetYes = document.getElementById("isAssetTransferredYes");
+    const TranferassetNo = document.getElementById("isAssetTransferredNo");
+    const assetRemarksBox = document.getElementById("isAssetTransferredtext");
+    
+    if (!TranferassetYes.checked && !TranferassetNo.checked) {
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Please select asset transfer status",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
+      return;
+    }
+
+    
+    try {
+      const response = await fetch(
+        "/newoffboardApprover/assettransfersubmit",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+             application_id: selected,
+            transfer_assets: TranferassetYes.checked ? "yes" : "no",
+            assetRemarksBox:assetRemarksBox.value
+          }),
+        }
+      );
+
+      const result = await response.json();
+
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: result.type === "success" ? "success" : "info",
+        title: result.message,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didClose: () => {
+          if (result.type === "success") {
+            closeModal("optionModal");
+            location.reload();
+          }
+        },
+      });
+    } catch (err) {
+      console.error("Error initiating resignation:", err);
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Failed to send email. Please try again.",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+      });
+    }
+  };
+
+</script>
+
+
+<script>
+  function openVerifyFNFBtn(element) {
+    selected = element.dataset.applicationId;
+    total_complete_approval_level = element.dataset.total_complete_approval_level;
+
+    
+    document.getElementById("verifyFNFBackdrop").classList.add("show");
+    document.getElementById("verifyFNFModal").classList.add("show");
+
+  const fnfDownloadLink = document.getElementById("fnfLetterDownload");
+  const signedFnfPath = element.dataset.signedFnfPath;
+
+  if (signedFnfPath) {
+    fnfDownloadLink.href = signedFnfPath;
+    fnfDownloadLink.setAttribute("download", "F&F_Letter.pdf");
+  } else {
+    fnfDownloadLink.href = "#";
+    fnfDownloadLink.removeAttribute("download");
+  }
+  }
+
+ 
+
+  document.querySelectorAll(".fnfApprove").forEach(element => {
+    element.onclick = async () => {
+      const isApprove = element.value === 'Approve' ? 'Approve' : 'Reject';
+      const fnfRemarks = document.getElementById("fnfRemarks");
+      
+      if (isApprove == 'Reject' && !fnfRemarks.value.trim()) {
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "error",
+          title: "Please enter remarks for rejection",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+        });
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          "/newoffboardApprover/fnfApproveBtn",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+               application_id: selected,
+              fnfApproveBtn: isApprove,
+              fnfRemarks: fnfRemarks.value || '',
+              total_complete_approval_level: total_complete_approval_level 
+            }),
+          }
+        );
+
+        const result = await response.json();
+
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: result.type === "success" ? "success" : "info",
+          title: result.message,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didClose: () => {
+            if (result.type === "success") {
+              closeModal("optionModal");
+              location.reload();
+            }
+          },
+        });
+      } catch (err) {
+        console.error("Error approving F&F:", err);
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "error",
+          title: "Failed to approve F&F. Please try again.",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+        });
+      }
+    };
+  });
+ 
+
+  document.getElementById("verifyFNFClose").onclick = function () {
+    document.getElementById("verifyFNFBackdrop").classList.remove("show");
+    document.getElementById("verifyFNFModal").classList.remove("show");
+  };
+
+  // document.getElementById("fnfApproveBtn").onclick = function () {
+  //   alert("F&F Approved Successfully!");
+  //   document.getElementById("verifyFNFClose").click();
+  // };
+
+  // document.getElementById("fnfRejectBtn").onclick = function () {
+  //   let remark = document.getElementById("fnfRemarks").value.trim();
+
+  //   if (remark === "") {
+  //     alert("Please enter remarks before rejecting.");
+  //     return;
+  //   }
+  // };
+</script>
+
+
+<script>
+  function openClaimModal(element) {
+     selected = element.dataset.applicationId;
+     total_complete_approval_level = element.dataset.total_complete_approval_level;
+    console.log("selectedApplicationId:", selected);
+    document.getElementById("claimModalBackdrop").classList.add("show");
+    document.getElementById("claimModal").classList.add("show");
+  }
+
+  function closeClaimModal() {
+    document.getElementById("claimModalBackdrop").classList.remove("show");
+    document.getElementById("claimModal").classList.remove("show");
+  }
+ 
+  document.getElementById("claimSubmitBtn").onclick = async () => {
+    // const raisedBy = document.getElementById("claimRaisedBy");
+    const type = document.getElementById("claimType").value;
+    const amount = document.getElementById("claimAmount").value;
+    const unit = document.getElementById("amountUnit").value;
+    if (!type) {
+      alert("Please select claim type.");
+      return;
+    }
+    if (amount === "" || amount <= 0) {
+      alert("Please enter a valid amount.");
+      return;
+    }
+
+   
+     if (!type && !amount && !unit) {
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Please select asset transfer status",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
+      return;
+    }
+
+    
+    try {
+      const response = await fetch(
+        "/newoffboardApprover/claimSubmit",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+             application_id: selected,
+            type: type,
+            amount:amount,
+            unit:unit,
+            total_complete_approval_level:total_complete_approval_level
+          }),
+        }
+      );
+
+      const result = await response.json();
+
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: result.type === "success" ? "success" : "info",
+        title: result.message,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didClose: () => {
+          if (result.type === "success") {
+            closeModal("optionModal");
+            location.reload();
+          }
+        },
+      });
+    } catch (err) {
+      console.error("Error initiating resignation:", err);
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Failed to send email. Please try again.",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+      });
+    }
+    closeClaimModal();
+  };
+</script>
+
+<script>
+$(document).ready(function () {
+    if ($("#distributorTable tbody tr").length > 1) {
+        var table = $("#distributorTable").DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            info: true,
+            lengthMenu: [5, 10, 25, 50],
+            pageLength: 10,
+            
+            scrollX: true, 
+            autoWidth: false, 
+            
+            columnDefs: [
+                { targets: [2, 3, 4, 5, 6, 7, 8, 9], visible: false }
+            ]
+        });
+    }
+});
+</script>
+
+<script>
+  function confirmDelete(id) {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = `/edit_distributor/delete_distributor?id=${id}`;
+      }
+    });
+  }
+</script>
+
+
+
+<script>
+  function openVerifyFNFBtnLetter(element) {
+    selected = element.dataset.applicationId;
+    total_complete_approval_level = element.dataset.total_complete_approval_level;
+    document.getElementById("paymentBackdrop").classList.add("show");
+    document.getElementById("paymentModal").classList.add("show");
+  };
+
+  document.getElementById("paymentClose").onclick = function () {
+    document.getElementById("paymentBackdrop").classList.remove("show");
+    document.getElementById("paymentModal").classList.remove("show");
+  };
+ document.getElementById("paymentSubmitBtn").onclick = async () => {
+      let paymentYes = document.getElementById('paymentYes');
+      let paymentNo = document.getElementById('paymentNo');
+      const isApprove = paymentYes.checked ? 'YES' : 'NO';
+      
+      if (!paymentYes.checked && !paymentNo.checked) {
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "error",
+          title: "Please select Yes or No",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+        });
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          "/newoffboardApprover/paymentSubmitBtn",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+               application_id: selected,
+              fnfApproveBtn: isApprove,
+              total_complete_approval_level: total_complete_approval_level
+            }),
+          }
+        );
+
+        const result = await response.json();
+
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: result.type === "success" ? "success" : "info",
+          title: result.message,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didClose: () => {
+            if (result.type === "success") {
+              closeModal("optionModal");
+              location.reload();
+            }
+          },
+        });
+      } catch (err) {
+        console.error("Error processing payment:", err);
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "error",
+          title: "Failed to process payment. Please try again.",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+        });
+      }
+  };
+ 
+
+  // document.getElementById("paymentSubmitBtn").onclick = function () {
+  //   const yes = document.getElementById("paymentYes").checked;
+  //   const no = document.getElementById("paymentNo").checked;
+
+  //   if (!yes && !no) {
+  //     alert("Please select Yes or No.");
+  //     return;
+  //   }
+
+  //   document.getElementById("paymentClose").click();
+  // };
+</script>
+
+<script>
+  function filterTableByStatus() {
+    const selectedStatus = document.getElementById("statusFilter").value;
+    const rows = document.querySelectorAll("#distributorTable tbody tr");
+
+    rows.forEach((row) => {
+      const rowStatus = row.getAttribute("data-status");
+      if (selectedStatus === "All" || rowStatus === selectedStatus) {
+        row.style.display = "";
+      } else {
+        row.style.display = "none";
+      }
+    });
+  }
+</script>
+
+<script>
+document.getElementById("toggleIcon").addEventListener("click", function (event) {
+    event.stopPropagation();  // yeh pehle se hai, theek hai
+
+    var table = $('#distributorTable').DataTable();
+
+    // Current state check (column 2 = DB Channel)
+    var makeVisible = !table.column(2).visible();  // agar hidden hai to visible karo
+
+    // Toggle karne wale columns (exact 2 se 9)
+    [2, 3, 4, 5, 6, 7, 8, 9].forEach(function (idx) {
+        table.column(idx).visible(makeVisible);
+    });
+
+    // Arrow rotate
+    this.style.transform = makeVisible ? "rotate(180deg)" : "rotate(0deg)";
+    this.style.transition = "transform 0.3s";
+});
+</script>
+
+<script>
+  function openFnfModal(element) {
+    selected = element.dataset.applicationId;
+    total_complete_approval_level = element.dataset.total_complete_approval_level;
+    document.getElementById("fnfBackdrop").classList.add("show");
+    document.getElementById("fnfModal").classList.add("show");
+  }
+
+  function closeFnfModal() {
+    document.getElementById("fnfBackdrop").classList.remove("show");
+    document.getElementById("fnfModal").classList.remove("show");
+  }
+
+  document
+    .getElementById("fnfBackdrop")
+    .addEventListener("click", closeFnfModal);
+    
+    document.getElementById("FnfSubmit").onclick = async () => {
+    const fnfFile = document.getElementById("fnfFile").files[0];
+     if (!fnfFile) {
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Please select Upload File",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
+      return;
+    }
+
+    const FnfSubmit = document.getElementById("FnfSubmit");
+    FnfSubmit.disabled = true;
+    try {
+      const formData = new FormData();
+      formData.append('application_id', selected);
+      formData.append('fnfFile', fnfFile);
+
+      const response = await fetch(
+        "/newoffboardApprover/FnfSubmit",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const result = await response.json();
+
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: result.type === "success" ? "success" : "info",
+        title: result.message,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didClose: () => {
+          if (result.type === "success") {
+            closeModal("optionModal");
+            location.reload();
+          }
+        },
+      });
+    } catch (err) {
+      console.error("Error uploading F&F file:", err);
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Failed to upload file. Please try again.",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+      });
+    }
+    closeFnfModal();
+  };
+</script>
+
+<script>
+  let selectedApplicationId = null;
+
+  function openModal(id) {
+    document.getElementById(id).style.display = "flex";
+  }
+
+  function closeModal(id) {
+    document.getElementById(id).style.display = "none";
+  }
+
+  
+  document.querySelectorAll(".openOption").forEach((btn) => {
+    btn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      selectedApplicationId = this.dataset.applicationId;
+      document.getElementById("application_id").value = selectedApplicationId;
+      openModal("optionModal");
+    });
+  });
+
+  
+  document.querySelectorAll(".close").forEach((btn) => {
+    btn.onclick = () => closeModal(btn.dataset.close);
+  });
+
+  document.getElementById("btnTermination").onclick = () => {
+    document.getElementById("offboard_type").value = "termination";
+    closeModal("optionModal");
+    openModal("terminationModal");
+  };
+
+  
+  document.getElementById("btnResignation").onclick = async () => {
+    if (!selectedApplicationId) {
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Please select a distributor first!",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      });
+      return;
+    }
+
+    const confirmResult = await Swal.fire({
+      title: "Initiate Resignation?",
+      text: "An email with resignation submission link will be sent to the distributor.",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Send Email",
+      cancelButtonText: "Cancel",
+    });
+
+    if (!confirmResult.isConfirmed) return;
+
+    
+
+    try {
+      const response = await fetch(
+        "/newoffboardApprover/initiateOffboardAsmaction",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            application_id: selectedApplicationId,
+            offboard_type: "resignation",
+            reason: [],
+          }),
+        }
+      );
+
+      const result = await response.json();
+      closeModal("optionModal");
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: result.type === "success" ? "success" : "info",
+        title: result.message,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+      });
+       if (result.type === "success") {
+      location.reload();
+    }
+    } catch (err) {
+      Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        title: "Failed to send email. Please try again.",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+      });
+    }
+  };
+
+  document.querySelectorAll("[data-back]").forEach((btn) => {
+    btn.onclick = () => {
+      closeModal(btn.dataset.back);
+      openModal(btn.dataset.open);
+    };
+  });
+
+  const form = document.getElementById("offboardForm");
+  if (form) {
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+    const submitButton = form.querySelector('button[type="submit"]');
+    submitButton.innerText = "Submitting...";
+    submitButton.disabled = true;
+
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+      const reason = formData.getAll("reason[]");
+      data.reason = reason;
+
+      try {
+        const res = await fetch(
+          "/newoffboardApprover/initiateOffboardAsmaction",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          }
+        );
+        const result = await res.json();
+
+     Swal.fire({
+        toast: true,
+        position: "top-end",
+        icon: result.type,
+        title: result.message,
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+      }).then(() => {
+        if (result.type === "success") {
+          closeModal("terminationModal");
+          location.reload();
+        } else {
+          submitButton.innerText = "SUBMIT";
+          submitButton.disabled = false;
+        }
+      });
+      } catch (err) {
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "error",
+          title: "Something went wrong!",
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+        });
+      }
+    });
+  }
+</script>
+
+<script>
+  let currentRsemApplicationId = null;
+
+  document.addEventListener("click", function (e) {
+    if (!e.target.classList.contains("rsem-action-btn")) return;
+
+    const btn = e.target;
+
+    currentRsemApplicationId = btn.dataset.applicationId;
+
+    if (!currentRsemApplicationId) {
+      Swal.fire("Error", "Application ID missing!", "error");
+      return;
+    }
+
+    console.log("RSEM Action for Application ID:", currentRsemApplicationId);
+
+    document.getElementById("rsemDistributor").textContent =
+      btn.dataset.name || "N/A";
+    document.getElementById("rsemDbType").textContent =
+      btn.dataset.dbtype || "N/A";
+       document.getElementById("rsemDbCode").textContent =
+      btn.dataset.dbcode || "N/A";
+    document.getElementById("rsemOffboardDate").textContent =
+      btn.dataset.offboarddate || "N/A";
+
+    const reasonBox = document.getElementById("rsemReason");
+    reasonBox.innerHTML = "";
+
+    if (btn.dataset.reasons && btn.dataset.reasons !== "[]") {
+      try {
+        const reasons = JSON.parse(btn.dataset.reasons);
+        if (Array.isArray(reasons) && reasons.length > 0) {
+          reasons.forEach((r) => {
+            const li = document.createElement("li");
+            li.textContent = r;
+            reasonBox.appendChild(li);
+          });
+        } else {
+          reasonBox.innerHTML = "<li>No specific reasons provided.</li>";
+        }
+      } catch (err) {
+        reasonBox.innerHTML = "<li>Invalid reasons format.</li>";
+      }
+    } else {
+      reasonBox.innerHTML = "<li>No specific reasons provided.</li>";
+    }
+     
+
+              const distNocBtn = document.getElementById("rsemDistNocDownload");
+              const resignBtn = document.getElementById("rsemResignationDownload");
+              const resignNocBtn = document.getElementById("rsemResignationNocDownload");
+
+              
+                  if (distNocBtn) distNocBtn.style.display = "none";
+                  if (resignBtn) resignBtn.style.display = "none";
+                  if (resignNocBtn) resignNocBtn.style.display = "none";
+
+                  if (btn.dataset.distNoc && distNocBtn) {
+                    distNocBtn.href = btn.dataset.distNoc;
+                    distNocBtn.style.display = "inline-block";
+                  }
+
+                  if (btn.dataset.resignLetter && resignBtn) {
+                    resignBtn.href = btn.dataset.resignLetter;
+                    resignBtn.style.display = "inline-block";
+                  }
+
+                  if (btn.dataset.resignNoc && resignNocBtn) {
+                    resignNocBtn.href = btn.dataset.resignNoc;
+                    resignNocBtn.style.display = "inline-block";
+                  }
+
+    
+     
+
+
+    document.getElementById("rsemModalBackdrop").classList.add("show");
+    document.getElementById("rsemModal").classList.add("show");
+  });
+
+  
+  document.getElementById("rsemModalClose").onclick = () => {
+    document.getElementById("rsemModalBackdrop").classList.remove("show");
+    document.getElementById("rsemModal").classList.remove("show");
+    document.getElementById("rsemRemarks").value = "";
+    currentRsemApplicationId = null;
+  };
+
+  
+  document.getElementById("rsemApproveBtn").onclick = async () => {
+    if (!currentRsemApplicationId)
+      return Swal.fire("Error", "Session expired. Reopen modal.", "error");
+
+    const remarks = document.getElementById("rsemRemarks").value.trim();
+
+    const { isConfirmed } = await Swal.fire({
+      title: "Approve?",
+      text: "Send to ASM?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+    });
+
+    if (!isConfirmed) return;
+
+    const res = await fetch("/newoffboardApprover/offboardrsemoffboardaction", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        application_id: currentRsemApplicationId,
+        action: "approve",
+        remarks,
+      }),
+    });
+
+    const result = await res.json();
+    Swal.fire(
+      result.success ? "Success" : "Error",
+      result.message,
+      result.success ? "success" : "error"
+    );
+    if (result.success) location.reload();
+  };
+
+  document.getElementById("rsemReturnBtn").onclick = async () => {
+    if (!currentRsemApplicationId)
+      return Swal.fire("Error", "Session expired.", "error");
+
+    const remarks = document.getElementById("rsemRemarks").value.trim();
+    if (!remarks)
+      return Swal.fire("Required", "Remarks mandatory for return", "warning");
+
+    const { isConfirmed } = await Swal.fire({
+      title: "Return?",
+      text: "Send back to ASM?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes",
+    });
+
+    if (!isConfirmed) return;
+
+    const res = await fetch("/newoffboardApprover/offboardrsemoffboardaction", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        application_id: currentRsemApplicationId,
+        action: "return",
+        remarks,
+      }),
+    });
+
+    const result = await res.json();
+    Swal.fire(
+      result.success ? "Returned" : "Error",
+      result.message,
+      result.success ? "info" : "error"
+    );
+    if (result.success) location.reload();
+  };
+</script>
+
+<script>
+  let applicationidselect = null;
+
+  const Toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 2500,
+    timerProgressBar: true,
+  });
+
+  function openReplacementModal(appId = null) {
+    applicationidselect = appId;
+
+    document.getElementById("replacementBackdrop").classList.add("show");
+    document.getElementById("replacementModal").classList.add("show");
+  }
+  function closeReplacementModal() {
+    document.getElementById("replacementBackdrop").classList.remove("show");
+    document.getElementById("replacementModal").classList.remove("show");
+
+    document
+      .querySelectorAll('input[name="isReplacement"]')
+      .forEach((r) => (r.checked = false));
+
+    document.getElementById("replacementFields").classList.add("hidden");
+
+    dbName.value = "";
+    dbCode.value = "";
+  }
+
+  const yes = document.getElementById("repYes");
+  const no = document.getElementById("repNo");
+  const fields = document.getElementById("replacementFields");
+
+  yes.addEventListener("change", () => fields.classList.remove("hidden"));
+
+  no.addEventListener("change", () => {
+    fields.classList.add("hidden");
+    dbName.value = "";
+    dbCode.value = "";
+  });
+
+  async function submitReplacement() {
+    if (!applicationidselect) {
+      Toast.fire({ icon: "error", title: "Application ID missing!" });
+      return;
+    }
+
+    const selected = document.querySelector(
+      'input[name="isReplacement"]:checked'
+    )?.value;
+
+    if (!selected) {
+      Toast.fire({ icon: "warning", title: "Please select Yes or No" });
+      return;
+    }
+
+    const payload = {
+      application_id: applicationidselect,
+      is_replacement: selected === "yes" ? 1 : 0,
+      submitted_at: new Date().toISOString(),
+    };
+
+    if (selected === "yes") {
+      payload.replacement_db_name = dbName.value.trim();
+      payload.replacement_db_code = dbCode.value.trim();
+
+      if (!payload.replacement_db_name || !payload.replacement_db_code) {
+        Toast.fire({
+          icon: "warning",
+          title: "Please enter DB Name & DB Code",
+        });
+        return;
+      }
+    }
+
+    try {
+      const res = await fetch("/newoffboardApprover/submitDbReplacement", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        Toast.fire({
+          icon: "success",
+          title: "Saved successfully",
+        });
+
+        setTimeout(() => {
+          closeReplacementModal();
+          location.reload();
+        }, 900);
+      } else {
+        Toast.fire({
+          icon: "error",
+          title: data.message || "Something went wrong",
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      Toast.fire({
+        icon: "error",
+        title: "Request failed",
+      });
+    }
+  }
+</script>
+
+<script>
+  let applicationrecon = null;
+
+  const Toaster = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    timer: 2500,
+    timerProgressBar: true,
+  });
+
+  function openAssetModal(appId = null) {
+    applicationrecon = appId;
+
+    document.getElementById("assetBackdrop").classList.add("show");
+    document.getElementById("assetModal").classList.add("show");
+  }
+
+  function closeAssetModal() {
+    document.getElementById("assetBackdrop").classList.remove("show");
+    document.getElementById("assetModal").classList.remove("show");
+
+    document
+      .querySelectorAll(
+        'input[name="assetReconciliation"], input[name="tranfertReconciliation"]'
+      )
+      .forEach((r) => (r.checked = false));
+
+    document.getElementById("assetFields").classList.remove("show");
+    document.getElementById("assetRemarks").value = "";
+  }
+
+  const assetYes = document.getElementById("assetYesasset");
+  const assetNo = document.getElementById("assetNoasset");
+  const assetFields = document.getElementById("assetFields");
+
+  assetYes.addEventListener("change", () => assetFields.classList.add("show"));
+  assetNo.addEventListener("change", () =>
+    assetFields.classList.remove("show")
+  );
+
+  async function submitAssetStatus() {
+    if (!applicationrecon) {
+      Toaster.fire({ icon: "error", title: "Application ID missing!" });
+      return;
+    }
+
+    const assetStatus = document.querySelector(
+      'input[name="assetReconciliation"]:checked'
+    )?.value;
+
+    const transferStatus = document.querySelector(
+      'input[name="tranfertReconciliation"]:checked'
+    )?.value;
+
+    const remarks = document.getElementById("assetRemarks").value.trim();
+
+    if (!assetStatus || !transferStatus) {
+      Toaster.fire({
+        icon: "warning",
+        title: "Please select Asset Reconciliation and Asset Transfer Status",
+      });
+      return;
+    }
+
+    const payload = {
+      application_id: applicationrecon,
+      asset_reconciliation: assetStatus === "yes" ? 1 : 0,
+      asset_transfer_done: transferStatus === "yes" ? 1 : 0,
+      asset_remarks: remarks || null,
+    };
+
+    try {
+      const res = await fetch("/newoffboardApprover/saveAssetReconciliation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      Toaster.fire({
+        icon: data.success ? "success" : "error",
+        title: data.message || "Something went wrong",
+      });
+
+      if (data.success) {
+        setTimeout(() => {
+          closeAssetModal();
+          location.reload();
+        }, 900);
+      }
+    } catch (err) {
+      console.error(err);
+      Toaster.fire({
+        icon: "error",
+        title: "Request failed",
+      });
+    }
+  }
+</script>
+
+<%- include("../shared/footer.ejs") %>

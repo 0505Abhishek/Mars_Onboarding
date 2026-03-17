@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Distributor Resignation Form</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #f8f9fa;
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      .header {
+        background-color: #0000a8;
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+        font-size: 2rem;
+        font-weight: bold;
+        letter-spacing: 2px;
+      }
+
+      .form-container {
+        background-color: #f6f7fb;
+        padding: 30px;
+        border-radius: 15px;
+        max-width: 700px;
+        margin: 40px auto;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .form-heading {
+        font-weight: 600;
+        text-align: center;
+        color: #2b2b8f;
+        margin-bottom: 10px;
+      }
+
+      .form-subtext {
+        text-align: center;
+        color: #5a5a89;
+        margin-bottom: 30px;
+        font-size: 1rem;
+      }
+      .form-check-input {
+        appearance: none;
+        -webkit-appearance: none;
+        border: 2px solid #0000a8;
+        width: 1.5em;
+        height: 1.5em;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        position: relative;
+        background-color: #fff;
+      }
+
+      .form-check-input:checked {
+        background-color: #0000a8;
+        border-color: #0000a8;
+      }
+
+      .form-check-input:checked::after {
+        color: white;
+        font-size: 1em;
+        position: absolute;
+        top: 0;
+        left: 3px;
+      }
+
+      .form-label {
+        font-weight: 500;
+      }
+
+      header.cc-header {
+        background: #1a73e8;
+        color: #fff;
+        padding: 15px 20px;
+        font-size: 20px;
+        font-weight: bold;
+      }
+
+      .cc-container {
+        max-width: 900px;
+        margin: 30px auto;
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .cc-section-title {
+        font-size: 18px;
+        margin-bottom: 10px;
+        font-weight: bold;
+      }
+
+      .cc-box {
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 6px;
+        background: #fafafa;
+        margin-bottom: 20px;
+      }
+
+      .cc-input,
+      .cc-select,
+      .cc-textarea {
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        padding: 10px;
+        width: 100%;
+      }
+
+      .cc-btn-primary {
+        background: #007bff;
+        color: #fff;
+        padding: 10px 18px;
+        border: none;
+        border-radius: 5px;
+      }
+      .gst-container {
+        max-width: 650px;
+        margin: 40px auto;
+        background: #ffffff;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .gst-title {
+        font-size: 24px;
+        font-weight: bold;
+        color: #0d6efd;
+      }
+
+      .gst-box {
+        background: #f8f9fa;
+        padding: 18px;
+        border-radius: 8px;
+        border: 1px solid #e1e1e1;
+      }
+
+      .btn-submit {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">MARS WRIGLEY</div>
+
+<% if (gstReversalStatus && Number(gstReversalStatus.dblinkstatus) === 0) { %>
+
+<div class="form-container" data-application-id="<%= applicationId || '' %>">
+  <h3 class="form-heading mb-3">GST Reversal Confirmation</h3>
+
+  <div class="gst-container">
+    <p class="text-muted">
+      Please accept or decline the GST Reversal request.
+    </p>
+
+    <div class="gst-box mb-4">
+      <label class="form-label fw-semibold">GST Reversal</label>
+
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="radio"
+          name="gstReversal"
+          id="gstAccept"
+          value="accept"
+        />
+        <label class="form-check-label mx-2" for="gstAccept">Accept</label>
+      </div>
+
+      <div class="form-check mt-2">
+        <input
+          class="form-check-input"
+          type="radio"
+          name="gstReversal"
+          id="gstDecline"
+          value="decline"
+        />
+        <label class="form-check-label mx-2" for="gstDecline">
+          Decline
+        </label>
+      </div>
+    </div>
+
+    <div id="declineReasonSection" style="display: none">
+      <label class="form-label fw-semibold">Enter Reason for Decline</label>
+      <textarea
+        id="declineReason"
+        class="form-control"
+        rows="3"
+        placeholder="Enter decline reason"
+      ></textarea>
+    </div>
+
+    <button
+      id="gstSubmitBtn"
+      class="btn btn-primary btn-submit mt-3"
+      onclick="submitGST()"
+    >
+      Submit
+    </button>
+  </div>
+</div>
+
+<% } else { %>
+
+<div class="alert alert-info mt-3 text-center">
+  <strong>GST Reversal Already Submitted</strong>
+</div>
+
+<% } %>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+      document
+        .querySelectorAll('input[name="gstReversal"]')
+        .forEach((radio) => {
+          radio.addEventListener("change", function () {
+            document.getElementById("declineReasonSection").style.display =
+              this.value === "decline" ? "block" : "none";
+          });
+        });
+
+      async function submitGST() {
+        const btn = document.getElementById("gstSubmitBtn");
+
+        if (btn && btn.disabled) return;
+
+        const selected = document.querySelector(
+          'input[name="gstReversal"]:checked',
+        );
+
+        if (!selected) {
+          Swal.fire("Warning", "Please select Accept or Decline", "warning");
+          return;
+        }
+
+        const gstDecision = selected.value;
+        const declineReason = document
+          .getElementById("declineReason")
+          .value.trim();
+
+        if (gstDecision === "decline" && !declineReason) {
+          Swal.fire("Warning", "Please enter decline reason", "warning");
+          return;
+        }
+
+        const formContainer = document.querySelector(".form-container");
+        const applicationId = formContainer?.dataset?.applicationId;
+
+        if (!applicationId) {
+          Swal.fire("Error", "Application ID missing", "error");
+          return;
+        }
+
+        if (btn) {
+          btn.disabled = true;
+          btn.innerText = "Submitting...";
+        }
+
+        try {
+          const response = await fetch(
+            "/newoffboardApprover/submitGstReversal",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                application_id: applicationId,
+                decision: gstDecision,
+                remark: declineReason,
+              }),
+            },
+          );
+
+          const result = await response.json();
+
+          if (result.type === "success") {
+            Swal.fire("Success", result.message, "success").then(() => {
+              location.reload();
+            });
+          } else {
+            Swal.fire("Error", result.message, "error");
+            if (btn) {
+              btn.disabled = false;
+              btn.innerText = "Submit";
+            }
+          }
+        } catch (err) {
+          console.error(err);
+          Swal.fire("Error", "Something went wrong", "error");
+          if (btn) {
+            btn.disabled = false;
+            btn.innerText = "Submit";
+          }
+        }
+      }
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const fieldLimits = {
+          gsvAverage: 20,
+        };
+
+        const inputFields = document.querySelectorAll("input");
+
+        inputFields.forEach((input) => {
+          input.addEventListener("input", function () {
+            const fieldId = input.id;
+            const fieldValue = input.value;
+
+            if (
+              fieldLimits[fieldId] &&
+              fieldValue.length > fieldLimits[fieldId]
+            ) {
+              input.value = fieldValue.slice(0, fieldLimits[fieldId]);
+
+              Swal.fire({
+                icon: "warning",
+                title: "Input Limit Exceeded",
+                text: `The maximum length for '${
+                  input.labels?.[0]?.textContent || fieldId
+                }' is ${fieldLimits[fieldId]} characters.`,
+                position: "top-end",
+                toast: true,
+                showConfirmButton: false,
+                timer: 3000,
+              });
+            }
+          });
+        });
+      });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

@@ -1,0 +1,352 @@
+<%- include("../shared/header.ejs") %>
+
+<style>
+  .custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: "Segoe UI", sans-serif;
+    background-color: #f6f6ff;
+  }
+
+  .custom-table th,
+  .custom-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border: 1px solid #e0e0ff;
+  }
+
+  .custom-table thead {
+    background-color: #dcdcff;
+    color: #2c2c9c;
+  }
+
+  .custom-table th {
+    font-weight: 600;
+    font-size: 16px;
+  }
+
+  .custom-table tbody tr:nth-child(even) {
+    background-color: #efefff;
+  }
+
+  .custom-table tbody td {
+    color: #2d2d2d;
+  }
+
+  .custom-table td:last-child {
+    font-weight: 600;
+  }
+
+  /* NEW: Table scrollable wrapper */
+  .table-wrapper {
+    max-height: 400px; /* set height according to your design */
+    overflow-y: auto;
+    overflow-x: auto;
+    border: 1px solid #dcdcff;
+    border-radius: 8px;
+  }
+
+  /* Optional: Fix header while scrolling */
+  .custom-table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #dcdcff;
+    z-index: 2;
+  }
+</style>
+
+<div class="container mt-5 mb-5">
+  <div class="table-wrapper">
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>S. No.</th>
+          <th>Questions</th>
+          <th>Answers</th>
+          <th>Team</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1.</td>
+          <td>
+            <div class="scrollable-questions">
+              Replacement DB is Available or Not?
+            </div>
+          </td>
+          <td><%= DistributorData?.replacement_db %></td>
+          <td>ASM</td>
+        </tr>
+        <tr>
+          <td>2.</td>
+          <td>
+            <div class="scrollable-questions">
+              The average L3P DB sale is less than 5 lakhs?
+            </div>
+          </td>
+          <td><%= DistributorData?.avg_sale %></td>
+          <td>ASM</td>
+        </tr>
+        <tr>
+          <td>3.</td>
+          <td><div class="scrollable-questions">Asset Reconciliation?</div></td>
+          <td><%= DistributorData?.Asset_Reco %></td>
+          <td>ASM</td>
+        </tr>
+        <% let counter = 4; %> <% if (DistributorData?.distributor_Code) { %>
+        <tr>
+          <td><%= counter++ %>.</td>
+          <td>
+            <div class="scrollable-questions">Replacement DB Code (by MDM)</div>
+          </td>
+          <td><%= DistributorData?.distributor_Code %></td>
+          <td>ASM</td>
+        </tr>
+        <% } %> <% if (DistributorData?.distributor_name) { %>
+        <tr>
+          <td><%= counter++ %>.</td>
+          <td><div class="scrollable-questions">Replacement DB Name</div></td>
+          <td><%= DistributorData?.distributor_name %></td>
+          <td>ASM</td>
+        </tr>
+        <% } %>
+
+        <tr>
+          <td><%= counter++ %>.</td>
+          <td><div class="scrollable-questions">Firm's Name</div></td>
+          <td><%= DistributorData?.firmName %></td>
+          <td>DB</td>
+        </tr>
+        <tr>
+          <td><%= counter++ %>.</td>
+          <td><div class="scrollable-questions">Distributor's Name</div></td>
+          <td><%= DistributorData?.distributorName %></td>
+          <td>DB</td>
+        </tr>
+        <tr>
+          <td><%= counter++ %>.</td>
+          <td><div class="scrollable-questions">Email ID</div></td>
+          <td><%= DistributorData?.email %></td>
+          <td>DB</td>
+        </tr>
+        <tr>
+          <td><%= counter++ %>.</td>
+          <td><div class="scrollable-questions">Contact No.</div></td>
+          <td><%= DistributorData?.contact_no %></td>
+          <td>DB</td>
+        </tr>
+
+        <tr>
+          <td><%= counter++ %>.</td>
+          <td>
+            <div class="scrollable-questions">
+              Average Business Value in GSV Per Period (L3P Average)
+            </div>
+          </td>
+          <td><%= DistributorData?.gsvAverage %></td>
+          <td>DB</td>
+        </tr>
+
+        <% if (DistributorData?.low_turnover) { %>
+        <tr>
+          <td><%= counter++ %>.</td>
+          <td><div class="scrollable-questions">Low Turnover</div></td>
+          <td><%= DistributorData?.low_turnover == 1 ? "Yes" : "No" %></td>
+          <td>DB</td>
+        </tr>
+        <% } %> <% if (DistributorData?.low_roi) { %>
+        <tr>
+          <td><%= counter++ %>.</td>
+          <td><div class="scrollable-questions">Low ROI%</div></td>
+          <td><%= DistributorData?.low_roi == 1 ? "Yes" : "No" %></td>
+          <td>DB</td>
+        </tr>
+        <% } %> <% if (DistributorData?.limitation_in_investment) { %>
+        <tr>
+          <td><%= counter++ %>.</td>
+          <td>
+            <div class="scrollable-questions">Limitation in Investment</div>
+          </td>
+          <td>
+            <%= DistributorData?.limitation_in_investment == 1 ? "Yes" : "No" %>
+          </td>
+          <td>DB</td>
+        </tr>
+        <% } %> <% if (DistributorData?.db_going_out_of_business) { %>
+        <tr>
+          <td><%= counter++ %>.</td>
+          <td>
+            <div class="scrollable-questions">DB going out of business</div>
+          </td>
+          <td>
+            <%= DistributorData?.db_going_out_of_business == 1 ? "Yes" : "No" %>
+          </td>
+          <td>DB</td>
+        </tr>
+        <% } %> <% if (DistributorData?.increasing_cost) { %>
+        <tr>
+          <td><%= counter++ %>.</td>
+          <td><div class="scrollable-questions">Increasing Cost</div></td>
+          <td><%= DistributorData?.increasing_cost == 1 ? "Yes" : "No" %></td>
+          <td>DB</td>
+        </tr>
+        <% } %> <% if (DistributorData?.not_ready_for_additional_infrastructure)
+        { %>
+        <tr>
+          <td><%= counter++ %>.</td>
+          <td>
+            <div class="scrollable-questions">
+              Not ready for additional infrastructure needed (warehouse/delivery
+              vehicle, etc)
+            </div>
+          </td>
+          <td>
+            <%= DistributorData?.not_ready_for_additional_infrastructure == 1 ?
+            "Yes" : "No" %>
+          </td>
+          <td>DB</td>
+        </tr>
+        <% } %>
+
+        <tr>
+          <td><%= counter++ %>.</td>
+          <td>
+            <div class="scrollable-questions">
+              Outlet or 3P transfer to the replacement DB?
+            </div>
+          </td>
+          <td>
+            <%= DistributorData?.replacement_DB === 'yes' ? "Yes" : "No" %>
+          </td>
+          <td>DT TEAM</td>
+        </tr>
+
+        <tr>
+          <td><%= counter++ %>.</td>
+          <td>
+            <div class="scrollable-questions">
+              Ivy retailer master Transfer?
+            </div>
+          </td>
+          <td>
+            <%= DistributorData?.master_Transfer === 'yes' ? "Yes" : "No" %>
+          </td>
+          <td>DT TEAM</td>
+        </tr>
+
+        <tr>
+          <td><%= counter++ %>.</td>
+          <td>
+            <div class="scrollable-questions">Ivy retailer stock Transfer?</div>
+          </td>
+          <td>
+            <%= DistributorData?.stock_Transfer === 'yes' ? "Yes" : "No" %>
+          </td>
+          <td>DT TEAM</td>
+        </tr>
+
+        <tr>
+          <td><%= counter++ %>.</td>
+          <td><div class="scrollable-questions">Claim Clearance?</div></td>
+          <td>
+            <%= DistributorData?.Claim_Clearance === 'yes' ? "Yes" : "No" %>
+          </td>
+          <td>SNF</td>
+        </tr>
+
+        <tr>
+          <td><%= counter++ %>.</td>
+          <td><div class="scrollable-questions">Pending Amount?</div></td>
+          <td><%= DistributorData?.pending_amount %></td>
+          <td>SNF</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="mt-4">
+    <div class="flex-grow-1 me-3 mb-3">
+      <label class="form-label">Remarks</label>
+      <input
+        type="text"
+        class="form-control"
+        id="remarks"
+        placeholder="Enter remarks"
+        required
+      />
+    </div>
+    <div
+      class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2"
+    >
+      <button
+        type="button"
+        class="btn btn-success px-4 py-2 action-btn"
+        data-action="Approve"
+      >
+        Approve
+      </button>
+      <button
+        type="button"
+        class="btn btn-danger px-4 py-2 action-btn"
+        data-action="Reject"
+      >
+        Reject
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  document.querySelectorAll('.action-btn').forEach(button => {
+    button.addEventListener('click', async () => {
+      const action = button.getAttribute('data-action');
+      const applicationId = <%- DistributorData?.application_id %>;
+      const remark = document.getElementById("remarks");
+
+      if(remark.value=="")
+      {
+        Swal.fire({
+          icon: 'warning',
+          title: "Please provide remark",
+          timer: 2000,
+          showConfirmButton: false
+        })
+        return;
+      }
+      const remarkMsg = remark.value;
+
+      try {
+        const response = await fetch(`/offboardApprover/${applicationId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ action, applicationId, remarkMsg })
+        });
+
+        const result = await response.json();
+
+        Swal.fire({
+          icon: result.type,
+          title: result.message,
+          timer: 2000,
+          showConfirmButton: false
+        }).then(() => {
+          // Optional: reload page or redirect
+          window.location.href = '/offboardApprover';
+        });
+
+      } catch (error) {
+        console.error('Error calling API:', error);
+        Swal.fire({
+          icon: 'error',
+          title: `Error while trying to ${action}`,
+          text: 'Please try again later.',
+        });
+      }
+    });
+  });
+</script>
+<%- include("../shared/footer.ejs") %>

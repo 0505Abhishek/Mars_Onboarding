@@ -1,0 +1,108 @@
+<!-- <div class="app-wrapper-footer" style="position: fixed;
+bottom: 0;
+width:100%;
+left: 0;">
+    <div class="app-footer">
+        <div class="app-footer__inner text-center">
+            <div class="app-footer-right" style="padding-left: 265px;">
+                <ul class="nav text-center">
+
+                    <li class="nav-item">
+                        <footer class="page-footer text-white">
+                            <p class="mb-0">Copyright © 2024. All right reserved.</p>
+                        </footer>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</div> -->
+
+<script>
+    function toggleUserInfo() {
+        let userInfo = document.getElementById("userInfo");
+        userInfo.style.display = (userInfo.style.display === "block") ? "none" : "block";
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener("click", function(event) {
+        let userContainer = document.querySelector(".user-container");
+        let userInfo = document.getElementById("userInfo");
+        
+        if (!userContainer.contains(event.target)) {
+            userInfo.style.display = "none";
+        }
+    });
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const navLinks = document.querySelectorAll(".nav-link");
+        const currentPath = window.location.pathname;
+
+        // Set active class based on the current path
+        let activeLinkFound = false;
+
+        navLinks.forEach(link => {
+            if (link.getAttribute("href") === currentPath) {
+                link.classList.add("active");
+                activeLinkFound = true;
+            } else {
+                link.classList.remove("active");
+            }
+        });
+
+        // Ensure that the active class remains on the correct link if no match found
+        if (!activeLinkFound) {
+            const activeLink = Array.from(navLinks).find(link => {
+                return link.getAttribute("href").includes(currentPath.split("/")[1]);
+            });
+            if (activeLink) {
+                activeLink.classList.add("active");
+            }
+        }
+    });
+
+</script>
+<script>
+    const Toast = Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.onmouseenter = Swal.stopTimer;
+        toast.onmouseleave = Swal.resumeTimer;
+      }
+    });
+
+    function showToast(icon, title) {
+      Toast.fire({
+        icon: icon,
+        title: title
+      });
+    }
+    "  <% if (error) { %>"
+    showToast("error", "<%= error %>");
+    "<% } else if (success) { %>"
+    showToast("success", "<%= success %>");
+
+    "  <% } %>"
+
+  </script>
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- DataTables CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.11.3/datatables.min.css" />
+<!-- DataTables JS -->
+<script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.11.3/datatables.min.js"></script>
+<!-- DataTables Buttons JS -->
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+<script src="../js/main.js"></script>
+<script src="../js/custom.js"></script>
+
+</body>
+
+</html>

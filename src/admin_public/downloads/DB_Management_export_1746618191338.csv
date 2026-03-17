@@ -1,0 +1,5 @@
+Region Name,Territory,Distributor Code,RECORD TYPE,Distributor Name,PAN Number,GST Number,Address1,City,State,Pincode,Email Id,Contact Number,Contact Person,Distributor Status,Distributor CreatedOn,Distributor DeactivatedOn,RSEM,ASM,RSM,MIS,SNF,MDM,O2C,CE,DT Team,SALES DIRECTOR
+1,N/A,1,ONBOARDING,Dukaan,N/A,N/A,N/A,N/A,N/A,N/A,shuv123@gmail.com,1023421343,N/A,N/A,N/A,N/A,rsem-coimbature,asm tt chennai,rsmchennai,mis,snf,mdm,02C-coimbature,CE-Coimbature,DT TEAM,
+1,N/A,2,ONBOARDING,Dukaan ,N/A,N/A,N/A,N/A,N/A,N/A,dukaan123@gmail.com,2245678987,N/A,N/A,N/A,N/A,rsem-coimbature,asm tt chennai,rsmchennai,mis,snf,mdm,02C-coimbature,CE-Coimbature,DT TEAM,
+1,N/A,3,ONBOARDING,Dukaan,N/A,N/A,N/A,N/A,N/A,N/A,Dukaan1232@gmail.com,1023421343,N/A,N/A,N/A,N/A,rsem-coimbature,asm tt chennai,rsmchennai,mis,snf,mdm,02C-coimbature,CE-Coimbature,DT TEAM,
+1,N/A,1,Offboarding,Dukaan,N/A,N/A,N/A,N/A,N/A,N/A,shuv123@gmail.com,1023421343,N/A,N/A,N/A,N/A,rsem-coimbature,asm tt chennai,rsm_coimbature,N/A,snf,N/A,N/A,N/A,DT TEAM,sales

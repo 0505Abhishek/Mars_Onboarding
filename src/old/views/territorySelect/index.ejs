@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Select Territory</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: white;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .top-border, .right-border, .bottom-border, .left-border {
+            position: absolute;
+            background-color: #0000A0; /* Dark Blue */
+            z-index: 1;
+        }
+
+        .top-border {
+            top: 0;
+            left: 0;
+            height: 80px; /* You can adjust height */
+            width: 100%;
+        }
+
+        .right-border {
+            top: 0;
+            right: 0;
+            width: 20px; /* Adjust width */
+            height: 100%;
+        }
+
+        .bottom-border {
+            bottom: 0;
+            left: 0;
+            height: 50px; /* Adjust height */
+            width: 100%;
+        }
+
+        .left-border {
+            top: 0;
+            left: 0;
+            width: 20px; /* Adjust width */
+            height: 100%;
+        }
+
+        .mars-logo {
+            position: absolute;
+            top: 0px; /* Moves it above top border */
+            left: 20px; /* Adjust to come after left border */
+            background-color: #0000A0;
+            color: white;
+            font-family: Arial, sans-serif;
+            font-size: 50px;
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 2;
+        }
+
+        /* Content */
+        .select-container {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        select {
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        select:focus {
+            border-color: #0000A0;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            background-color: #0000A0;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: #000080;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Borders -->
+    <div class="top-border"></div>
+    <div class="right-border"></div>
+    <div class="bottom-border"></div>
+    <div class="left-border"></div>
+
+    <!-- MarS Logo -->
+    <div class="mars-logo">MARS</div>
+
+    <div class="select-container">
+        <h2>Select Your Territory</h2>
+        <form action="/select-territory" method="POST">
+            <select name="territory" required>
+                <option value="">-- Select Territory --</option>
+                <% territory.forEach(function(item) { %>
+                    <option value="<%= item %>"><%= item %></option>
+                <% }) %>
+            </select>
+            <br>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+
+</body>
+</html>

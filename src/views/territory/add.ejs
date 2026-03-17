@@ -1,0 +1,92 @@
+<%- include("../shared/super_header.ejs") %>
+
+<div class="main-panel distributors-details">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="m-3 mt-0">
+                <a href="/territory" class="btn btn-primary"><i class="fa fa-arrow-left"></i> Back</a>
+            </div>
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card p-3">
+                    <div class="card-header">
+                        <h4>Add New Territory</h4>
+                    </div>
+                    <div class="card-body">
+                        <form action="/territory/addterritory" method="POST">
+                            <div class="form-group">
+                                <label for="region_id">Select Region</label>
+                                <select class="form-control" id="region_id" name="region_id" required>
+                                    <option value="">Select Region</option>
+                                    <% regions.forEach(function(region) { %>
+                                        <option value="<%= region.id %>"><%= region.region_name %></option>
+                                    <% }); %>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Territories</label>
+                                <div id="territories-container">
+                                    <div class="territory-input-group mb-2">
+                                        <div class="input-group">
+                                            <input type="text" class="form-control territory-name" name="territory_names[]" placeholder="Enter Territory Name" required>
+                                            <div class="input-group-append">
+                                                <button type="button" class="btn btn-danger remove-territory-btn" style="display:none;">-</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-right mt-2">
+                                    <button type="button" class="btn btn-success add-territory-btn">+ Add Territory</button>
+                                </div>
+                            </div>
+                            
+                            <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const territoriesContainer = document.getElementById('territories-container');
+                                const addTerritoryBtn = document.querySelector('.add-territory-btn');
+                                
+                                // Add new territory input field
+                                addTerritoryBtn.addEventListener('click', function() {
+                                    const newInputGroup = document.createElement('div');
+                                    newInputGroup.classList.add('territory-input-group', 'mb-2');
+                                    newInputGroup.innerHTML = `
+                                        <div class="input-group">
+                                            <input type="text" class="form-control territory-name" name="territory_names[]" placeholder="Enter Territory Name" required>
+                                            <div class="input-group-append">
+                                                <button type="button" class="btn btn-danger remove-territory-btn">-</button>
+                                            </div>
+                                        </div>
+                                    `;
+                                    
+                                    // Show remove button for all input groups
+                                    const removeButtons = territoriesContainer.querySelectorAll('.remove-territory-btn');
+                                    removeButtons.forEach(btn => btn.style.display = 'inline-block');
+                                    
+                                    territoriesContainer.appendChild(newInputGroup);
+                                });
+                                
+                                // Remove territory input field
+                                territoriesContainer.addEventListener('click', function(e) {
+                                    if (e.target.classList.contains('remove-territory-btn')) {
+                                        const inputGroup = e.target.closest('.territory-input-group');
+                                        inputGroup.remove();
+                                        
+                                        // Hide remove button if only one input group remains
+                                        const remainingInputGroups = territoriesContainer.querySelectorAll('.territory-input-group');
+                                        if (remainingInputGroups.length === 1) {
+                                            remainingInputGroups[0].querySelector('.remove-territory-btn').style.display = 'none';
+                                        }
+                                    }
+                                });
+                            });
+                            </script>
+                           
+                            <button type="submit" class="btn btn-primary">Add Territory</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../shared/super_footer.ejs') %>

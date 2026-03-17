@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Centered Option Page</title>
+  <style>
+    body {
+      margin: 0;
+      height: 95vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: white;
+      border: 18px solid #0000A0; 
+      font-family: Arial, sans-serif;
+      overflow: hidden; 
+    }
+
+    .header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding: 25px 35px;
+    }
+
+    .logo {
+      height: 80px; 
+      width: auto;
+    }
+
+    .option-box {
+      padding: 25px 110px;
+      background: #ffffff;
+      border: 4px solid #0000A0;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.15);
+    }
+
+    .option-box h2 {
+      margin-bottom: 20px;
+      font-size: 22px;
+      color: #000080;
+    }
+
+    .brand-text {
+      font-size: 40px;
+      font-weight: 700;
+      color: #000080; 
+      font-family: Arial, sans-serif;
+    }
+
+    .option-box select {
+      padding: 12px;
+      font-size: 16px;
+      border: 2px solid #0000A0;
+      border-radius: 8px;
+      width: 220px;
+      outline: none;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
+    .next-btn {
+      padding: 12px 30px;
+      font-size: 16px;
+      color: white;
+      background-color: #007BFF;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: 0.3s ease;
+    }
+
+    .next-btn:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <span class="brand-text">Mars Wrigley</span>
+</div>
+
+
+<div class="option-box">
+  <h2>Select an Option</h2>
+
+  <select id="roleSelect">
+    <option value="">-- Choose --</option>
+
+    <% results.forEach(function(item) { %>
+      <option 
+        value="<%= item.role %>"
+        <%= results.length === 1 ? 'selected' : '' %>>
+        <%= item.role %>
+      </option>
+    <% }); %>
+  </select>
+
+  <br>
+  <button class="next-btn" onclick="submitRole()">Next</button>
+</div>
+
+
+
+  <script>
+  function submitRole() {
+    const role = document.getElementById("roleSelect").value;
+    if (!role) {
+      alert("Please select a role before continuing.");
+      return;
+    }
+
+    fetch("/roleSelector", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ role })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        window.location.href = "/dashboard";
+      } else {
+        alert("Something went wrong!");
+      }
+    })
+    .catch(err => {
+      console.error("Error:", err);
+    });
+  }
+  </script>
+
+</body>
+</html>

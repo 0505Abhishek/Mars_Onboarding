@@ -26,9 +26,8 @@ app.use((req, res, next) => {
   res.removeHeader('X-Powered-By');
   res.removeHeader('Server');
 
-  // Set custom Server header
   res.set('Server', 'Sachin');
-  res.locals.alert = req.session.alert || null; // Handle alert session
+  res.locals.alert = req.session.alert || null; 
   req.session.alert = null; 
   
   next();
@@ -65,9 +64,9 @@ app.use('/public', express.static(__dirname + '/src/public'));
 app.use('/', adminRoute);
 app.use((req, res) => {
 
-  res.redirect('/page404/page404'); 
+  res.redirect('/'); 
 });
-app.listen(3100, () => {
+app.listen(5100, () => {
 
-  console.log(`listening on port 3100`);
+  console.log(`listening on port 5100`);
 });

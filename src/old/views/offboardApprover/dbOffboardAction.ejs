@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Distributor Offboarding Action</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background-color: #f8f9fa;
+        padding: 40px 0;
+      }
+      .card {
+        max-width: 800px;
+        margin: 0 auto;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        background: #007bff;
+        color: white;
+        padding: 20px;
+        border-radius: 8px 8px 0 0;
+        text-align: center;
+      }
+      .form-section {
+        padding: 30px;
+      }
+      .questionnaire {
+        background: #f1f3f5;
+        padding: 20px;
+        border-radius: 8px;
+        margin: 20px 0;
+      }
+      .noc-box {
+        border: 2px dashed #007bff;
+        padding: 30px;
+        text-align: center;
+        border-radius: 8px;
+        background: #f8fbff;
+      }
+      .no-objection {
+        background: #e8f5e8;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <% if (notification) { %>
+    <div class="container mt-5">
+      <div class="alert alert-danger text-center">
+        <h4><%= notification.message %></h4>
+        <p>Please contact your ASM if you need a new link.</p>
+      </div>
+    </div>
+    <% } else { %>
+    <div class="container">
+      <div class="card">
+        <div class="header">
+          <h3>Distributor Offboarding Process</h3>
+          <p>
+            Firm: <strong><%= firmName %></strong> | Distributor:
+            <strong><%= distributorName %></strong>
+          </p>
+          <p class="mb-0">
+            <strong>Type:</strong> <%= offboard_type.toUpperCase() %>
+          </p>
+        </div>
+
+        <div class="form-section">
+          <form id="nocForm" enctype="multipart/form-data">
+            <input
+              type="hidden"
+              name="application_id"
+              value="<%= application_id %>"
+            />
+            <input
+              type="hidden"
+              name="offboard_type"
+              value="<%= offboard_type %>"
+            />
+
+            <% if (offboard_type === 'termination') { %>
+            <div class="alert alert-warning">
+              <h5>
+                <strong>Reason for Termination (Provided by ASM):</strong>
+              </h5>
+              <% if (termination_reasons && termination_reasons.length > 0) { %>
+              <ul class="mb-0">
+                <% termination_reasons.forEach(function(reason) { %>
+                <li><%= reason %>
+                <input type="hidden" value="<%= reason %>" name="termination_reasons[]"></li>
+                <% }) %>
+              </ul>
+              <% } else { %>
+              <p class="mb-0">No specific reasons provided by ASM.</p>
+              <% } %>
+              <small
+                >(These reasons were recorded by your ASM during
+                initiation)</small
+              >
+            </div>
+            <% } %>
+            <div class="noc-box mb-4">
+              <h5>Upload No Objection Certificate (NOC) - Mandatory</h5>
+              <p class="text-muted">
+                Please upload signed and stamped NOC in PDF format
+              </p>
+              <input
+                type="file"
+                class="form-control"
+                name="nocFile"
+                accept=".pdf"
+                required
+              />
+              <small class="text-danger"
+                >Only PDF files allowed | Max size: 5MB</small
+              >
+            </div>
+
+            <div class="text-center mt-4">
+              <button
+                type="submit"
+                class="btn btn-primary btn-lg px-5"
+                id="submitBtn"
+              >
+                Submit Response
+              </button>
+            </div>
+          </form>
+
+          <div
+            id="responseMessage"
+            class="mt-4 text-center"
+            style="display: none"
+          ></div>
+        </div>
+      </div>
+    </div>
+    <% } %>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      document
+        .getElementById("nocForm")
+        ?.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const formData = new FormData(e.target);
+          const submitBtn = e.target.querySelector("button");
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = "Uploading...";
+
+          try {
+            const response = await fetch(
+              "/newoffboardApprover/submitNocUpload",
+              {
+                method: "POST",
+                body: formData,
+              }
+            );
+            const result = await response.json();
+
+            const msgDiv = document.getElementById("responseMessage");
+            msgDiv.style.display = "block";
+            if (result.type === "success") {
+              msgDiv.innerHTML = `<div class="alert alert-success"><strong>${result.message}</strong></div>`;
+              document.getElementById("nocForm").style.display = "none";
+            } else {
+              msgDiv.innerHTML = `<div class="alert alert-danger">${result.message}</div>`;
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = "Upload NOC";
+            }
+          } catch (err) {
+            document.getElementById(
+              "responseMessage"
+            ).innerHTML = `<div class="alert alert-danger">Network error. Please try again.</div>`;
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = "Upload NOC";
+          }
+        });
+    </script>
+  </body>
+</html>

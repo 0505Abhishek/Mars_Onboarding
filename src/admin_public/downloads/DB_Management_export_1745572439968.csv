@@ -1,0 +1,9 @@
+Region Name,Channel,Distributor Code,RECORD TYPE,Distributor Name,PAN Number,GST Number,Address1,City,State,Pincode,Email Id,Contact Number,Contact Person,Distributor Status,Distributor CreatedOn,Distributor DeactivatedOn,RSEM,ASM,MIS,RSM,O2C,SNF,MDM,DT Team,SALES DIRECTOR
+North,N/A,1,ONBOARDING,Dukaan,N/A,N/A,N/A,N/A,N/A,N/A,shivam123@gmail.com,8287859240,N/A,ONBOARDING,N/A,N/A,Priya Mehta ,2,Kiran Gupta,Rajeev Singh,Sunil Narang,Kaushik,Alok Pandey,Suresh Pillai,
+North,N/A,7,EXISTING,sachin,121,1212,12121delhi,delhi,up,N/A,sachin@gmail.com,8864924023,N/A,EXISTING,N/A,N/A,Priya Mehta ,2,Kiran Gupta,Rajeev Singh,Sunil Narang,Kaushik,Alok Pandey,Suresh Pillai,
+North,N/A,8,EXISTING,sachin,121,1212,12121delhi,delhi,up,N/A,sachin11@gmail.com,8864924023,N/A,EXISTING,N/A,N/A,Priya Mehta ,2,Kiran Gupta,Rajeev Singh,Sunil Narang,Kaushik,Alok Pandey,Suresh Pillai,
+North,N/A,9,EXISTING,sachin,121,1212,12121delhi,delhi,up,N/A,sachin1111@gmail.com,8864924023,N/A,EXISTING,N/A,N/A,Priya Mehta ,2,Kiran Gupta,Rajeev Singh,Sunil Narang,Kaushik,Alok Pandey,Suresh Pillai,
+North,N/A,10,EXISTING,sachin,121,1212,12121delhi,delhi,up,N/A,sachin11111@gmail.com,8864924023,N/A,EXISTING,N/A,N/A,Priya Mehta ,2,Kiran Gupta,Rajeev Singh,Sunil Narang,Kaushik,Alok Pandey,Suresh Pillai,
+North,N/A,11,EXISTING,sachin,121,1212,12121delhi,delhi,up,N/A,sachin222@gmail.com,8864924023,N/A,EXISTING,N/A,N/A,Priya Mehta ,2,Kiran Gupta,Rajeev Singh,Sunil Narang,Kaushik,Alok Pandey,Suresh Pillai,
+North,N/A,1,Offboarding,Dukaan,N/A,N/A,N/A,N/A,N/A,N/A,shivam123@gmail.com,8287859240,N/A,N/A,N/A,N/A,Priya Mehta ,2,N/A,Rajeev Singh,N/A,Kaushik,N/A,Suresh Pillai,SALES DIRECTOR
+North,N/A,10,Offboarding,sachin,121,1212,12121delhi,delhi,up,110006,sachin11111@gmail.com,8864924023,N/A,active,01-03-2024,01-03-2024,Shruti RSEM,Shruti ASM,N/A,Rajeev Singh,N/A,Kaushik,N/A,Suresh Pillai,N/A

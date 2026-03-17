@@ -1,0 +1,438 @@
+<%- include("../shared/super_header.ejs") %>
+    <style>
+        .select2-container {
+            width: 100% !important;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #0d6efd !important;
+            border: 1px solid #0d6efd !important;
+        }
+
+        .select2-container--default .select2-selection--multiple {
+            background-color: #f8f9fa;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            min-height: 38px;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 2px;
+            margin-top: 5px;
+            padding: 2px 5px;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+            color: white;
+            margin-right: 5px;
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__rendered {
+            padding: 0 5px;
+        }
+
+        .select2-dropdown {
+            border-radius: 4px;
+        }
+
+        .select2-results__option {
+            padding: 6px 12px;
+        }
+
+        .select2-results__option--selected {
+            background-color: #00b3ff !important;
+            color: white !important;
+        }
+    </style>
+
+<div class="main-panel distributors-details">
+    <div class="content-wrapper">
+        <div class="row">
+            <div class="m-3 mt-0">
+                <a href="/region" class="btn btn-primary"><i class="fa fa-arrow-left"></i> Back</a>
+            </div>
+            <div class="col-12 grid-margin stretch-card">
+                <div class="card p-3 table-responsive">
+                        <div class="d-flex justify-content-between my-4">
+                            <div class="business-hading d-flex justify-content-between">
+                                <h4 class="card-title">
+                                    <%= rolename[0]?.role %> Management
+                                </h4>
+                            </div>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#userTransferModal">
+                            Add New User
+                           </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table id="userTable" class="display table table-bordered table-hover"
+                                    style="width:100%">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Number</th>
+                                            <th>Region</th>
+                                            <th>Territory</th>
+                                            
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% users.forEach(function(user) { %>
+                                            <tr>
+                                                <td>
+                                                   CB<%= user.id %>
+                                                </td>
+                                                <td>
+                                                    <%= user.employee_name %>
+                                                </td>
+                                                <td>
+                                                    <%= user.email_id %>
+                                                </td>
+                                                <td>
+                                                    <%= user.mobile_no %>
+                                                </td>
+                                                <td>
+                                                   <%
+                                                     var userregion = [];
+                                                     var regionIds = (user.region || '').split(',');
+                                                     regions.forEach(function(region) {
+                                                         if (regionIds.includes(String(region.id))) {
+                                                             userregion.push(region.region_name);
+                                                         }
+                                                     });
+                                                   %>
+                                                   <%= userregion.join(', ') %>
+                                                </td>
+                                                <td>
+                                                  <%
+                                                      var userTerritories = [];
+                                                      territories.forEach(function(territory) {
+                                                          if (user.id == territory.user_id) {
+                                                              userTerritories.push(territory.territory_name);
+                                                          }
+                                                      });
+                                                  %>
+                                                  <%= userTerritories.join(', ') %>
+                                                </td>
+                                                
+                                                <td>
+                                                    <a href="/tab/edit/<%= user.id %>" class="btn btn-primary btn-sm">
+                                                        Edit
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            </div>
+        </div>
+        <div class="custom-modal-backdrop" id="modalBackdrop"></div>
+        <!-- Modal -->
+        <div class="modal " id="userTransferModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="userTransferModalLabel">User Creation </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="userTransferForm" action="#" method="POST">
+                            <input type="hidden" name="role_id" value="<%= id %>">
+                            <div class="row">
+                                <div class="col-md-12 form-group">
+                                    <label>Regions</label>
+                                    <select name="region" class="select2-dropdown" multiple="multiple"
+                                        id="regionsSelect" required>
+                                        <option value="select_all">Select All</option>
+                                        <option value="remove_all">Remove All</option>
+                                        <% regions.forEach(function(region) { %>
+                                            <option value="<%= region.id %>" data-email="<%= region.email_id %>"
+                                                data-territory="<%= region.territory %>"
+                                                data-region="<%= region.region %>" data-channel="<%= region.channel %>">
+                                                <%= region.region_name %>
+                                            </option>
+                                            <% }); %>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-12 form-group">
+                                    <label>Territories</label>
+                                    <select name="territories" class="select2-dropdown" multiple="multiple"
+                                        id="territoriesSelect" required>
+                                        <option value="select_all">Select All</option>
+                                        <option value="remove_all">Remove All</option>
+                                    </select>
+                                </div>
+                            </div>
+                           
+                            <div class="row">
+                                <div class="col-md-12 form-group">
+                                    <label>User Name</label>
+                                    <input type="text" name="employee_name" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 form-group">
+                                    <label>Email</label>
+                                    <input type="email" name="email_id" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12 form-group">
+                                    <label>Number</label>
+                                    <input type="number" 
+                                           name="mobile_no" 
+                                           pattern="[1-9][0-9]{9}"
+                                           oninput="javascript: if (this.value.length > 10) this.value = this.value.slice(0, 10); if(this.value.startsWith('0')) this.value = this.value.substring(1);"
+                                           class="form-control" 
+                                           required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+        <%- include("../shared/super_footer.ejs") %>
+      
+       
+       
+            <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+            <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+            <script type="text/javascript" src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+            <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"></script>
+            <script type="text/javascript" src="https://cdn.datatables.net/buttons/2.3.6/js/buttons.html5.min.js"></script>
+            <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.3.6/css/buttons.dataTables.min.css">
+    
+            <!-- Bootstrap JS -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+            <script>
+                $(document).ready(function () {
+                    $('.select2-dropdown').select2({
+                        placeholder: "Select options",
+                        allowClear: true,
+                        templateResult: function (state) {
+                            if (!state.id) {
+                                return state.text;
+                            }
+                            var $state = $(
+                                '<span>' +
+                                '<strong>' + state.text + '</strong>' +
+                                (state.element.getAttribute('data-email') ?
+                                    '<br><small class="text-muted">' + state.element.getAttribute('data-email') + '</small>' :
+                                    ''
+                                ) +
+                                '</span>'
+                            );
+                            return $state;
+                        },
+                        templateSelection: function (state) {
+                            return state.text;
+                        },
+                        matcher: function (params, data) {
+                            if ($.trim(params.term) === '') {
+                                return data;
+                            }
+                            var searchTerm = params.term.toLowerCase();
+                            var text = data.text.toLowerCase();
+                            var email = data.element.getAttribute('data-email') ?
+                                data.element.getAttribute('data-email').toLowerCase() : '';
+
+                            if (text.indexOf(searchTerm) > -1 || email.indexOf(searchTerm) > -1) {
+                                return data;
+                            }
+
+                            return null;
+                        }
+                    });
+
+                    $('#regionsSelect').on('change', function () {
+                        var $select = $(this);
+                        var selectedValues = $select.val() || [];
+                        if (selectedValues.includes('select_all')) {
+                            var allRegionValues = $select.find('option')
+                                .map(function () {
+                                    return (this.value !== 'select_all' && this.value !== 'remove_all') ? this.value : null;
+                                })
+                                .get();
+
+                            $select.val(allRegionValues).trigger('change.select2');
+                        }
+                        else if (selectedValues.includes('remove_all')) {
+                            $select.val('').trigger('change.select2');
+                        }
+
+                        fetchTerritories();
+                    });
+
+                    $('#territoriesSelect').on('change', function () {
+                        var $select = $(this);
+                        var selectedValues = $select.val() || [];
+                        if (selectedValues.includes('select_all')) {
+                            var allTerritoryValues = $select.find('option')
+                                .map(function () {
+                                    return (this.value !== 'select_all' && this.value !== 'remove_all') ? this.value : null;
+                                })
+                                .get();
+
+                            $select.val(allTerritoryValues).trigger('change.select2');
+                        }
+                        else if (selectedValues.includes('remove_all')) {
+                            $select.val('').trigger('change.select2');
+                        }
+                    });
+
+                    function fetchTerritories() {
+                        var selectedRegionIds = ($('select[name="region"]').val() || [])
+                            .filter(function (value) {
+                                return value !== 'select_all' && value !== 'remove_all';
+                            });
+
+                        $('#territoriesSelect').empty().append('<option value="select_all">Select All</option><option value="remove_all">Remove All</option>');
+
+                        if (selectedRegionIds && selectedRegionIds.length > 0) {
+                            $.ajax({
+                                url: '/tab/get-territories',
+                                method: 'POST',
+                                data: { regionIds: selectedRegionIds },
+                                success: function (territories) {
+                                    if (territories && territories.length > 0) {
+                                        territories.forEach(function (territory) {
+                                            $('#territoriesSelect').append(
+                                                `<option value="${territory.id}" 
+                                    data-region="${territory.region}" 
+                                    data-channel="${territory.channel}">
+                                    ${territory.territory_name}
+                                </option>`
+                                            );
+                                        });
+                                    } else {
+                                        $('#territoriesSelect').append('<option value="">No territories found</option>');
+                                    }
+
+                                    $('#territoriesSelect').select2({
+                                        placeholder: "Select territories",
+                                        allowClear: true
+                                    });
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Error fetching territories:', error);
+                                    $('#territoriesSelect')
+                                        .empty()
+                                        .append('<option value="select_all">Select All</option><option value="remove_all">Remove All</option><option value="">Error loading territories</option>')
+                                        .select2({
+                                            placeholder: "Select territories",
+                                            allowClear: true
+                                        });
+                                }
+                            });
+                        } else {
+                            $('#territoriesSelect').select2({
+                                placeholder: "Select territories",
+                                allowClear: true
+                            });
+                        }
+                    }
+
+                    const backdropDocument = document.getElementsByClassName('modal-backdrop');
+                    $('#userTransferModal').on('show.bs.modal', function (event) {
+                        // Hide all backdrop elements
+                        Array.from(backdropDocument).forEach(backdrop => {
+                            backdrop.style.display = 'none';
+                        });
+                    });
+
+                    $('#userTransferModal').on('shown.bs.modal', function (event) {
+                        // Hide all backdrop elements
+                        Array.from(backdropDocument).forEach(backdrop => {
+                            backdrop.style.display = 'none';
+                        });
+
+                        // Reinitialize Select2 inside the modal to ensure proper styling
+                        $(this).find('.select2-dropdown').select2({
+                            placeholder: "Select options",
+                            allowClear: true,
+                            dropdownParent: $(this)
+                        });
+                    });
+
+                    $('#userTransferModal').on('hide.bs.modal', function (event) {
+                        // Remove 'show' class from all backdrop elements
+                        Array.from(backdropDocument).forEach(backdrop => {
+                            backdrop.classList.remove('show');
+                        });
+                    });
+
+                    $('#userTransferModal').on('hidden.bs.modal', function (event) {
+                        // Remove 'show' class from all backdrop elements
+                        Array.from(backdropDocument).forEach(backdrop => {
+                            backdrop.classList.remove('show');
+                        });
+
+                        // Reset the form when modal is closed
+                        $(this).find('form')[0].reset();
+
+                        // Clear Select2 selections
+                        $(this).find('.select2-dropdown').val(null).trigger('change');
+                    });
+
+                    // Form submission handler
+                    $('#userTransferForm').on('submit', function (e) {
+                        e.preventDefault();
+
+                        // Validate form
+                        if (this.checkValidity()) {
+                            // Collect form data
+                            var formData = $(this).serialize();
+
+                            $.ajax({
+                                url: '/tab/insert', // Update with your actual endpoint
+                                method: 'POST',
+                                data: formData,
+                                success: function (response) {                                   
+                                    // Close modal
+                                    $('#userTransferModal').modal('hide');
+                                    window.location.reload();
+                                },
+                                error: function (xhr, status, error) {
+                                    // Show error message
+                                    alert('Error submitting user transfer: ' + error);
+                                }
+                            });
+                        } else {
+                            // Trigger form validation
+                            this.classList.add('was-validated');
+                        }
+                    });
+                });
+            </script>
+             <script>
+                $(document).ready(function() {
+                    $('#userTable').DataTable({
+                        dom: 'Bfrtip',
+                        ordering: false,
+                        buttons: [
+                            'copy', 'csv', 'excel', 'pdf', 'print'
+                        ]
+                    });
+                });
+            </script>

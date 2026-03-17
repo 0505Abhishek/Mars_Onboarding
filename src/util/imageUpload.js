@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+
 const imageUpload = async(files)=>{
 
         const uploadDir = path.join(__dirname, '..', 'public', 'uploads');

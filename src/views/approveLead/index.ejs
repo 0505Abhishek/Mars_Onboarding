@@ -36,25 +36,66 @@
     #distributorTable tbody tr:nth-child(even) td {
         background: #EFEFFF !important; 
     }
-
 </style>
 
 
-   
+
 <div class="container mt-4">
+
     <h4 class="mb-4" style="color: #41378d;">Approve Lead</h4>
+
+ <div class="d-flex flex-wrap justify-content-end align-items-center mb-3 gap-3">
+      <div>
+
+        <label for="statusFilter" class="form-label">Filter by Status:</label>
+        <select id="statusFilter" class="form-select" style="max-width: 300px;">
+            <option value="">All</option>
+            <option value="Approved">Approved</option>
+            <option value="Need more Information">Need more Information</option>
+            <option value="Rejected">Rejected</option>
+            <option value="Pending">Pending</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="regionFilter" class="form-label mb-0">Filter by Region:</label>
+        <select id="regionFilter" class="form-select" style="width: 200px;">
+            <option value="">All</option>
+            <% regions.forEach(region => { %>
+            <option value="<%= region.id %>"
+                    data-name="<%= region.region_name %>"><%= region.region_name %></option>  
+            <% }) %>
+
+        </select>
+    </div>
+
+    <!-- Filter by Territory -->
+    <div>
+        <label for="territoryFilter" class="form-label mb-0">Filter by Territory:</label>
+        <select id="territoryFilter" class="form-select" style="width: 200px;">
+        <option value="">All</option>
+        <% territory.forEach(t => { %>
+            <option value="<%= t.territory_id %>" data-name="<%= t.territory_name %>"><%= t.territory_name %></option>
+        <% }) %>
+        </select>
+    </div>
+  </div>
 
     <div class="table-responsive">
         <table id="distributorTable" class="table table-hover table-bordered">
             <thead class="table-dark">
                 <tr>
-                    <th>S.No</th>
+                    <th>Unique Application code</th>
                     <th>Application Type</th>
-                    <th>DB Type</th>
+                    <th>DB Channel</th>
                     <th>Firm's Name</th>
                     <th>Distributor's Name</th>
                     <th>Email ID</th>
                     <th>Mobile No.</th>
+                    <th>Region</th>
+                    <th>Territory</th>
+                    <th>City</th>
+                    <th>Freight Expenses % </th>
                     <th>Start Date</th>
                     <th>Status</th>
                     <th>Created By</th>
@@ -65,21 +106,28 @@
                 <% if (distributors.length > 0) { %>
                     <% distributors.forEach((distributor, index) => { %>
                         <tr>
-                            <td><%= index + 1 %></td> 
+                            <td><%= distributor?.mars_code%></td> 
                             <td><%= distributor?.applicationType || 'N/A' %></td>
                             <td><%= distributor?.dbType || 'N/A' %></td>
                             <td><%= distributor?.firmName || 'N/A' %></td>
                             <td><%= distributor?.distributorName || 'N/A' %></td>
                             <td><%= distributor?.email || 'N/A' %></td>
                             <td><%= distributor?.contactNumber || 'N/A' %></td>
-                            <td><%= distributor?.create_date ? new Date(distributor.create_date).toLocaleDateString('en-GB') : 'N/A' %></td>
-                            <td>
-                                <% if (distributor?.is_final_approver === 1) { %>
-                                    <span class="badge bg-success">Sent</span> 
-                                <% } else if(distributor?.flag == 3 && distributor?.is_final_approver === 0){ %>
-                                    <span class="badge bg-success"><%= distributor.applicationStatus%></span> 
+                            <td><%= distributor.region_name %></td>
+                            <td><%= distributor.territory_name %></td>
+                            <td><%= distributor.city %></td>
+                            <td><%= distributor.FreightExpenses %></td>
+
+                            <td><%= distributor?.create_date ? new Date(distributor.create_date).toLocaleDateString('en-CA') : 'N/A' %></td>
+                           <td class="status-cell" data-status="<% if (distributor?.is_final_approver === 1 && distributor.applicationPhase_Flag > 0) { -%>Approved<% } else if (distributor?.flag == 3 && distributor?.is_final_approver === 0) { -%>Need more Information<% } else if (distributor?.flag == 2) { -%>Rejected<% } else { -%>Pending<% } -%>">
+                                <% if (distributor?.is_final_approver === 1 && distributor.applicationPhase_Flag > 0) { %>
+                                    <span class="badge bg-success">Approved</span>
+                                <% } else if (distributor?.flag == 3 && distributor?.is_final_approver === 0) { %>
+                                    <span class="badge bg-warning text-dark">Need more Information</span>
+                                <% } else if (distributor?.flag == 2) { %>
+                                    <span class="badge bg-danger text-white">Rejected</span>
                                 <% } else { %>
-                                    <span class="badge bg-warning text-dark">Pending</span>
+                                    <span class="badge bg-primary text-white">Pending</span>
                                 <% } %>
                             </td>
                             <td><%= distributor?.aseemail || 'N/A' %></td>
@@ -106,21 +154,51 @@
 </div>
 
 
-
-<script>
+<script> 
     $(document).ready(function () {
-    if ($('#distributorTable tbody tr').length > 1) { 
-        $('#distributorTable').DataTable({
-            "paging": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "lengthMenu": [5, 10, 25, 50], 
-            "pageLength": 5 
-        });
-    }
- });
+        if ($('#distributorTable tbody tr').length > 1) {
+            const table = $('#distributorTable').DataTable({
+                "paging": true,
+                "searching": true,
+                "ordering": false,
+                "order": [[10, 'desc']],
+                "info": true,
+                "lengthMenu": [5, 10, 25, 50],
+                "pageLength": 10
+            });
+
+function customFilter(settings, data, dataIndex) {
+    const statusSelected = $('#statusFilter').val().toLowerCase().trim();
+    // Get the text of the selected option
+    const regionSelected = $('#regionFilter').val() ? $('#regionFilter option:selected').text().toLowerCase().trim() : "";
+    const territorySelected = $('#territoryFilter').val() ? $('#territoryFilter option:selected').text().toLowerCase().trim() : "";
+
+    const row = settings.aoData[dataIndex].nTr;
+    const statusAttr = $(row).find('.status-cell').data('status')?.toLowerCase().trim() || "";
+    const regionText = data[7]?.toLowerCase().trim() || "";
+    const territoryText = data[8]?.toLowerCase().trim() || "";
+
+    // Status can keep .includes if you want partial matching for "Pending at..."
+    const statusMatch = !statusSelected || statusAttr.includes(statusSelected);
+    
+    // Change these to strict equality (===) to avoid "North" matching "NorthUAT1"
+    const regionMatch = !regionSelected || regionText === regionSelected;
+    const territoryMatch = !territorySelected || territoryText === territorySelected;
+
+    return statusMatch && regionMatch && territoryMatch;
+}
+                       
+            $.fn.dataTable.ext.search.push(customFilter);
+
+            // Trigger filter redraw on change
+            $('#statusFilter, #regionFilter, #territoryFilter').on('change', function () {
+                table.draw();
+            });
+        }
+    });
 </script>
+
+
 
 <script>
     function confirmDelete(id) {
@@ -151,6 +229,34 @@
             });
         <% } %>
     });
+</script>
+
+
+<script>
+  const regionFilter = document.getElementById('regionFilter');
+  const territoryFilter = document.getElementById('territoryFilter');
+
+  regionFilter.addEventListener('change', () => {
+    const selectedRegion = regionFilter.value;
+
+    territoryFilter.innerHTML = '<option value="">All</option>';
+
+    if (!selectedRegion) return; 
+
+    fetch(`/approve_lead/territories?region=${encodeURIComponent(selectedRegion)}`)
+      .then(response => response.json())
+      .then(data => {
+        data.territories.forEach(territory => {
+          const option = document.createElement('option');
+          option.value = territory.territory_id;
+          option.textContent = territory.territory_name;
+          territoryFilter.appendChild(option);
+        });
+      })
+      .catch(err => {
+        console.error('Error fetching territories:', err);
+      });
+  });
 </script>
 
 

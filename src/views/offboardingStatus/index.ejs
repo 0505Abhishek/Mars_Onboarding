@@ -1,0 +1,239 @@
+<%- include("../shared/header.ejs") %>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    .hidden { display: none; }
+</style>
+
+<style>
+    .scroll-section {
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      background: #f8f9fa;
+    }
+</style>
+
+<style>
+
+    .table-dark th {
+        color: #0000A0 !important; 
+        background-color: #E0E0FC;
+        border: 1px solid rgb(224, 203, 203);
+    }
+
+    #distributorTable tbody tr:nth-child(odd) td {
+        background: #FFFFFF !important; 
+    }
+
+    #distributorTable tbody tr:nth-child(even) td {
+        background: #EFEFFF !important; 
+    }
+
+</style>
+
+<style>
+    /* Fullscreen overlay */
+.overlay {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background: rgba(0, 0, 0, 0.2);
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+/* Modal box styling */
+.modal-box {
+background: white;
+border: 3px solid #0000A0;
+border-radius: 25px;
+padding: 30px;
+width: 500px;
+text-align: center;
+box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-group {
+display: flex;
+justify-content: center;
+gap: 20px;
+margin: 10px 0 20px 0;
+}
+
+.toggle-group label {
+font-weight: bold;
+display: flex;
+align-items: center;
+gap: 5px;
+}
+
+input[type="checkbox"] {
+width: 40px;
+height: 20px;
+appearance: none;
+background: #ccc;
+border-radius: 20px;
+position: relative;
+outline: none;
+cursor: pointer;
+transition: background 0.3s;
+}
+
+input[type="checkbox"]::before {
+content: '';
+width: 18px;
+height: 18px;
+background: white;
+border-radius: 50%;
+position: absolute;
+top: 1px;
+left: 1px;
+transition: transform 0.3s;
+}
+
+input[type="checkbox"]:checked {
+background: #14e651;
+}
+
+input[type="checkbox"]:checked::before {
+transform: translateX(20px);
+}
+
+/* Submit Button */
+.submit-btn {
+background-color: #007bff;
+color: white;
+padding: 12px 25px;
+border: none;
+border-radius: 12px;
+cursor: pointer;
+font-weight: bold;
+}
+
+.submit-btn:hover {
+background-color: #0056b3;
+}
+
+</style>
+ 
+<style>
+  .distributor-field {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.distributor-field label {
+  font-weight: bold;
+  margin-bottom: 6px;
+  font-size: 14px;
+}
+
+.distributor-field input[type="text"] {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.distributor-field input[type="text"]:focus {
+  border-color: #007BFF;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
+}
+
+</style>
+
+
+  <div class="container mt-4">
+    <div class="table-responsive">
+    <table id="distributorTable" class="table table-hover table-bordered">
+      <thead class="table-dark">
+          <tr>
+              <th>Unique Application code</th>
+              <th>Distributor's Name</th>
+              <th>Firm Name</th>
+              <th>Created By</th>
+              <th>Start Date</th>
+
+              <% 
+              masterRoles?.forEach(role => { %>
+                  <th><%= role %></th>
+              <% }) %>
+          </tr>
+      </thead>
+
+          <tbody>
+              <% finalData.forEach(app => { %>
+                  <tr>
+                      <td><%= app.mars_code %></td>
+                      <td><%= app.distributorName %></td>
+                      <td><%= app.firmName %></td>
+                      <td><%= app.aseemail %></td>
+                      <td><%= app.offboardStartDate %></td>
+
+                      <% app.roles.forEach(role => { %>
+                          <td>
+                              <% if (role.status === 'APPROVED') { %>
+                                  <span class="badge bg-success text-white">Approved</span><br>
+                                  <%= role.date || '' %>
+                              <% } else if (role.status === 'PENDING') { %>
+                                  <span class="badge bg-primary text-white">Pending</span><br>
+                                  <%= role.date || '' %>
+                              <% } else if (role.status) { %>
+                                  <%= role.status %><br>
+                                  <%= role.date || '' %>
+                              <% } else { %>
+                                  —
+                              <% } %>
+                          </td>
+                      <% }) %>
+                  </tr>
+              <% }) %>
+          </tbody>
+      </table>
+
+  </div>
+</div>
+
+
+
+
+<script>
+    $(document).ready(function () {
+      const table = $('#distributorTable').DataTable({
+        "paging": true,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "lengthMenu": [5, 10, 25, 50],
+        "pageLength": 10
+      });
+  
+      $('#statusFilter').on('change', function () {
+        const status = this.value;
+        if (status === "All") {
+          table.columns(7).search("").draw(); 
+        } else {
+          table.columns(7).search(status, true, false).draw(); 
+        }
+      });
+    });
+</script>
+  
+<%- include("../shared/footer.ejs") %>

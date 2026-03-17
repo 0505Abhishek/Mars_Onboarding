@@ -1,0 +1,6 @@
+ASM User Id,Territory Name,Distributor Code,DistributorName,PAN Number,GST Number,Address1,City,State,Pincode,Email Id,Contact Number,Contact Person,Distributor Status,Distributor CreatedOn,Distributor DeactivatedOn,PDF Document
+CB68,Terr.1forNorthUAT2,1234,DB Name 1,PAN983NJF,,,,,,DBName1@gmail.com,9898989898,,Active ,,,
+CB68,Terr.1forNorthUAT2,1234,DB Name 2,PAN9876NJF,,,,,,DBName2@gmail.com,7878787878,,Active ,,,
+CB68,Terr.3forNorthUAT2,1234,DB Name 3,PA9763NJF,,,,,,DBName3@gmail.com,6767676767,,Active ,,,
+CB68,Terr.3forNorthUAT2,1234,DB Name 4,PAN983NJF,,,,,,DBName4@gmail.com,5656565656,,Active ,,,
+CB68,Terr.1forNorthUAT2,1234,DB Name 5,PAN9876NJF,,,,,,DBName5@gmail.com,8989898989,,Active ,,,

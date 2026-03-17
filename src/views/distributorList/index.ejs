@@ -7,6 +7,9 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
 <style>
     .hidden { display: none; }
 </style>
@@ -43,17 +46,56 @@
 <div class="container mt-4">
     <h4 class="mb-4" style="color: #41378d;">Document Verification</h4>
 
+     <div class="d-flex flex-wrap justify-content-end align-items-center mb-3 gap-3">
+
+        <div>
+            <label for="statusFilter" class="form-label mb-0">Filter by Status:</label>
+            <select id="statusFilter" class="form-select" style="width: 200px;">
+                <option value="">All</option>
+                <option value="verified">Documents Verified</option>
+                <option value="pending">Pending</option>
+                <option value="need-info">Need More Information</option>
+            </select>
+        </div>
+
+
+        <div>
+            <label for="regionFilter" class="form-label mb-0">Filter by Region:</label>
+            <select id="regionFilter" class="form-select" style="width: 200px;">
+                <option value="">All</option>
+                <% regions.forEach(region => { %>
+                <option value="<%= region.id %>"
+                        data-name="<%= region.region_name %>"><%= region.region_name %></option>  
+                <% }) %>
+
+            </select>
+        </div>
+
+        <!-- Filter by Territory -->
+        <div>
+            <label for="territoryFilter" class="form-label mb-0">Filter by Territory:</label>
+            <select id="territoryFilter" class="form-select" style="width: 200px;">
+            <option value="">All</option>
+            <% territory.forEach(t => { %>
+                <option value="<%= t.territory_id %>" data-name="<%= t.territory_name %>"><%= t.territory_name %></option>
+            <% }) %>
+            </select>
+        </div>
+    </div>
+
     <div class="table-responsive">
         <table id="distributorTable" class="table table-hover table-bordered">
             <thead class="table-dark">
                 <tr>
-                    <th>S.No</th>
+                    <th>Unique Application code</th>
                     <th>Application Type</th>
-                    <th>DB Type</th>
+                    <th>DB Channel</th>
                     <th>Firm's Name</th>
                     <th>Distributor's Name</th>
                     <th>Email ID</th>
                     <th>Mobile No.</th>
+                    <th>Region</th>
+                    <th>Territory</th>
                     <th>Start Date</th>
                     <th>Status</th>
                     <th>Created By</th>
@@ -64,24 +106,28 @@
                 <% if (distributors.length > 0) { %>
                     <% distributors.forEach((distributor, index) => { %>
                         <tr>
-                            <td><%= index + 1 %></td> 
-                            <td><%= distributor.firmName %></td>
-                            <td><%= distributor.email %></td>
-                            <td><%= distributor.contactNumber %></td>
-                            <td><%= distributor.aseemail %></td>
-                            <td><%= distributor.aseemail %></td>
-                            <td><%= distributor.aseemail %></td>
-                            <td><%= distributor.aseemail %></td>
-                            <td>
+                            <td><%= distributor?.mars_code%></td> 
+                            <td><%= distributor?.applicationType %></td>
+                            <td><%= distributor?.dbType %></td>
+                            <td><%= distributor?.firmName %></td>
+                            <td><%= distributor?.distributorName %></td>
+                            <td><%= distributor?.email %></td>
+                            <td><%= distributor?.contactNumber %></td>
+                            <td><%= distributor?.region_name %></td>
+                            <td><%= distributor?.territory_name %></td>
+                            <td><%= distributor?.create_date ? new Date(distributor.create_date).toLocaleDateString('en-CA') : 'N/A' %></td>
+
+                            <td class="status-cell" data-status="<%= distributor.is_final_approver === 1 ? 'verified' : (distributor.flag === 3 ? 'need-info' : 'pending') %>">
                                 <% if (distributor.is_final_approver === 1) { %>
-                                    <span class="badge bg-success">Approved</span> 
+                                    <span class="badge bg-success">Documents Verified</span> 
                                 <% } else if(distributor.is_final_approver === 0 && distributor.flag === 3){ %>
-                                    <span class="badge bg-warning text-dark">Correction<span>
+                                    <span class="badge bg-warning text-dark">Need More Information</span>
                                 <% } else { %>
-                                    <span class="badge bg-warning text-dark">Pending</span>
+                                    <span class="badge bg-primary text-white">Pending</span>
                                 <% } %>
                             </td>
-                            <td><%= new Date(distributor.create_date).toLocaleDateString('en-GB') %></td>
+
+                            <td><%= distributor?.aseemail %></td>
                             <td>
                                 <% if (distributor.is_final_approver === 0 && distributor.canApprove && distributor.lower_pending == 0 && distributor.flag!==3) { %>
                                     <a href="/distributorList/<%= distributor?.application_id %>">
@@ -95,40 +141,60 @@
                     <% }) %>
                 <% } else { %>
                     <tr>
-                        <td colspan=11" class="text-center">No distributors found.</td>
+                        <td colspan="11" class="text-center">No distributors found.</td>
                     </tr>
                 <% } %>
-            </tbody>
-            
-            
+            </tbody>    
         </table>
     </div>
 </div>
 
 
+<script> 
+    $(document).ready(function () {
+        if ($('#distributorTable tbody tr').length > 1) {
+            const table = $('#distributorTable').DataTable({
+                "paging": true,
+                "searching": true,
+                "ordering": true,
+                "order": [[9, 'desc']],
+                "info": true,
+                "lengthMenu": [5, 10, 25, 50],
+                "pageLength": 10
+            });
 
-<script>
-$(document).ready(function () {
-    if ($('#distributorTable tbody tr').length > 1) { 
-        $('#distributorTable').DataTable({
-            "paging": true,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "lengthMenu": [5, 10, 25, 50], 
-            "pageLength": 5,
-            "scrollY": "400px", // Table rows ke liye vertical scroll
-            "scrollX": true, // Horizontal scrolling enable karega (agar zarurat ho)
-            "scrollCollapse": true,
-            "fixedHeader": {
-                header: true,
-                footer: false
-            }
-        });
-    }
-});
+function customFilter(settings, data, dataIndex) {
+    const statusSelected = $('#statusFilter').val().toLowerCase().trim();
+    // Get the text of the selected option
+    const regionSelected = $('#regionFilter').val() ? $('#regionFilter option:selected').text().toLowerCase().trim() : "";
+    const territorySelected = $('#territoryFilter').val() ? $('#territoryFilter option:selected').text().toLowerCase().trim() : "";
 
+    const row = settings.aoData[dataIndex].nTr;
+    const statusAttr = $(row).find('.status-cell').data('status')?.toLowerCase().trim() || "";
+    const regionText = data[7]?.toLowerCase().trim() || "";
+    const territoryText = data[8]?.toLowerCase().trim() || "";
+
+    // Status can keep .includes if you want partial matching for "Pending at..."
+    const statusMatch = !statusSelected || statusAttr.includes(statusSelected);
+    
+    // Change these to strict equality (===) to avoid "North" matching "NorthUAT1"
+    const regionMatch = !regionSelected || regionText === regionSelected;
+    const territoryMatch = !territorySelected || territoryText === territorySelected;
+
+    return statusMatch && regionMatch && territoryMatch;
+} 
+                       
+            $.fn.dataTable.ext.search.push(customFilter);
+
+            // Trigger filter redraw on change
+            $('#statusFilter, #regionFilter, #territoryFilter').on('change', function () {
+                table.draw();
+            });
+        }
+    });
 </script>
+
+
 
 <script>
     function confirmDelete(id) {
@@ -161,5 +227,33 @@ $(document).ready(function () {
     });
 </script>
 
+
+
+<script>
+  const regionFilter = document.getElementById('regionFilter');
+  const territoryFilter = document.getElementById('territoryFilter');
+
+  regionFilter.addEventListener('change', () => {
+    const selectedRegion = regionFilter.value;
+
+    territoryFilter.innerHTML = '<option value="">All</option>';
+
+    if (!selectedRegion) return; 
+
+    fetch(`/distributorList/territories?region=${encodeURIComponent(selectedRegion)}`)
+      .then(response => response.json())
+      .then(data => {
+        data.territories.forEach(territory => {
+          const option = document.createElement('option');
+          option.value = territory.territory_id;
+          option.textContent = territory.territory_name;
+          territoryFilter.appendChild(option);
+        });
+      })
+      .catch(err => {
+        console.error('Error fetching territories:', err);
+      });
+  });
+</script>
 
 <%- include("../shared/footer.ejs") %>

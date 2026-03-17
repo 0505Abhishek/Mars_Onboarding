@@ -1952,6 +1952,7 @@ const offboardrsemoffboardaction = async (req, res) => {
       await approverModel.updatedt_team_flag(application_id);
     } else {
       await approverModel.deleteMainOffboardStatus(application_id);
+      await approverModel.deleteMainOffboardStatusresign(application_id);
       const userData = await ResignationModel.getUserById(user_id);
       let obj = {};
       obj.sendToEmail = userData?.email_id;

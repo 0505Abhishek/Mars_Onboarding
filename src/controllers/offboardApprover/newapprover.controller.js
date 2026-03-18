@@ -599,7 +599,7 @@ if (isTermination) {
       await approverModel.insertWorkflowHistory({
         application_id,
         approver_id: "0",
-        approver_role: "0",
+        approver_role: "Distributor",
         action: status,
         remarks: reason,
       });
@@ -657,7 +657,7 @@ if (isTermination) {
   await approverModel.insertWorkflowHistory({
     application_id,
     approver_id: "0",
-    approver_role: "0",
+    approver_role: "Distributor",
     action: status,
     remarks: reason,
   });
@@ -1569,14 +1569,6 @@ const saveResignation = async (req, res) => {
       action: "Submit",
       remarks: "Application submitted for offboarding",
     });
-
-    await approverModel.insertWorkflowHistory({
-    application_id,
-    approver_id: 0, 
-     approver_role: "Distributor",
-    action: "Submit",
-    remarks: "Application submitted for offboarding",
-  });
 
 
     const nextRow = await approverModel.getNextSequenceRow(application_id, 1);
@@ -2952,7 +2944,7 @@ const gstsubmit = async (req, res) => {
     await approverModel.insertWorkflowHistory({
       application_id,
       approver_id: user_id,
-      approver_role: role_id,
+      approver_role: role_name,
       action: status,
       remarks: gstYes,
     });
@@ -3100,7 +3092,7 @@ const FnfSubmit = async (req, res) => {
     await approverModel.insertWorkflowHistory({
       application_id,
       approver_id: user_id,
-      approver_role: role_id,
+      approver_role: role_name,
       action: status,
       remarks: fnf_file_path,
     });
@@ -3648,7 +3640,7 @@ const send_email_last_approve = async (approver_id, application_id) => {
   obj.sendToName = distributor?.firmName;
 
   obj.firmName = distributor?.firmName;
-  obj.mars_code = distributor?.mars_code;
+  obj.mars_code = userData?.mars_code;
 
   obj.employee_name = approverDetails?.employee_name;
   obj.asmName = approverDetails?.employee_name;
@@ -4053,7 +4045,6 @@ const submitFnfForm = async (req, res) => {
       total_level: "8",
     });
 
-    // return
     await approverModel.insertWorkflowHistory({
       application_id,
       approver_id: "0",

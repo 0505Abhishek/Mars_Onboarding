@@ -41,6 +41,7 @@ const getDistributorList = async (role_id, region_id) => {
         odist.ap_action_status,
         odist.ap_assigned_at,
         odist.ap_deadline,
+        odist.applicationStatus,
         fnf.signed_fnf_path,
         fnf.status AS fnf_status,
         dbr.is_replacement,

@@ -656,19 +656,19 @@
     };
   </script>
 
-  <script>
-    let notification = <%- JSON.stringify(notification || null) %>;
+<script>
+  let notification = <%- JSON.stringify(notification || null) %>;
 
-    if (notification) {
-      Swal.fire({
-        toast: true,
-        position: "top-right",
-        icon: notification.type || "info",
-        title: notification.text,
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-      });
-    }
-  </script>
+  if (notification && notification.text) {
+    Swal.fire({
+      toast: true,
+      position: "top-right",
+      icon: notification.type || "info",
+      title: notification.text,
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+    });
+  }
+</script>
 </html>

@@ -657,7 +657,7 @@
   </script>
 
 <script>
-  let notification = <%- JSON.stringify(notification || null) %>;
+  let notification = <%- JSON.stringify(typeof notification !== 'undefined' ? notification : null) %>;
 
   if (notification && notification.text) {
     Swal.fire({

@@ -202,73 +202,89 @@
 
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-      document.getElementById("submitFNF").addEventListener("click", async function() {
-        const signedFnf = document.getElementById("signedFnf").files[0];
-        const chequeUpload = document.getElementById("chequeUpload").files[0];
-        
-        if (!signedFnf) {
-          Swal.fire({
-            icon: "warning",
-            title: "Missing File",
-            text: "Please upload the signed F&F letter",
-          });
-          return;
-        }
-        
-        const formData = new FormData();
-        formData.append("signedFnf", signedFnf);
-        if (chequeUpload) {
-          formData.append("chequeUpload", chequeUpload);
-        }
-        
-        // Add application_id if available from get_file
-        const pageCard = document.querySelector('.page-card');
-        const applicationId = pageCard ? pageCard.dataset.applicationId : null;
-        if (applicationId) {
-          formData.append("application_id", applicationId);
-        } else {
-        
-          const urlParams = new URLSearchParams(window.location.search);
-          const urlApplicationId = urlParams.get('application_id') || urlParams.get('id');
-          if (urlApplicationId) {
-            formData.append("application_id", urlApplicationId);
-          }
-        }
-        
-        try {
-          const response = await fetch("/newoffboardApprover/submitFnfForm", {
-            method: "POST",
-            body: formData
-          });
-          
-          const result = await response.json();
-          
-          if (result.type === "success") {
-            Swal.fire({
-              icon: "success",
-              title: "Success!",
-              text: result.message,
-            }).then(() => {
-             window.location.reload(); 
-            });
-          } else {
-            Swal.fire({
-              icon: "error",
-              title: "Error!",
-              text: result.message,
-            });
-          }
-        } catch (error) {
-          console.error("Submit error:", error);
-          Swal.fire({
-            icon: "error",
-            title: "Error!",
-            text: "Something went wrong. Please try again.",
-          });
-        }
+  <script>
+    document.getElementById("submitFNF").addEventListener("click", async function () {
+  const submitBtn = document.getElementById("submitFNF");
+
+  // Disable button + loader text
+  submitBtn.disabled = true;
+  const originalText = submitBtn.innerText;
+  submitBtn.innerText = "Uploading...";
+
+  const signedFnf = document.getElementById("signedFnf").files[0];
+  const chequeUpload = document.getElementById("chequeUpload").files[0];
+
+  if (!signedFnf) {
+    submitBtn.disabled = false;
+    submitBtn.innerText = originalText;
+
+    Swal.fire({
+      icon: "warning",
+      title: "Missing File",
+      text: "Please upload the signed F&F letter",
+    });
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("signedFnf", signedFnf);
+
+  if (chequeUpload) {
+    formData.append("chequeUpload", chequeUpload);
+  }
+
+  const pageCard = document.querySelector('.page-card');
+  const applicationId = pageCard ? pageCard.dataset.applicationId : null;
+
+  if (applicationId) {
+    formData.append("application_id", applicationId);
+  } else {
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlApplicationId = urlParams.get('application_id') || urlParams.get('id');
+    if (urlApplicationId) {
+      formData.append("application_id", urlApplicationId);
+    }
+  }
+
+  try {
+    const response = await fetch("/newoffboardApprover/submitFnfForm", {
+      method: "POST",
+      body: formData
+    });
+
+    const result = await response.json();
+
+    if (result.type === "success") {
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: result.message,
+      }).then(() => {
+        window.location.reload();
       });
-    </script>
+    } else {
+      submitBtn.disabled = false;
+      submitBtn.innerText = originalText;
+
+      Swal.fire({
+        icon: "error",
+        title: "Error!",
+        text: result.message,
+      });
+    }
+  } catch (error) {
+    submitBtn.disabled = false;
+    submitBtn.innerText = originalText;
+
+    console.error("Submit error:", error);
+    Swal.fire({
+      icon: "error",
+      title: "Error!",
+      text: "Something went wrong. Please try again.",
+    });
+  }
+});
+  </script>
     <script>
       const approval = document.getElementById("dbApproval");
       const declineSection = document.getElementById("declineSection");
@@ -371,7 +387,7 @@
             );
             if (submitBtn) {
               submitBtn.disabled = true;
-              submitBtn.innerText = "Submitting..."; // Optional: change text
+              submitBtn.innerText = "Submitting...";
             }
           }
         });

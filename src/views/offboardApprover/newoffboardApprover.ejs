@@ -1728,102 +1728,103 @@
       document.getElementById("gstRemarkSection").classList.add("d-none");
     }
   });
-    document.getElementById("gstSubmitBtn").onclick = async () => {
-    const gstYes = document.getElementById("gstYes");
-    const gstNo = document.getElementById("gstNo");
-    const gstRemark = document.getElementById("gstRemark");
-    const gstNumber = document.getElementById("gstNumber");
+ document.getElementById("gstSubmitBtn").onclick = async () => {
+  const submitBtn = document.getElementById("gstSubmitBtn");
 
+  // Disable button immediately
+  submitBtn.disabled = true;
 
-    if (!gstNumber.value.trim()) {
-      Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: "error",
-        title: "Please enter GST Number",
-        showConfirmButton: false,
-        timer: 2000,
-      });
-      return;
-    }
+  const gstYes = document.getElementById("gstYes");
+  const gstNo = document.getElementById("gstNo");
+  const gstRemark = document.getElementById("gstRemark");
+  const gstNumber = document.getElementById("gstNumber");
 
-  
-    if (!gstYes.checked && !gstNo.checked) {
-      Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: "error",
-        title: "Please select GST matching status",
-        showConfirmButton: false,
-        timer: 2000,
-      });
-      return;
-    }
+  if (!gstNumber.value.trim()) {
+    submitBtn.disabled = false; // re-enable
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "error",
+      title: "Please enter GST Number",
+      showConfirmButton: false,
+      timer: 2000,
+    });
+    return;
+  }
 
-   
-    if (gstNo.checked && !gstRemark.value.trim()) {
-      Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: "error",
-        title: "Please enter remark for GST mismatch",
-        showConfirmButton: false,
-        timer: 2000,
-      });
-        return;
-    }
+  if (!gstYes.checked && !gstNo.checked) {
+    submitBtn.disabled = false;
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "error",
+      title: "Please select GST matching status",
+      showConfirmButton: false,
+      timer: 2000,
+    });
+    return;
+  }
 
-   
+  if (gstNo.checked && !gstRemark.value.trim()) {
+    submitBtn.disabled = false;
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "error",
+      title: "Please enter remark for GST mismatch",
+      showConfirmButton: false,
+      timer: 2000,
+    });
+    return;
+  }
 
-    
-    try {
-      const response = await fetch(
-        "/newoffboardApprover/gstsubmit",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-             application_id: selected,
-             gstNumber:gstNumber.value,
-            gstYes: gstYes.checked ? "yes" : "no",
-            gstRemark:gstRemark.value,
-            total_complete_approval_level:total_complete_approval_level
-          }),
+  try {
+    const response = await fetch("/newoffboardApprover/gstsubmit", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        application_id: selected,
+        gstNumber: gstNumber.value,
+        gstYes: gstYes.checked ? "yes" : "no",
+        gstRemark: gstRemark.value,
+        total_complete_approval_level: total_complete_approval_level
+      }),
+    });
+
+    const result = await response.json();
+
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: result.type === "success" ? "success" : "info",
+      title: result.message,
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didClose: () => {
+        if (result.type === "success") {
+          closeModal("optionModal");
+          location.reload();
+        } else {
+          submitBtn.disabled = false;
         }
-      );
-
-      const result = await response.json();
-
-      Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: result.type === "success" ? "success" : "info",
-        title: result.message,
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didClose: () => {
-          if (result.type === "success") {
-            closeModal("optionModal");
-            location.reload();
-          }
-        },
-      });
-    } catch (err) {
-      console.error("Error initiating resignation:", err);
-      Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: "error",
-        title: "Failed to send email. Please try again.",
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-      });
-    }
-  };
+      },
+    });
+  } catch (err) {
+    submitBtn.disabled = false;
+    console.error("Error:", err);
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "error",
+      title: "Failed to send request. Please try again.",
+      showConfirmButton: false,
+      timer: 3000,
+    });
+  }
+};
 
 </script>
 
@@ -2478,11 +2479,11 @@ $(document).ready(function () {
     document.getElementById("paymentModal").classList.add("show");
   };
 
-  document.getElementById("paymentClose").onclick = function () {
-    document.getElementById("paymentBackdrop").classList.remove("show");
-    document.getElementById("paymentModal").classList.remove("show");
-  };
- document.getElementById("paymentSubmitBtn").onclick = async () => {
+    document.getElementById("paymentClose").onclick = function () {
+      document.getElementById("paymentBackdrop").classList.remove("show");
+      document.getElementById("paymentModal").classList.remove("show");
+    };
+     document.getElementById("paymentSubmitBtn").onclick = async () => {
       let paymentYes = document.getElementById('paymentYes');
       let paymentNo = document.getElementById('paymentNo');
       const isApprove = paymentYes.checked ? 'YES' : 'NO';

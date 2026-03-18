@@ -83,7 +83,7 @@ const offboardList = async (req, res) => {
 
     res.render("offboardApprover/newoffboardApprover", {
       token: navbarviews,
-      notification,
+      notification:notification||[],
       data: allDistributor,
       terminationReasons: terminationReasons || [],
       get_action_button: get_action_button || [],
@@ -254,6 +254,7 @@ const saveAssetReconciliation = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
+
 const offboardWebPage = async (req, res) => {
   try {
     const token = req.params.token;
@@ -823,21 +824,13 @@ const offboardWebPageclearclearance = async (req, res) => {
     let get_application_status = await approverModel.get_application_status(
       distributorDetails.application_id,
     );
-    // console.log(get_application_status, "get_application_id");
     let data = await dashboard.selectQuery(req.cookies.email);
     let allDistributor = await approverModel.getDistributorList(
       req.cookies.role_id,
       req.cookies.region_id,
     );
-    let navbarviews = await dashboard.navbarviewesult(data);
-
-    let notification = req.session.notification;
-
-    delete req.session.notification;
 
     res.render("offboardApprover/webpageclearclearance", {
-      token: navbarviews,
-      notification,
       data: allDistributor,
       get_data: get_application_id,
       get_application_status: get_application_status,
@@ -859,10 +852,7 @@ const offboardWebpagereversal = async (req, res) => {
       req.cookies.role_id,
       req.cookies.region_id,
     );
-    let navbarviews = await dashboard.navbarviewesult(data);
 
-    let notification = req.session.notification;
-    delete req.session.notification;
 
     const token = req.params.token;
     let distributorDetails = null;
@@ -886,8 +876,6 @@ const offboardWebpagereversal = async (req, res) => {
     }
 
     res.render("offboardApprover/webpagereversal", {
-      token: navbarviews,
-      notification,
       data: allDistributor,
       distributorDetails,
       get_file,
@@ -923,11 +911,8 @@ const offboardWebpagefnf = async (req, res) => {
       req.cookies.role_id,
       req.cookies.region_id,
     );
-    let navbarviews = await dashboard.navbarviewesult(data);
 
-    let notification = req.session.notification;
 
-    delete req.session.notification;
     const distributorDetails = await approverModel.getDistributorByToken(token);
 
     let get_file = await approverModel.get_file(
@@ -939,8 +924,6 @@ const offboardWebpagefnf = async (req, res) => {
     );
 
     res.render("offboardApprover/webpagefnf", {
-      token: navbarviews,
-      notification,
       data: allDistributor,
       get_file: get_file,
       get_fnf_file: get_fnf_file,
@@ -1396,19 +1379,11 @@ const saveResignation = async (req, res) => {
       const file = req.files.nocFile;
 
       if (file.size > MAX_FILE_SIZE) {
-        req.session.notification = {
-          type: "info",
-          message: "NOC file size should not exceed 5 MB",
-        };
-        return res.redirect(`/newoffboardApprover/webpageView/${token}`);
+        return res.redirect(`/newoffboardApprover/webpageView/${token}?error=noc_size`);
       }
 
-      if (file.type !== "application/pdf") {
-        req.session.notification = {
-          type: "info",
-          message: "Only PDF files are allowed for NOC",
-        };
-        return res.redirect(`/newoffboardApprover/webpageView/${token}`);
+     if (file.type !== "application/pdf") {
+        return res.redirect(`/newoffboardApprover/webpageView/${token}?error=noc_type`);
       }
 
       const uploadDir = path.join(__dirname, "../../public/uploads/noc");
@@ -1428,20 +1403,12 @@ const saveResignation = async (req, res) => {
     if (req.files?.regionFile) {
       const file = req.files.regionFile;
 
-      if (file.size > MAX_FILE_SIZE) {
-        req.session.notification = {
-          type: "info",
-          message: "Resignation letter size should not exceed 5 MB",
-        };
-        return res.redirect(`/newoffboardApprover/webpageView/${token}`);
+       if (file.size > MAX_FILE_SIZE) {
+        return res.redirect(`/newoffboardApprover/webpageView/${token}?error=letter_size`);
       }
 
       if (file.type !== "application/pdf") {
-        req.session.notification = {
-          type: "info",
-          message: "Only PDF files are allowed for Resignation Letter",
-        };
-        return res.redirect(`/newoffboardApprover/webpageView/${token}`);
+        return res.redirect(`/newoffboardApprover/webpageView/${token}?error=letter_type`);
       }
 
       const uploadDir = path.join(
@@ -1597,16 +1564,16 @@ const saveResignation = async (req, res) => {
     );
     await approverModel.insertWorkflowHistory({
       application_id,
-      approver_id: req.cookies.user_id,
-      approver_role: req.cookies.role_name,
+        approver_id: 0,
+        approver_role: "Distributor",
       action: "Submit",
       remarks: "Application submitted for offboarding",
     });
 
     await approverModel.insertWorkflowHistory({
     application_id,
-    approver_id: req.cookies.user_id,
-    approver_role: req.cookies.role_name,
+    approver_id: 0, 
+     approver_role: "Distributor",
     action: "Submit",
     remarks: "Application submitted for offboarding",
   });
@@ -1661,13 +1628,8 @@ const saveResignation = async (req, res) => {
   } catch (error) {
     console.error("Error saving resignation:", error);
 
-    const token = req.body.token || req.query.token || "";
-    req.session.notification = {
-      type: "error",
-      message: "Something went wrong! Please try again.",
-    };
+    return res.redirect(`/newoffboardApprover/webpageView/${token}?error=server`);
 
-    return res.redirect(`/newoffboardApprover/webpageView/${token}`);
   }
 };
 
@@ -1953,6 +1915,7 @@ const offboardrsemoffboardaction = async (req, res) => {
     } else {
       await approverModel.deleteMainOffboardStatus(application_id);
       await approverModel.deleteMainOffboardStatusresign(application_id);
+
       const userData = await ResignationModel.getUserById(user_id);
       let obj = {};
       obj.sendToEmail = userData?.email_id;

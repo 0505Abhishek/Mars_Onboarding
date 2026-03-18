@@ -14,19 +14,20 @@ router.post("/submitDbReplacement", approverList.submitDbReplacement);
 
 router
   .route("/webpageView/:token")
-  .get(getDetails, getNotification, approverList.offboardWebPage);
+  .get(approverList.offboardWebPage);
 
 router
   .route("/webpageclearclearance/:token")
   .get(approverList.offboardWebPageclearclearance);
+  
 router.post("/saveAssetReconciliation", approverList.saveAssetReconciliation);
-router
-  .route("/webpagereversal/:token")
-  .get(getDetails, getNotification, approverList.offboardWebpagereversal);
+router .route("/webpagereversal/:token")
+  .get(approverList.offboardWebpagereversal);
+  
 
 router
   .route("/webpagefnf/:token")
-  .get(getDetails, getNotification, approverList.offboardWebpagefnf);
+  .get(approverList.offboardWebpagefnf);
 
 router.get("/download-fnf/:filename", approverList.downloadFnfFile);
 router.post("/submitFnfForm", approverList.submitFnfForm);
@@ -81,8 +82,6 @@ router.post(
 );
 router.post(
   "/saveResignation",
-  getDetails,
-  getNotification,
   approverList.saveResignation,
 );
 
@@ -104,8 +103,6 @@ router.post(
 );
 router.post(
   "/submitGstReversal",
-  getDetails,
-  getNotification,
   approverList.submitGstReversal,
 );
 router.post("/submitDbResponse", approverList.submitDbResponse);

@@ -1245,6 +1245,8 @@ const initiateOffboardAsmaction = async (req, res) => {
 
       if (role === "NSM") {
         currentSequence = sequence - 1;
+
+        await new Promise(resolve => setTimeout(resolve, 5));
       }
 
       await approverModel.insertOffboardApprovalWorkflow({
@@ -1499,61 +1501,60 @@ const saveResignation = async (req, res) => {
 
     await approverModel.deleteExistingWorkflow(applicationId);
 
+
     let hierarchy = [];
     let sequence = 1;
-    const roleSequenceMap = new Map();
 
-    for (let role of approvalHierarchy) {
+for (let role of approvalHierarchy) {
+
+  if (role === "distributor") {
+    await approverModel.insertOffboardApprovalWorkflow({
+      application_id,
+      territory_id,
+      role_id: 0,
+      role_name: "distributor",
+      approver_id: 0,
+      status: "NOT_STARTED",
+      remark: null,
+      sequence: sequence,
+    });
+
+    hierarchy.push(0);
+    sequence++;
+    continue;
+  }
+
       const person = hierarchyPersons.find((p) => p.role === role);
-
       if (!person) {
-        if (role === "distributor") {
-          const approval_sequence = sequence++;
-          await approverModel.insertOffboardApprovalWorkflow({
-            application_id,
-            territory_id,
-            role_id: 0,
-            role_name: "distributor",
-            approver_id: 0,
-            status: "NOT_STARTED",
-            remark: null,
-            sequence: approval_sequence,
-          });
-          hierarchy.push(0);
-          continue;
-        }
-        console.warn(
-          `No user found for role: ${role} in territory ${territory_id} - skipping`,
-        );
+        console.warn(`No user found for role: ${role}`);
         continue;
       }
 
-      if (role == "RSM" || role == "NSM") {
-        if (roleSequenceMap.has("RSM_NSM_SHARED")) {
-          person.approval_sequence = roleSequenceMap.get("RSM_NSM_SHARED");
-        } else {
-          person.approval_sequence = sequence;
-          roleSequenceMap.set("RSM_NSM_SHARED", person.approval_sequence);
-          sequence++;
-        }
-      } else {
-        person.approval_sequence = sequence++;
-      }
+      let currentSequence = sequence;
 
-      hierarchy.push(person.user_id);
-      
+      if (role === "NSM") {
+        currentSequence = sequence - 1;
+      }
 
       await approverModel.insertOffboardApprovalWorkflow({
         application_id,
         territory_id,
-        role_id: role === "distributor" ? 0 : person.user_role_id || null,
-        role_name: role === "distributor" ? "distributor" : person.role,
+        role_id: person.user_role_id || null,
+        role_name: person.role,
         approver_id: person.user_id,
         status: "NOT_STARTED",
         remark: null,
-        sequence: person.approval_sequence,
+        sequence: currentSequence,
       });
+
+      hierarchy.push(person.user_id);
+
+      if (role !== "NSM") {
+        sequence++;
+      }
     }
+
+
     let lastApprover = sequence || null;
     await approverModel.updateProspectiveInfo(
       hierarchy,

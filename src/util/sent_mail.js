@@ -238,7 +238,7 @@ const templates = {
   `,
 
   Finalapproval: (obj) => `
-    <p>Dear ${obj.SendToRole} Team,</p>
+    <p>Dear Team,</p>
     <p>
       The DB <strong>${obj.firmName}</strong>
       is successfully appointed. 

@@ -1942,12 +1942,18 @@
     document.getElementById("zeroLedgerBackdrop").classList.add("show");
     document.getElementById("zeroLedgerModal").classList.add("show");
   }
+
   function closeZeroLedgerModal() {
     document.getElementById("zeroLedgerBackdrop").classList.remove("show");
     document.getElementById("zeroLedgerModal").classList.remove("show");
   }
-    document.getElementById("zeroLedgerSubmit").onclick = async () => {
-      
+
+  document.getElementById("zeroLedgerSubmit").onclick = async function () {
+
+    const ss  = this;
+    ss.disabled = true;
+    ss.innerText = "Submitting...";
+
     const zeroLedgerSelect =
       document.getElementById("zeroLedgerSelect").value;
 
@@ -1964,6 +1970,8 @@
         timer: 2000,
         timerProgressBar: true,
       });
+      ss.disabled = false;
+      ss.innerText = "Submit";
       return;
     }
 
@@ -1977,13 +1985,11 @@
         timer: 2500,
         timerProgressBar: true,
       });
+      ss.disabled = false;
+      ss.innerText = "Submit";
       return;
     }
 
-    const ss  = document.getElementById("zeroLedgerSubmit");
-    ss.disabled = true;
-
-    
     try {
       const formData = new FormData();
       formData.append('application_id', selected);
@@ -1991,6 +1997,7 @@
       formData.append('zeroLedgerSelect', zeroLedgerSelect);
       formData.append('zeroLedgerRemarks', zeroLedgerRemarks);
       formData.append('total_complete_approval_level', total_complete_approval_level);
+
       const response = await fetch(
         "/newoffboardApprover/zeroLedgerSubmit",
         {
@@ -2027,7 +2034,11 @@
         timer: 3000,
         timerProgressBar: true,
       });
+
+      ss.disabled = false;
+      ss.innerText = "Submit";
     }
+
     closeZeroLedgerModal();
   };
 </script>
@@ -2350,16 +2361,26 @@ document.getElementById("verifyFNFClose").onclick = function () {
     document.getElementById("claimModal").classList.remove("show");
   }
  
-  document.getElementById("claimSubmitBtn").onclick = async () => {
-    // const raisedBy = document.getElementById("claimRaisedBy");
+  document.getElementById("claimSubmitBtn").onclick = async function () {
+
+    const btn = this; 
+    btn.disabled = true;
+    btn.innerText = "Submitting...";
+
     const type = document.getElementById("claimType").value;
     const amount = document.getElementById("claimAmount").value;
+
     if (!type) {
       alert("Please select claim type.");
+      btn.disabled = false;
+      btn.innerText = "Submit";
       return;
     }
+
     if (amount === "" || amount <= 0) {
       alert("Please enter a valid amount.");
+      btn.disabled = false;
+      btn.innerText = "Submit";
       return;
     }
 
@@ -2374,6 +2395,8 @@ document.getElementById("verifyFNFClose").onclick = function () {
         timer: 2000,
         timerProgressBar: true,
       });
+      btn.disabled = false;
+      btn.innerText = "Submit";
       return;
     }
 
@@ -2424,6 +2447,10 @@ document.getElementById("verifyFNFClose").onclick = function () {
         timerProgressBar: true,
       });
     }
+
+    btn.disabled = false;
+    btn.innerText = "Submit";
+
     closeClaimModal();
   };
 </script>

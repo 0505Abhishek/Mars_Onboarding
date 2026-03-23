@@ -3095,7 +3095,7 @@ const FnfSubmit = async (req, res) => {
       approver_id: user_id,
       approver_role: role_name,
       action: status,
-      remarks: fnf_file_path,
+      remarks: "",
     });
 
     const nextSequence = sequence + 1;

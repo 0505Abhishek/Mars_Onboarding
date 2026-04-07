@@ -363,11 +363,10 @@ const submitDbResponseASM= async (req, res) => {
     }
     if (approval === "approve") {
       await approverModel.updateDbTrackingStatus(application_id, "APPROVED");
-      const currentRowss = await approverModel.checkOffboardingapprovedPDF(
+      const currentRowss = await approverModel.checkOffboardingapprovedPDFnew(
         application_id,
         "0",
         "0",
-        "4",
       );
       const row = currentRowss[0];
       let sequence = row.sequence;
@@ -383,7 +382,7 @@ const submitDbResponseASM= async (req, res) => {
         acted_at: new Date(),
         is_final_approval: is_final_approval,
         fnf_flag: "1",
-        total_level: "4",
+        total_level: sequence,
       });
       // await approverModel.updateOffboardapprovedfnf_flag(application_id, "1");
 
@@ -420,16 +419,15 @@ const submitDbResponseASM= async (req, res) => {
       return res.json({
         type: "success",
         message: "Claim Approved Successfully!",
-      });
-    } else if (approval === "decline") {
+        });
+      } else if (approval === "decline") {
 
-  await approverModel.updateDbTrackingStatus(application_id, "DECLINED");
-  const currentRowss = await approverModel.checkOffboardingapprovedPDF(
-    application_id,
-    "0",
-    "0",
-    "4",
-  );
+    await approverModel.updateDbTrackingStatus(application_id, "DECLINED");
+    const currentRowss = await approverModel.checkOffboardingapprovedPDFnew(
+      application_id,
+      "0",
+      "0",
+    );
 
   const row = currentRowss[0];
   let sequence = row.sequence;
@@ -441,7 +439,7 @@ const submitDbResponseASM= async (req, res) => {
     remark: reason,
     is_final_approval: "1",
     fnf_flag: "1",
-    total_level: "4",
+    total_level: sequence,
   });
 
   await approverModel.insertWorkflowHistory({
@@ -522,35 +520,32 @@ const submitDbResponse = async (req, res) => {
           
        
 
-   const isTermination =
-  await approverModel.shouldInitializeDbTracking(application_id);
+   const isTermination = await approverModel.shouldInitializeDbTracking(application_id);
 
-if (isTermination) {
-  const dbTracking = await approverModel.getDbTracking(application_id);
+      if (isTermination) {
+        const dbTracking = await approverModel.getDbTracking(application_id);
 
-  if (!dbTracking) {
-    return res.json({
-      type: "error",
-      message: "Invalid request.",
-    });
-  }
+        if (!dbTracking) {
+          return res.json({
+            type: "error",
+            message: "Invalid request.",
+          });
+        }
 
-  if (dbTracking.db_response_status !== "PENDING") {
-    return res.json({
-      type: "error",
-      message: "This claim has already been processed.",
-    });
-  }
+        if (dbTracking.db_response_status !== "PENDING") {
+          return res.json({
+            type: "error",
+            message: "This claim has already been processed.",
+          });
+        }
 
-  if (new Date() > new Date(dbTracking.db_deadline)) {
-    return res.json({
-      type: "error",
-      message: "Response time expired. This claim is now handled by ASM.",
-    });
-  }
-}
-
-
+            if (new Date() > new Date(dbTracking.db_deadline)) {
+              return res.json({
+                type: "error",
+                message: "Response time expired. This claim is now handled by ASM.",
+              });
+            }
+          }
 
     await approverModel.insertDbResponse({
       application_id,
@@ -572,11 +567,11 @@ if (isTermination) {
     }
     if (approval === "approve") {
       await approverModel.updateDbTrackingStatus(application_id, "APPROVED");
-      const currentRowss = await approverModel.checkOffboardingapprovedPDF(
+      const currentRowss = await approverModel.checkOffboardingapprovedPDFnew(
         application_id,
         "0",
         "0",
-        "4",
+
       );
       const row = currentRowss[0];
       let sequence = row.sequence;
@@ -592,7 +587,7 @@ if (isTermination) {
         acted_at: new Date(),
         is_final_approval: is_final_approval,
         fnf_flag: "1",
-        total_level: "4",
+        total_level: sequence,
       });
       // await approverModel.updateOffboardapprovedfnf_flag(application_id, "1");
 
@@ -634,24 +629,23 @@ if (isTermination) {
     } else if (approval === "decline") {
 
       await approverModel.updateDbTrackingStatus(application_id, "DECLINED");
-  const currentRowss = await approverModel.checkOffboardingapprovedPDF(
-    application_id,
-    "0",
-    "0",
-    "4",
-  );
+      const currentRowss = await approverModel.checkOffboardingapprovedPDFnew(
+        application_id,
+        0,
+        0
+      );
 
-  const row = currentRowss[0];
-  let sequence = row.sequence;
+    const row = currentRowss[0];
+    let sequence = row.sequence;
 
-  let status = "REJECTED";
+    let status = "REJECTED";
 
   await approverModel.updateWorkflowRow(row.id, {
     status: status,
     remark: reason,
     is_final_approval: "1",
     fnf_flag: "1",
-    total_level: "4",
+    total_level: sequence,
   });
 
   await approverModel.insertWorkflowHistory({
@@ -669,20 +663,20 @@ if (isTermination) {
       application_id,
       prevSequence
     );
-
+ 
     if (prevRow) {
       await approverModel.updateWorkflowRow(prevRow.id, {
         status: "PENDING",
         is_final_approval: "0",
       });
 
-      await approverModel.nextapproval_action_user_idN(
-        prevRow,
-        "0",
-        application_id,
-        "",
-        2
-      );
+        await approverModel.nextapproval_action_user_idN(
+          prevRow,
+          "0",
+          application_id,
+          "",
+          2
+        );
 
         await send_email_sac_returned(prevRow.approver_id);
       }
@@ -1206,12 +1200,12 @@ const initiateOffboardAsmaction = async (req, res) => {
         ) {
           approvalHierarchy = [
             "RSM","DT Team","SNF","distributor","TAX GST","distributor",
-            "O2C","distributor","SNF","O2C","MDM","RSM","NSM","AP TEAM"
+            "O2C","SNF","distributor","O2C","MDM","RSM","NSM","AP TEAM"
           ];
         } else {
           approvalHierarchy = [
             "RSM","DT Team","SNF","distributor","TAX GST","distributor",
-            "O2C","distributor","SNF","O2C","MDM","RSM","AP TEAM"
+            "O2C","SNF","distributor","O2C","MDM","RSM","AP TEAM"
           ];
         }
 
@@ -1371,36 +1365,11 @@ const saveResignation = async (req, res) => {
       db_going_out_of_business,
       increasing_cost,
       not_ready_for_additional_infrastructure,
+      nocFile,
     } = req.body;
 
-    let noc_file_path = null;
     let resignation_letter = null;
     const MAX_FILE_SIZE = 5 * 1024 * 1024;
-
-    if (req.files?.nocFile) {
-      const file = req.files.nocFile;
-
-      if (file.size > MAX_FILE_SIZE) {
-        return res.redirect(`/newoffboardApprover/webpageView/${token}?error=noc_size`);
-      }
-
-     if (file.type !== "application/pdf") {
-        return res.redirect(`/newoffboardApprover/webpageView/${token}?error=noc_type`);
-      }
-
-      const uploadDir = path.join(__dirname, "../../public/uploads/noc");
-      fs.mkdirSync(uploadDir, { recursive: true });
-
-      const extension = path.extname(file.name) || ".pdf";
-      const baseName = path.basename(file.name, extension);
-      const uniqueFilename = `${baseName}_${Date.now()}${extension}`;
-      const destPath = path.join(uploadDir, uniqueFilename);
-
-      fs.copyFileSync(file.path, destPath);
-      fs.unlinkSync(file.path);
-
-      noc_file_path = "/uploads/noc/" + uniqueFilename;
-    }
 
     if (req.files?.regionFile) {
       const file = req.files.regionFile;
@@ -1436,7 +1405,6 @@ const saveResignation = async (req, res) => {
       distributor_name: distributorName,
       email,
       contact_no,
-      noc_file_path,
       resignation_letter,
       gsv_average: gsvAverage,
       low_turnover: low_turnover || null,
@@ -1444,8 +1412,8 @@ const saveResignation = async (req, res) => {
       limitation_in_investment: limitation_in_investment || null,
       db_going_out_of_business: db_going_out_of_business || null,
       increasing_cost: increasing_cost || null,
-      not_ready_for_additional_infrastructure:
-        not_ready_for_additional_infrastructure || null,
+      not_ready_for_additional_infrastructure: not_ready_for_additional_infrastructure || null,
+      noc_file_path :nocFile || null
     });
 
     await approverModel.updateOffboardStatus(applicationId, "1");
@@ -1461,11 +1429,11 @@ const saveResignation = async (req, res) => {
     }
 
     const territory_id = distributor.territory_id;
-    const hierarchyPersons =
-      await approverModel.getAllhierarchyPersons(territory_id);
+    const hierarchyPersons = await approverModel.getAllhierarchyPersons(territory_id);
     const approvalHierarchy = [];
     if (gsvAverage > "3 Lakh") {
       approvalHierarchy.push(
+        "RSM",
         "RSEM",
         "DT Team",
         "SNF",
@@ -1473,8 +1441,8 @@ const saveResignation = async (req, res) => {
         "TAX GST",
         "distributor",
         "O2C",
-        "distributor",
         "SNF",
+        "distributor",
         "O2C",
         "MDM",
         "RSM",
@@ -1483,6 +1451,7 @@ const saveResignation = async (req, res) => {
       );
     } else {
       approvalHierarchy.push(
+        "RSM",
         "RSEM",
         "DT Team",
         "SNF",
@@ -1490,8 +1459,8 @@ const saveResignation = async (req, res) => {
         "TAX GST",
         "distributor",
         "O2C",
-        "distributor",
         "SNF",
+        "distributor",
         "O2C",
         "MDM",
         "RSM",
@@ -1501,28 +1470,27 @@ const saveResignation = async (req, res) => {
 
     await approverModel.deleteExistingWorkflow(applicationId);
 
-
     let hierarchy = [];
     let sequence = 1;
 
-for (let role of approvalHierarchy) {
+   for (let role of approvalHierarchy) {
 
-  if (role === "distributor") {
-    await approverModel.insertOffboardApprovalWorkflow({
-      application_id,
-      territory_id,
-      role_id: 0,
-      role_name: "distributor",
-      approver_id: 0,
-      status: "NOT_STARTED",
-      remark: null,
-      sequence: sequence,
-    });
+    if (role === "distributor") {
+      await approverModel.insertOffboardApprovalWorkflow({
+        application_id,
+        territory_id,
+        role_id: 0,
+        role_name: "distributor",
+        approver_id: 0,
+        status: "NOT_STARTED",
+        remark: null,
+        sequence: sequence,
+      });
 
-    hierarchy.push(0);
-    sequence++;
-    continue;
-  }
+      hierarchy.push(0);
+      sequence++;
+      continue;
+    }
 
       const person = hierarchyPersons.find((p) => p.role === role);
       if (!person) {
@@ -1532,9 +1500,9 @@ for (let role of approvalHierarchy) {
 
       let currentSequence = sequence;
 
-      if (role === "NSM") {
-        currentSequence = sequence - 1;
-      }
+      // if (role === "NSM") {
+      //   currentSequence = sequence - 1;
+      // }
 
       await approverModel.insertOffboardApprovalWorkflow({
         application_id,
@@ -2018,6 +1986,7 @@ const rsmInitialAction = async (req, res) => {
       }
     } else {
       await approverModel.deleteMainOffboardStatus(application_id);
+      await approverModel.deleteMainOffboardStatusresign(application_id);
 
       const userData = await ResignationModel.getUserById(user_id);
       let obj = {
@@ -2638,7 +2607,7 @@ const updateapprovel_levelRSM = async (
     total_level: total_level,
   });
 
-  if (parseInt(sequence) === 12 && action === "Approve" && approver_role === "RSM") {
+  if (parseInt(sequence) === sequence && action === "Approve" && approver_role === "RSM") {
      await approverModel.updateParallelNSM(application_id, sequence);
    }
 
@@ -2678,7 +2647,7 @@ const updateapprovel_levelRSM = async (
     await send_email_Approve(approver_id);
   } else {
     let nextSequence = [];
-    if (sequence == "12") {
+    if (sequence == sequence) {
     let check_pending = await approverModel.checkPendingRow(
       application_id,
       sequence,
@@ -3064,11 +3033,10 @@ const FnfSubmit = async (req, res) => {
         data: alreadyInitiated[0],
       });
     }
-    const currentRowss = await approverModel.checkOffboardingapprovedPDF(
+    const currentRowss = await approverModel.checkOffboardingapprovedPDFnew(
       application_id,
       user_id,
       role_id,
-      "7",
     );
     const row = currentRowss[0];
     // console.log(row, "row");
@@ -3086,9 +3054,9 @@ const FnfSubmit = async (req, res) => {
       acted_at: new Date(),
       is_final_approval: is_final_approval,
       fnf_flag: "1",
-      total_level: "6",
+      total_level: sequence,
     });
-    await approverModel.updateOffboardapprovedfnf_flag(application_id, "1");
+    await approverModel.fnfstatussnfflag(application_id, "1");
 
     await approverModel.insertWorkflowHistory({
       application_id,
@@ -3129,15 +3097,6 @@ const FnfSubmit = async (req, res) => {
       fnf_file_path,
     );
 
-    const token =
-      Date.now().toString(36) +
-      Math.random().toString(36).substr(2) +
-      Math.random().toString(36).substr(2);
-    const expiryDate = new Date();
-    expiryDate.setDate(expiryDate.getDate() + 15);
-
-    await approverModel.saveDbLinkToken(application_id, token, expiryDate);
-    await send_email_distu_fnf(application_id, token, expiryDate, link);
     const distributor = await approverModel.getDistributorDetailsrole(application_id);
     await send_email_asm_info(application_id, distributor.territory_id, nextRow.approver_id);
     return res.status(200).json({
@@ -4013,11 +3972,10 @@ const submitFnfForm = async (req, res) => {
       cheque_path: chequeFilePath,
       submission_date: new Date(),
     });
-    const currentRow = await approverModel.checkOffboardingapprovedPDF(
+    const currentRow = await approverModel.checkOffboardingapprovedPDFnew(
       application_id,
       "0",
       "0",
-      "8",
     );
     const row = currentRow[0];
     // console.log(row, "row");
@@ -4043,7 +4001,7 @@ const submitFnfForm = async (req, res) => {
       acted_at: new Date(),
       is_final_approval: is_final_approval,
       fnf_flag: "",
-      total_level: "8",
+      total_level: sequence,
     });
 
     await approverModel.insertWorkflowHistory({
@@ -4054,7 +4012,7 @@ const submitFnfForm = async (req, res) => {
       remarks: "",
     });
 
-    const nextSequence = sequence + 2;
+    const nextSequence = sequence + 1;
     const nextRow = await approverModel.getNextSequenceRow(
       application_id,
       nextSequence,
@@ -4101,6 +4059,7 @@ const submitFnfForm = async (req, res) => {
 
     let sac = mailer.sentEmailForOffboarding(obj, "APPROVED");
     await send_email_asm_info(application_id, distributor.territory_id, nextRow.approver_id);
+    await approverModel.updateOffboardapprovedfnf_flag(application_id, "1");
 
     res.json({
       type: "success",
@@ -4175,11 +4134,10 @@ const submitGstReversal = async (req, res) => {
       role_name: req.cookies.role_name || "distributor",
     });
 
-    const rows = await approverModel.checkOffboardingapprovedPDF(
+    const rows = await approverModel.checkOffboardingapprovedPDFnew(
       application_id,
       "0",
       "0",
-      "6"
     );
 
     if (!rows || rows.length === 0) {
@@ -4296,6 +4254,146 @@ const submitGstReversal = async (req, res) => {
   }
 };
 
+
+const FnfsnfSubmit = async (req, res) => {
+  try {
+    const { application_id, total_complete_approval_level, action } = req.body;
+
+    if (!application_id || !action) {
+      return res.json({
+        type: "error",
+        message: "Invalid request.",
+      });
+    }
+
+   const currentRows = await approverModel.getCurrentPendingRow(application_id);
+
+
+    if (!currentRows || currentRows.length === 0) {
+      return res.json({
+        type: "error",
+        message: "No workflow found.",
+      });
+    }
+
+    const row = currentRows[0];
+    let sequence = row.sequence;
+
+    if (action === "approve") {
+
+      await approverModel.updateWorkflowRow(row.id, {
+        status: "APPROVED",
+        acted_at: new Date(),
+        is_final_approval: "1",
+        fnf_flag: "1",
+        total_level: total_complete_approval_level,
+      });
+
+      await approverModel.insertWorkflowHistory({
+        application_id,
+        approver_id: row.approver_id,
+        approver_role: "FNF",
+        action: "APPROVED",
+        remarks: "FNF Accepted",
+      });
+
+      const nextSequence = sequence + 1;
+
+      const nextRow = await approverModel.getNextSequenceRow(
+        application_id,
+        nextSequence
+      );
+
+      if (nextRow) {
+        await approverModel.updateWorkflowRow(nextRow.id, {
+          status: "PENDING",
+          is_final_approval: "0",
+        });
+
+        await approverModel.nextapproval_action_user_id(
+          nextRow,
+          "0",
+          application_id,
+          "",
+          "0"
+        );
+
+        await send_email_sac(nextRow.approver_id, application_id, nextRow.approver_id);
+      }
+
+    const token =
+      Date.now().toString(36) +
+      Math.random().toString(36).substr(2) +
+      Math.random().toString(36).substr(2);
+    const expiryDate = new Date();
+    expiryDate.setDate(expiryDate.getDate() + 15);
+
+    await approverModel.saveDbLinkToken(application_id, token, expiryDate);
+    await send_email_distu_fnf(application_id, token, expiryDate, link);
+
+      return res.json({
+        type: "success",
+        message: "F&F Approved & forwarded successfully!",
+      });
+    }
+
+    if (action === "decline") {
+      if (sequence > 1) {
+        const prevSequence = sequence - 1;
+
+           await approverModel.updateWorkflowRow(row.id, {
+            status: "REJECTED",
+            acted_at: new Date(),
+            is_final_approval: "1",
+            fnf_flag: "1",
+            total_level: total_complete_approval_level,
+          });
+
+        const prevRow = await approverModel.getNextSequenceRow(
+          application_id,
+          prevSequence
+        );
+
+        if (prevRow) {
+          await approverModel.updateWorkflowRow(prevRow.id, {
+            status: "PENDING",
+            is_final_approval: "0",
+          });
+
+          await approverModel.nextapproval_action_user_idN(
+            prevRow,
+            "0",
+            application_id,
+            "",
+            2
+          );
+
+          await send_email_sac_returned(prevRow.approver_id);
+        }
+      }
+
+      await approverModel.fnf_flagstatus(application_id, "0");
+
+      return res.json({
+        type: "success",
+        message: "F&F Rejected & sent back successfully!",
+      });
+    }
+
+    return res.json({
+      type: "error",
+      message: "Invalid action.",
+    });
+
+  } catch (error) {
+    console.error("FNF Submit Error:", error);
+    return res.json({
+      type: "error",
+      message: "Something went wrong.",
+    });
+  }
+};
+
 module.exports = {
   offboardList,
   offboardApplicationViewById,
@@ -4327,5 +4425,6 @@ module.exports = {
   submitFnfForm,
   submitGstReversal,
   rsmInitialAction,
-  snfPaymentSubmitBtn
+  snfPaymentSubmitBtn,
+  FnfsnfSubmit
 };

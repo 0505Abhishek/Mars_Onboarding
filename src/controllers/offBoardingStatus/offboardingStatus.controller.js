@@ -111,16 +111,16 @@ const offboardList = async (req, res) => {
     let navbarviews = await dashboard.navbarviewesult(data);
 
     const masterRoles = [
-      "RSEM",
       "RSM",
+      "RSEM",
       "DT Team",
       "SNF",
       "distributor",
       "TAX GST",
       "distributor",
       "O2C",
-      "distributor",
       "SNF",
+      "distributor",
       "O2C",
       "MDM",
       "RSM",

@@ -27,6 +27,7 @@ const getDistributorList = async (role_id, region_id) => {
         ord.resignation_letter AS resignation_letter,
         ord.noc_file_path AS noc_file_path,
         odist.flag,
+        odist.snf_flag,
         odist.dt_team_flag,
         odist.db_replace_status,
         odist.replacementstatus,
@@ -46,8 +47,8 @@ const getDistributorList = async (role_id, region_id) => {
         fnf.status AS fnf_status,
         dbr.is_replacement,
         dbr.type AS claim_type,
-        dbr.amount AS claim_amount
-
+        dbr.amount AS claim_amount,
+        dbr.fnf_file_path AS fnfpdf
     FROM prospective_info
     LEFT JOIN offboardingdistributors odist
         ON odist.application_id = prospective_info.id
@@ -1265,6 +1266,7 @@ const deleteMainOffboardStatus = async (application_id) => {
         approval_role,
         final_approver,
         fnf_flag,
+        snf_flag,
         dt_team_flag,
         confirm_asset_status,
         db_replace_status,
@@ -1311,6 +1313,7 @@ const deleteMainOffboardStatus = async (application_id) => {
         approval_role,
         final_approver,
         fnf_flag,
+        snf_flag,
         dt_team_flag,
         confirm_asset_status,
         db_replace_status,
@@ -1995,6 +1998,39 @@ const checkOffboardingapprovedPDF = async (
   }
 };
 
+
+const checkOffboardingapprovedPDFnew = async (
+  application_id,
+  user_id,
+  role_id
+) => {
+  try {
+        let query = `
+        SELECT * 
+        FROM offboardHierarchy
+        WHERE application_id = ?
+          AND approver_id = ?
+          AND role_id = ?
+          AND status = 'PENDING'
+        LIMIT 1
+      `;
+
+    return new Promise((resolve, reject) => {
+      dbconn.query(
+        query,
+        [application_id, user_id, role_id],
+        (error, results) => {
+          if (error) return reject(error);
+          resolve(results);
+        }
+      );
+    });
+  } catch (error) {
+    console.error("Error in checkOffboardingInitiated:", error);
+    throw error;
+  }
+};
+
 const checkOffboardingapprovedPDFSNF = async (
   application_id,
   role_id,
@@ -2203,6 +2239,34 @@ const updateReplacementStatusToNo = (application_id) => {
   });
 };
 
+const fnfstatussnfflag = (application_id) => {
+  return new Promise((resolve, reject) => {
+    const updateQuery = `
+      UPDATE offboardingdistributors
+      SET snf_flag = 1
+      WHERE application_id = ?
+    `;
+    dbconn.query(updateQuery, [application_id], (err, result) => {
+      if (err) return reject(err);
+      resolve({ updated: true });
+    });
+  });
+};
+
+const fnf_flagstatus = (application_id) => {
+  return new Promise((resolve, reject) => {
+    const updateQuery = `
+      UPDATE offboardingdistributors
+      SET fnf_flag = 0
+      WHERE application_id = ?
+    `;
+    dbconn.query(updateQuery, [application_id], (err, result) => {
+      if (err) return reject(err);
+      resolve({ updated: true });
+    });
+  });
+};
+
 const deleteDbResponseByApplicationId = (application_id) => {
   return new Promise((resolve, reject) => {
     const query = `DELETE FROM db_responses WHERE application_id = ?`;
@@ -2329,7 +2393,7 @@ const initializeDbTracking = async (application_id) => {
       db_action_taken_at = NULL,
       db_override_by = NULL,
       db_override_at = NULL
-    WHERE application_id = ?
+    WHERE application_id = ?  
   `;
 
   return new Promise((resolve, reject) => {
@@ -2617,7 +2681,23 @@ const checkRoleInWorkflow = (application_id, role_name) => {
   });
 };
 
+const getCurrentPendingRow = async (application_id) => {
+  let query = `
+    SELECT * 
+    FROM offboardHierarchy
+    WHERE application_id = ?
+    AND status = 'PENDING'
+    AND role_id = 7
+    LIMIT 1
+  `;
 
+  return new Promise((resolve, reject) => {
+    dbconn.query(query, [application_id], (error, results) => {
+      if (error) return reject(error);
+      resolve(results);
+    });
+  });
+};
 
 module.exports = {
   checkPendingRow,
@@ -2705,5 +2785,9 @@ module.exports = {
   getOffboardEmailDetails,
   checkRoleInWorkflow,
   getDistributorSubmittedDate,
-  getOffboardEmailDetailsDB
+  getOffboardEmailDetailsDB,
+  getCurrentPendingRow,
+  fnfstatussnfflag,
+  fnf_flagstatus,
+  checkOffboardingapprovedPDFnew
 };

@@ -816,16 +816,23 @@
             </td>
             <td>
               <% 
-              const canShowNSMction = appActions && appActions.get_approvel_button && appActions.get_approvel_button.filter(btn => btn.role_name == 'NSM');
+              const canShowNSMction = appActions && appActions.get_approvel_button && 
+                appActions.get_approvel_button.filter(btn => btn.role_name == 'NSM');
+
               const total_levelNSM = canShowNSMction && canShowNSMction.length > 0 && canShowNSMction[0];
               %>
 
-              <% if (canShowNSMction && canShowNSMction.length > 0 && distributor.applicationStatus !== 'Rejected') { %>
-                
+              <% if (
+                canShowNSMction && 
+                canShowNSMction.length > 0 && 
+                distributor.applicationStatus !== 'Rejected' &&
+                appActions && appActions.isNSMPending 
+              ) { %>
+
                 <button id="openVerifyFNFBtn"
                   onclick="openVerifyFNFBtn(this)" 
                   data-application-id="<%= distributor.applicationId %>"
-                  data-total_complete_approval_level="<%= total_levelNSM ? total_levelNSM.total_complete_approval_level : '' %>"
+                  data-total_complete_approval_level="<%= total_levelNSM.total_complete_approval_level %>"
                   data-signed-fnf-path="<%= distributor.signed_fnf_path || '' %>"
                   data-offboard-type="<%= distributor.offboard_type %>"
                   data-exit-interview-completed="<%= distributor.exit_interview_completed %>"

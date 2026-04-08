@@ -67,9 +67,15 @@ const offboardList = async (req, res) => {
           req.cookies.role_name,
           distributor.total_complete_approval_level,
         );
+
+        const isNSMPending = await approverModel.getNSMPendingStatus(
+          distributor.applicationId
+        );
+
         get_action_button.push({
           applicationId: distributor.applicationId,
           get_approvel_button: buttons,
+          isNSMPending: isNSMPending
         });
       }
     }

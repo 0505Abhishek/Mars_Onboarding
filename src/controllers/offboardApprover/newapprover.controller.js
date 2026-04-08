@@ -1439,8 +1439,8 @@ const saveResignation = async (req, res) => {
     const approvalHierarchy = [];
     if (gsvAverage > "3 Lakh") {
       approvalHierarchy.push(
-        "RSM",
         "RSEM",
+        "RSM",
         "DT Team",
         "SNF",
         "distributor",
@@ -1457,8 +1457,8 @@ const saveResignation = async (req, res) => {
       );
     } else {
       approvalHierarchy.push(
-        "RSM",
         "RSEM",
+        "RSM",
         "DT Team",
         "SNF",
         "distributor",

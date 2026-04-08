@@ -1506,9 +1506,9 @@ const saveResignation = async (req, res) => {
 
       let currentSequence = sequence;
 
-      // if (role === "NSM") {
-      //   currentSequence = sequence - 1;
-      // }
+      if (role === "NSM") {
+        currentSequence = sequence - 1;
+      }
 
       await approverModel.insertOffboardApprovalWorkflow({
         application_id,

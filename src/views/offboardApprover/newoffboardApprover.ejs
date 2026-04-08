@@ -782,6 +782,14 @@
               %>
 
             <% if (canShowRSMAction && canShowRSMAction.length > 0) { %>
+
+               <% if (
+                  total_levelRSM && 
+                  (
+                    (distributor.offboard_type === 'resignation' && Number(total_levelRSM.sequence) === 2) ||
+                    (distributor.offboard_type === 'termination' && Number(total_levelRSM.sequence) === 1)
+                  )
+                ) { %>
                 
                 <button 
                   class="btn btn-warning"
@@ -809,6 +817,8 @@
                   </button>
 
                 <% } %>
+
+              <% } %>
             </td>
             <td>
               <% 
@@ -822,7 +832,7 @@
                 canShowNSMction && 
                 canShowNSMction.length > 0 && 
                 distributor.applicationStatus !== 'Rejected' &&
-                appActions && appActions.isNSMPending 
+                appActions && appActions.isNSMPending  
               ) { %>
 
                 <button id="openVerifyFNFBtn"
@@ -3760,7 +3770,7 @@ async function submitFnfAction(action) {
       body: JSON.stringify({
         application_id: selected,
         total_complete_approval_level: total_complete_approval_level,
-        action: action 
+        action: action // 🔥 important
       }),
     });
 
@@ -3792,10 +3802,12 @@ async function submitFnfAction(action) {
 }
 
 
+// ✅ Approve button
 document.getElementById("fnfAccSubmitBtn").onclick = function () {
   submitFnfAction("approve");
 };
 
+// ❌ Reject button
 document.getElementById("fnfAccRejectBtn").onclick = function () {
   submitFnfAction("decline");
 };

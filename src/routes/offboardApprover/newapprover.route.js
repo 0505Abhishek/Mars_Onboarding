@@ -56,6 +56,7 @@ router.post(
 );
 router.post("/gstsubmit", getDetails, getNotification, approverList.gstsubmit);
 router.post("/FnfSubmit", getDetails, getNotification, approverList.FnfSubmit);
+router.post("/FnfsnfSubmit", getDetails, getNotification, approverList.FnfsnfSubmit);
 router.post(
   "/zeroLedgerSubmit",
   getDetails,

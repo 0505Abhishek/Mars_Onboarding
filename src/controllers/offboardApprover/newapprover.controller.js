@@ -68,14 +68,21 @@ const offboardList = async (req, res) => {
           distributor.total_complete_approval_level,
         );
 
-        const isNSMPending = await approverModel.getNSMPendingStatus(
-          distributor.applicationId
-        );
+
+            const isNSMPending = await approverModel.getNSMPendingStatus(
+              distributor.applicationId
+            );
+
+            const isRSMPending = await approverModel.getRSMPendingStatus(
+            distributor.applicationId
+          );
+
 
         get_action_button.push({
           applicationId: distributor.applicationId,
           get_approvel_button: buttons,
-          isNSMPending: isNSMPending
+          isNSMPending: isNSMPending,
+          isRSMPending: isRSMPending 
         });
       }
     }

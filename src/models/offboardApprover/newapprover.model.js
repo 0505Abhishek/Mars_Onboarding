@@ -2722,6 +2722,29 @@ const getNSMPendingStatus = (applicationId) => {
   });
 };
 
+
+  const getRSMPendingStatus = (applicationId) => {
+    return new Promise((resolve, reject) => {
+      const query = `
+        SELECT *
+        FROM offboardHierarchy
+        WHERE application_id = ?
+          AND role_name = 'RSM'
+          AND is_final_approval = 0
+          AND status = 'PENDING'
+        LIMIT 1
+      `;
+
+      dbconn.query(query, [applicationId], (err, results) => {
+        if (err) {
+          console.error(err);
+          return reject(err);
+        }
+        resolve(results.length > 0);
+      });
+    });
+  };
+
 module.exports = {
   checkPendingRow,
   updateOffboardapprovedfnf_flag,
@@ -2813,5 +2836,6 @@ module.exports = {
   fnfstatussnfflag,
   fnf_flagstatus,
   checkOffboardingapprovedPDFnew,
-  getNSMPendingStatus
+  getNSMPendingStatus,
+  getRSMPendingStatus
 };

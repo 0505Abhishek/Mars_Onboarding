@@ -786,7 +786,7 @@
                <% if (
                   total_levelRSM && 
                   (
-                    (distributor.offboard_type === 'resignation' && Number(total_levelRSM.sequence) === 2) ||
+                   (distributor.offboard_type === 'resignation' && Number(total_levelRSM.sequence) === 2 && appActions.isRSMPending) ||
                     (distributor.offboard_type === 'termination' && Number(total_levelRSM.sequence) === 1)
                   )
                 ) { %>
@@ -3802,12 +3802,9 @@ async function submitFnfAction(action) {
 }
 
 
-// ✅ Approve button
 document.getElementById("fnfAccSubmitBtn").onclick = function () {
   submitFnfAction("approve");
 };
-
-// ❌ Reject button
 document.getElementById("fnfAccRejectBtn").onclick = function () {
   submitFnfAction("decline");
 };

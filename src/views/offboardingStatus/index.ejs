@@ -178,7 +178,7 @@ background-color: #0056b3;
           </tr>
       </thead>
 
-          <tbody>
+             <tbody>
               <% finalData.forEach(app => { %>
                   <tr>
                       <td><%= app.mars_code %></td>
@@ -187,22 +187,34 @@ background-color: #0056b3;
                       <td><%= app.aseemail %></td>
                       <td><%= app.offboardStartDate %></td>
 
-                      <% app.roles.forEach(role => { %>
-                          <td>
-                              <% if (role.status === 'APPROVED') { %>
-                                  <span class="badge bg-success text-white">Approved</span><br>
-                                  <%= role.date || '' %>
-                              <% } else if (role.status === 'PENDING') { %>
-                                  <span class="badge bg-primary text-white">Pending</span><br>
-                                  <%= role.date || '' %>
-                              <% } else if (role.status) { %>
-                                  <%= role.status %><br>
-                                  <%= role.date || '' %>
-                              <% } else { %>
-                                  —
-                              <% } %>
-                          </td>
-                      <% }) %>
+                     <% app.roles.forEach(role => { %>
+                        <td>
+                            <% if (role.status === 'APPROVED') { %>
+                            <span class="badge bg-success text-white">Approved</span><br>
+                            <% if (role.subStatus) { %>
+                                <small><%= role.subStatus %></small><br>
+                            <% } %>
+                            <%= role.date || '' %>
+
+                            <% } else if (role.status === 'PENDING') { %>
+                            <span class="badge bg-primary text-white">Pending</span><br>
+                            <% if (role.subStatus) { %>
+                                <small><%= role.subStatus %></small><br>
+                            <% } %>
+                            <%= role.date || '' %>
+
+                            <% } else if (role.status) { %>
+                            <%= role.status %><br>
+                            <% if (role.subStatus) { %>
+                                <small><%= role.subStatus %></small><br>
+                            <% } %>
+                            <%= role.date || '' %>
+
+                            <% } else { %>
+                            — 
+                            <% } %>
+                        </td>
+                        <% }) %>
                   </tr>
               <% }) %>
           </tbody>

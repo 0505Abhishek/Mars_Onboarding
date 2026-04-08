@@ -111,6 +111,7 @@ const offboardList = async (req, res) => {
     let navbarviews = await dashboard.navbarviewesult(data);
 
     const masterRoles = [
+      "ASM",
       "RSM",
       "RSEM",
       "DT Team",
@@ -141,6 +142,11 @@ const offboardList = async (req, res) => {
           offboardStartDate: row?.offboardStartDate
             ? new Date(row.offboardStartDate).toISOString().slice(0, 10)
             : '',
+          dt_team_flag: row.dt_team_flag,
+           replacementstatus: row.replacementstatus,
+          db_replace_status: row.db_replace_status,
+          confirm_asset_status: row.confirm_asset_status,
+
           roleData: []
         };
       }
@@ -168,41 +174,67 @@ const offboardList = async (req, res) => {
 
       const roleUsed = {};
 
+
       const orderedRoles = masterRoles.map((roleName) => {
 
-        const roleKey = roleName.trim().toUpperCase();
+          if (roleName === "ASM") {
 
-        if (!roleUsed[roleKey]) roleUsed[roleKey] = 0;
+          let status = null;
+          let subStatus = null;
 
-        const roleArr = roleDataMap[roleKey] || [];
-        const totalSlots = masterRoles.filter(r => r === roleName).length;
-        const used = roleUsed[roleKey];
-        const totalData = roleArr.length;
+          if (data.dt_team_flag == 1) {
 
-        let roleInfo = null;
+            if (data.replacementstatus != 1) {
+              status = "PENDING";
+              subStatus = "DB Replacement";
+            } 
+            else if (data.db_replace_status == 1 && data.confirm_asset_status != 1) {
+              status = "PENDING";
+              subStatus = "Asset Reconciliation";
+            } 
+            else if (data.confirm_asset_status == 1) {
+              status = "APPROVED";
+              subStatus = "Completed";
+            }
 
-        if (totalData === 0) {
-        }
-
-        else if (totalData === 1) {
-          if (used === totalSlots - 1) {
-            roleInfo = roleArr[0];
           }
 
+          return {
+            role: "ASM",
+            status: status,
+            subStatus: subStatus, 
+            date: null
+          };
         }
 
-        else {
-          roleInfo = roleArr[used] || null;
-        }
+  const roleKey = roleName.trim().toUpperCase();
 
-        roleUsed[roleKey]++;
+  if (!roleUsed[roleKey]) roleUsed[roleKey] = 0;
 
-        return roleInfo || {
-          role: roleName,
-          status: null,
-          date: null
-        };
-      });
+  const roleArr = roleDataMap[roleKey] || [];
+  const totalSlots = masterRoles.filter(r => r === roleName).length;
+  const used = roleUsed[roleKey];
+  const totalData = roleArr.length;
+
+  let roleInfo = null;
+
+  if (totalData === 0) {
+  } else if (totalData === 1) {
+    if (used === totalSlots - 1) {
+      roleInfo = roleArr[0];
+    }
+  } else {
+    roleInfo = roleArr[used] || null;
+  }
+
+  roleUsed[roleKey]++;
+
+  return roleInfo || {
+    role: roleName,
+    status: null,
+    date: null
+  };
+});
 
       return {
         application_id: appId,

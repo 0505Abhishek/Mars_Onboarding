@@ -122,11 +122,13 @@ const offboardList = async (req, res) => {
       "O2C",
       "SNF",
       "distributor",
-      "O2C",
-      "MDM",
       "RSM",
       "NSM",
-      "AP TEAM"
+      "AP TEAM",
+      "O2C",
+      "MDM",
+      "RSEM",
+      "NSEM"
     ];
 
     const appMap = {};

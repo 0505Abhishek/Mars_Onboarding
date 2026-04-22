@@ -42,7 +42,9 @@ const getDistributorList = async (role_id, region_id) => {
         odist.ap_action_status,
         odist.ap_assigned_at,
         odist.ap_deadline,
+        odist.rsem_flag,
         odist.applicationStatus,
+        odist.is_nsem_rsem,
         fnf.signed_fnf_path,
         fnf.status AS fnf_status,
         dbr.is_replacement,
@@ -717,6 +719,39 @@ const getRsemPendingRowRSM = async (application_id, approver_id) => {
   });
 };
 
+
+const getPendingRowByRole = async (application_id, approver_id, approver_role) => {
+  if (!application_id) {
+    throw new Error("application_id is required");
+  }
+
+  let query = `
+    SELECT *
+    FROM offboardHierarchy
+    WHERE application_id = ?
+      AND status = 'PENDING'
+  `;
+
+  const params = [application_id];
+
+  if (approver_role === "RSEM") {
+    query += ` AND approver_id = ?`;
+    params.push(approver_id);
+  }
+
+  query += ` ORDER BY sequence ASC LIMIT 1`;
+
+  return new Promise((resolve, reject) => {
+    dbconn.query(query, params, (err, rows) => {
+      if (err) {
+        console.error("SQL Error:", err);
+        return reject(err);
+      }
+      resolve(rows[0] || null);
+    });
+  });
+};
+
 const getNextSequenceRow = async (application_id, sequence) => {
   const query = `
     SELECT * FROM offboardHierarchy 
@@ -763,6 +798,45 @@ const updateWorkflowRow = async (row_id, updates) => {
 
   console.log("Update Workflow Query:", query);
   console.log("Update Values:", values);
+
+  return new Promise((resolve, reject) => {
+    dbconn.query(query, values, (err) => {
+      if (err) return reject(err);
+      resolve();
+    });
+  });
+};
+
+
+const updateWorkflowRowASM = async (row_id, updates) => {
+  let fields = [];
+  let values = [];
+  if (updates.status) {
+    fields.push("status = ?");
+    values.push(updates.status);
+  }
+  if (updates.remark) {
+    fields.push("remark = ?");
+    values.push(updates.remark);
+  }
+  if (updates.is_final_approval) {
+    fields.push("is_final_approval = ?");
+    values.push(updates.is_final_approval);
+  }
+  if (updates.total_level) {
+    fields.push("sequence = ?");
+    values.push(updates.total_level);
+  }
+  if (updates.fnf_flag) {
+    fields.push("fnf_flag = ?");
+    values.push(updates.fnf_flag);
+  }
+
+  const query = `UPDATE offboardHierarchy SET ${fields.join(
+    ", ",
+  )} WHERE id = ? LIMIT 1`;
+  values.push(row_id);
+
 
   return new Promise((resolve, reject) => {
     dbconn.query(query, values, (err) => {
@@ -1052,7 +1126,6 @@ const getActionButtons = async (
         
       `;
       params = [id, sequence, role_name];
-      console.log(params, "params");
     } else {
       query = `
         SELECT 
@@ -2090,6 +2163,55 @@ const updateOffboardapprovedfnf_flag = async (application_id, fnf_flag) => {
   }
 };
 
+
+const updateOffboardapprovdrsemnsem = async (application_id, is_nsem_rsem) => {
+  try {
+    const updateQuery = `
+        UPDATE offboardingdistributors
+        SET is_nsem_rsem = ?
+        WHERE application_id = ?
+      `;
+
+    return new Promise((resolve, reject) => {
+      dbconn.query(
+        updateQuery,
+        [is_nsem_rsem, application_id],
+        (error, results) => {
+          if (error) return reject(error);
+          resolve({ action: "updated", ...results });
+        },
+      );
+    });
+  } catch (error) {
+    console.error("Error in updateOffboardapproved:", error);
+    throw error;
+  }
+};
+
+const updateOffboardapprovedrsem_flag = async (application_id, fnf_flag) => {
+  try {
+    const updateQuery = `
+        UPDATE offboardingdistributors
+        SET rsem_flag = ?
+        WHERE application_id = ?
+      `;
+
+    return new Promise((resolve, reject) => {
+      dbconn.query(
+        updateQuery,
+        [fnf_flag, application_id],
+        (error, results) => {
+          if (error) return reject(error);
+          resolve({ action: "updated", ...results });
+        },
+      );
+    });
+  } catch (error) {
+    console.error("Error in updateOffboardapproved:", error);
+    throw error;
+  }
+};
+
 const saveGstReversalDecision = async (data) => {
   try {
     const checkQuery = `
@@ -2745,6 +2867,38 @@ const getNSMPendingStatus = (applicationId) => {
     });
   };
 
+
+ const updateParallelRSEMNSEM = (application_id, sequence, action) => {
+  return new Promise((resolve, reject) => {
+
+    const status = action === "Approve" ? "APPROVED" : "REJECT";
+    const is_final_approval = action === "Approve" ? 1 : 2;
+
+    const query = `
+      UPDATE offboardHierarchy
+      SET status = ?,
+          is_final_approval = ?
+      WHERE application_id = ?
+        AND sequence IN (?, ?)
+        AND role_name IN ('RSEM','NSEM')
+    `;
+
+    dbconn.query(
+      query,
+      [status, is_final_approval, application_id, sequence, sequence + 1],
+      (err, result) => {
+        if (err) {
+          console.log("Error updating RSEM/NSEM:", err);
+          return reject(err);
+        }
+
+        resolve(result);
+      }
+    );
+
+  });
+};
+
 module.exports = {
   checkPendingRow,
   updateOffboardapprovedfnf_flag,
@@ -2837,5 +2991,10 @@ module.exports = {
   fnf_flagstatus,
   checkOffboardingapprovedPDFnew,
   getNSMPendingStatus,
-  getRSMPendingStatus
+  getRSMPendingStatus,
+  updateOffboardapprovedrsem_flag,
+  updateParallelRSEMNSEM,
+  updateOffboardapprovdrsemnsem,
+  getPendingRowByRole,
+  updateWorkflowRowASM
 };

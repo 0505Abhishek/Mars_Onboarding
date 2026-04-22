@@ -76,6 +76,12 @@ router.post(
   approverList.fnfApproveBtn,
 );
 router.post(
+  "/fnfApproveBtnexit",
+  getDetails,
+  getNotification,
+  approverList.fnfApproveBtnexit,
+);
+router.post(
   "/paymentSubmitBtn",
   getDetails,
   getNotification,

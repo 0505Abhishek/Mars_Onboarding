@@ -418,10 +418,11 @@
     padding-left: 10px;
   }
 
-  .interviewcss{
+ .interviewcss{
     overflow-x: scroll;
     height: 71%;
   }
+
 </style>
 
 <div class="container mt-4">
@@ -478,6 +479,7 @@
           <th class="dummy-col">RSM</th>
           <th class="dummy-col">NSM</th>
           <th class="dummy-col">AP Team</th>
+          <th class="dummy-col">NSEM</th>
           <th class="dummy-col">RECORDS</th>
         </tr>
       </thead>
@@ -592,11 +594,13 @@
               <% } %>
            </td>
 
-          <td>
-            <% 
-            const canShowRSEMAction = appActions && appActions.get_approvel_button && appActions.get_approvel_button.some(btn => btn.role_name == 'RSEM');
-            %>
-            <% if (canShowRSEMAction) { %>
+        <td>
+          <% 
+            const rsemObj = appActions && appActions.get_approvel_button &&
+              appActions.get_approvel_button.find(btn => btn.role_name == 'RSEM');
+          %>
+
+          <% if (rsemObj && rsemObj.rsem_flag == 0) { %>
             <button
               class="rsem-action-btn btn btn-primary btn-sm"
               data-application-id="<%= distributor.applicationId %>"
@@ -608,12 +612,28 @@
               data-dist-noc="<%= distributor.noc_certificate || '' %>" 
               data-resign-letter="<%= distributor.resignation_letter || '' %>"
               data-resign-noc="<%= distributor.noc_file_path || '' %>"
-              data-total_complete_approval_level="<%= canShowRSEMAction.total_complete_approval_level %>"
+              data-total_complete_approval_level="<%= rsemObj.total_complete_approval_level %>"
             >
               Action
             </button>
-            <% } %>
-          </td>
+          <% } %>
+
+        <% if (rsemObj && rsemObj.rsem_flag == 1) { %>
+          <button 
+            id="openVerifyexitrsem"
+            onclick="openVerifyexitrsem(this)"  
+            data-application-id="<%= distributor.applicationId %>"
+            data-total_complete_approval_level="<%= rsemObj.total_complete_approval_level %>"
+            data-offboard-type="<%= distributor.offboard_type %>"
+            data-exit-interview-completed="<%= distributor.exit_interview_completed %>"
+            data-signed-fnf-path="<%= distributor.signed_fnf_path || '' %>"
+            class="btn btn-primary"
+          >
+            DB Exit Interview
+          </button>
+        <% } %>
+
+      </td>
           <td>
             <% 
             const canShowDTTeamAction = appActions && appActions.get_approvel_button && appActions.get_approvel_button.filter(btn => btn.role_name == 'DT Team');
@@ -810,6 +830,7 @@
                     onclick="openVerifyFNFBtn(this)" 
                     data-application-id="<%= distributor.applicationId %>"
                     data-total_complete_approval_level="<%= total_levelRSM ? total_levelRSM.total_complete_approval_level : '' %>"
+                    data-signed-fnf-path="<%= distributor.signed_fnf_path || '' %>"
                     data-offboard-type="<%= distributor.offboard_type %>"
                     data-exit-interview-completed="<%= distributor.exit_interview_completed %>"
                     class="btn btn-primary">
@@ -864,6 +885,28 @@
             </button>
             <% } %>
           </td>
+
+          <td>
+              <%
+                const showNSEM = (
+                  distributor.rsem_flag == 1 &&
+                  distributor.applicationStatus !== 'Rejected' &&
+                  distributor.is_nsem_rsem != 1
+                );
+              %>
+
+              <% if (showNSEM) { %>
+                <button 
+                  id="openVerifyexitrsem"
+                  onclick="openVerifyexitrsem(this)"  
+                  data-application-id="<%= distributor.applicationId %>"
+                  class="btn btn-primary"
+                >
+                  DB Exit Interview
+                </button>
+              <% } %>
+            </td>
+          
           <td class="text-center">
             <a
               href="/newoffboardApprover/newoffboardApproverview/<%= distributor.applicationId %>"
@@ -1306,7 +1349,7 @@
 
 <div id="verifyFNFBackdrop" class="custom-modal-backdrop"></div>
 
-<div id="verifyFNFModal" class="custom-modal modalwidth interviewcss">
+<div id="verifyFNFModal" class="custom-modal modalwidth">
   <div class="custom-modal-content">
     <div class="modal-header-custom">
       <h4 class="modal-title-custom">Verify F&F Letter</h4>
@@ -1330,6 +1373,37 @@
       <h5 class="section-title">Remarks</h5>
       <textarea
         id="fnfRemarks"
+        name="fnfRemarks"
+        class="form-control section-box-textarea"
+        rows="3"
+      ></textarea>
+    </div>
+
+    </div>
+
+
+
+    <div class="action-buttons">
+      <input type="button"  id="fnfApproveBtn" name="fnfApproveBtn" class="approve-btn fnfApprove_fnf" value="Approve">
+      <input type="button" id="fnfRejectBtn" name="fnfRejectBtn" class="return-btn fnfApprove_fnf" value="Reject">
+    </div>
+  </div>
+</div>
+
+
+<div id="verifyFNFBackdrop_exit" class="custom-modal-backdrop"></div>
+
+<div id="verifyFNFModal_exit" class="custom-modal modalwidth interviewcss">
+  <div class="custom-modal-content">
+    <div class="modal-header-custom">
+      <h4 class="modal-title-custom">DB Exit Interview</h4>
+      <span id="verifyFNFClose_exit" class="close-btn">✖</span>
+    </div>
+
+    <div class="modal-section">
+      <h5 class="section-title">Remarks</h5>
+      <textarea
+        id="fnfRemarksexit"
         name="fnfRemarks"
         class="form-control section-box-textarea"
         rows="3"
@@ -1403,11 +1477,10 @@
 
 
     <div class="action-buttons">
-      <input type="button"  id="fnfApproveBtn" name="fnfApproveBtn" class="approve-btn fnfApprove" value="Approve">
-      <input type="button" id="fnfRejectBtn" name="fnfRejectBtn" class="return-btn fnfApprove" value="Reject">
+   <input type="button" id="fnfApproveBtn_exit" name="fnfApproveBtn" class="approve-btn fnfApprove" value="Approve">
+    <input type="button" id="fnfRejectBtn_exit" name="fnfRejectBtn" class="return-btn fnfApprove" value="Reject">
     </div>
   </div>
-</div>
 
 <div id="rsemModalBackdrop" class="custom-modal-backdrop"></div>
 
@@ -2224,14 +2297,9 @@ function openVerifyFNFBtn(element) {
   selected = element.dataset.applicationId;
   total_complete_approval_level = element.dataset.total_complete_approval_level;
 
-  const offboardType = element.dataset.offboardType;
-  const exitCompleted = element.dataset.exitInterviewCompleted;
   const signedFnfPath = element.dataset.signedFnfPath;
 
   const modal = document.getElementById("verifyFNFModal");
-
-  modal.dataset.offboardType = offboardType;
-  modal.dataset.exitCompleted = exitCompleted;
 
   document.getElementById("verifyFNFBackdrop").classList.add("show");
   modal.classList.add("show");
@@ -2247,148 +2315,70 @@ function openVerifyFNFBtn(element) {
   }
 }
 
+document.addEventListener("click", async (e) => {
 
-const interviewYes = document.getElementById("interviewYes");
-const interviewNo = document.getElementById("interviewNo");
-const exitInterviewQuestions = document.getElementById("exitInterviewQuestions");
+  const btn = e.target.closest(".fnfApprove_fnf");
+  if (!btn) return;
 
-interviewYes.addEventListener("change", () => {
-  exitInterviewQuestions.style.display = "block";
+  const isApprove = btn.id === "fnfApproveBtn" ? "Approve" : "Reject";
+
+  const fnfRemarks = document.getElementById("fnfRemarks");
+
+  document.getElementById("fnfApproveBtn").disabled = true;
+  document.getElementById("fnfRejectBtn").disabled = true;
+
+  if (isApprove === "Reject" && !fnfRemarks.value.trim()) {
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "error",
+      title: "Please enter remarks for rejection",
+      timer: 2000,
+      showConfirmButton: false
+    });
+
+    enableButtons();
+    return;
+  }
+
+  try {
+    const response = await fetch("/newoffboardApprover/fnfApproveBtn", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        application_id: selected,
+        fnfApproveBtn: isApprove,
+        fnfRemarks: fnfRemarks.value.trim(),
+        total_complete_approval_level
+      })
+    });
+
+    const result = await response.json();
+
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: result.type === "success" ? "success" : "info",
+      title: result.message,
+      timer: 3000,
+      showConfirmButton: false,
+      didClose: () => {
+        if (result.type === "success") location.reload();
+        else enableButtons();
+      }
+    });
+
+  } catch (err) {
+    console.error(err);
+    enableButtons();
+  }
+
+  function enableButtons() {
+    document.getElementById("fnfApproveBtn").disabled = false;
+    document.getElementById("fnfRejectBtn").disabled = false;
+  }
 });
 
-interviewNo.addEventListener("change", () => {
-  exitInterviewQuestions.style.display = "none";
-});
-
-document.querySelectorAll(".fnfApprove").forEach(element => {
-  element.onclick = async () => {
-
-    const isApprove = element.id === "fnfApproveBtn" ? "Approve" : "Reject";
-    const fnfRemarks = document.getElementById("fnfRemarks");
-
-    document.getElementById("fnfApproveBtn").disabled = true;
-    document.getElementById("fnfRejectBtn").disabled = true;
-
-    const originalValue = element.value;
-    element.value = "Processing...";
-
-    const modal = document.getElementById("verifyFNFModal");
-    const offboardType = modal.dataset.offboardType;
-    const exitCompleted = modal.dataset.exitCompleted;
-
-    let exitInterviewRemarks = null;
-    let interviewValue = null;
-
-    if (
-      offboardType &&
-      offboardType.toLowerCase() === "resignation" &&
-      exitCompleted == "0"
-    ) {
-
-      interviewValue =
-        document.querySelector(
-          'input[name="interviewConducted"]:checked'
-        )?.value || null;
-
-      if (!interviewValue) {
-        Swal.fire({
-          icon: "error",
-          title: "Please select Interview Conducted Yes/No"
-        });
-        enableButtons();
-        return;
-      }
-
-      if (interviewValue === "no") {
-        Swal.fire({
-          icon: "error",
-          title: "Exit Interview is mandatory for resignation."
-        });
-        enableButtons();
-        return;
-      }
-
-      const exitInterviewAnswers = Array.from(
-        document.querySelectorAll("#exitInterviewQuestions textarea")
-      ).map(t => t.value.trim());
-
-      const anyEmpty = exitInterviewAnswers.some(ans => ans === "");
-
-      if (anyEmpty) {
-        Swal.fire({
-          icon: "error",
-          title: "Please answer all exit interview questions"
-        });
-        enableButtons();
-        return;
-      }
-
-      exitInterviewRemarks = JSON.stringify(exitInterviewAnswers);
-    }
-
-    if (isApprove === "Reject" && !fnfRemarks.value.trim()) {
-      Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: "error",
-        title: "Please enter remarks for rejection",
-        showConfirmButton: false,
-        timer: 2000
-      });
-      enableButtons();
-      return;
-    }
-
-    try {
-      const response = await fetch("/newoffboardApprover/fnfApproveBtn", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          application_id: selected,
-          fnfApproveBtn: isApprove,
-          fnfRemarks: fnfRemarks.value || "",
-          total_complete_approval_level: total_complete_approval_level,
-          exitInterviewRemarks: exitInterviewRemarks,
-          interviewConducted: interviewValue
-        })
-      });
-
-      const result = await response.json();
-
-      Swal.fire({
-        toast: true,
-        position: "top-end",
-        icon: result.type === "success" ? "success" : "info",
-        title: result.message,
-        showConfirmButton: false,
-        timer: 3000,
-        didClose: () => {
-          if (result.type === "success") {
-            location.reload();
-          } else {
-            enableButtons();
-          }
-        }
-      });
-
-    } catch (err) {
-      console.error("Error approving F&F:", err);
-      Swal.fire({
-        icon: "error",
-        title: "Failed to approve F&F. Please try again."
-      });
-      enableButtons();
-    }
-
-    function enableButtons() {
-      document.getElementById("fnfApproveBtn").disabled = false;
-      document.getElementById("fnfRejectBtn").disabled = false;
-      document.getElementById("fnfApproveBtn").value = "Approve";
-      document.getElementById("fnfRejectBtn").value = "Reject";
-    }
-
-  };
-});
 document.getElementById("verifyFNFClose").onclick = function () {
   document.getElementById("verifyFNFBackdrop").classList.remove("show");
   document.getElementById("verifyFNFModal").classList.remove("show");
@@ -3027,8 +3017,6 @@ document.getElementById("toggleIcon").addEventListener("click", function (event)
       return;
     }
 
-    console.log("RSEM Action for Application ID:", currentRsemApplicationId);
-
     document.getElementById("rsemDistributor").textContent =
       btn.dataset.name || "N/A";
     document.getElementById("rsemDbType").textContent =
@@ -3467,7 +3455,6 @@ document.getElementById("rsmApproveBtn").onclick = async function () {
 
   if (!isConfirmed) return;
 
-  // Disable both buttons immediately
   document.getElementById("rsmApproveBtn").disabled = true;
   document.getElementById("rsmReturnBtn").disabled = true;
 
@@ -3492,7 +3479,7 @@ document.getElementById("rsmApproveBtn").onclick = async function () {
 
     if (result.success) location.reload();
     else {
-      // Re-enable buttons if something went wrong
+      
       document.getElementById("rsmApproveBtn").disabled = false;
       document.getElementById("rsmReturnBtn").disabled = false;
     }
@@ -3503,7 +3490,6 @@ document.getElementById("rsmApproveBtn").onclick = async function () {
   }
 };
 
-// RETURN
 document.getElementById("rsmReturnBtn").onclick = async function () {
   if (!currentApplicationId)
     return Swal.fire("Error", "Session expired.", "error");
@@ -3523,7 +3509,6 @@ document.getElementById("rsmReturnBtn").onclick = async function () {
 
   if (!isConfirmed) return;
 
-  // Disable both buttons immediately
   document.getElementById("rsmApproveBtn").disabled = true;
   document.getElementById("rsmReturnBtn").disabled = true;
 
@@ -3809,6 +3794,134 @@ document.getElementById("fnfAccRejectBtn").onclick = function () {
   submitFnfAction("decline");
 };
 
+</script>
+
+
+<script>
+let selecteded = null;
+let total_complete_approval_leveled = null;
+
+function openVerifyexitrsem(element) {
+  selecteded = element.dataset.applicationId;
+  total_complete_approval_leveled = element.dataset.total_complete_approval_level;
+
+  const modal = document.getElementById("verifyFNFModal_exit");
+
+  modal.dataset.offboardType = element.dataset.offboardType;
+  modal.dataset.exitCompleted = element.dataset.exitInterviewCompleted;
+
+  document.getElementById("verifyFNFBackdrop_exit").classList.add("show");
+  modal.classList.add("show");
+
+  const link = document.getElementById("fnfLetterDownload_exit");
+  const file = element.dataset.signedFnfPath;
+
+  if (file) {
+    link.href = file;
+    link.setAttribute("download", "FNF.pdf");
+  } else {
+    link.href = "#";
+    link.removeAttribute("download");
+  }
+}
+
+const interviewYes = document.getElementById("interviewYes");
+const interviewNo = document.getElementById("interviewNo");
+const exitInterviewQuestions = document.getElementById("exitInterviewQuestions");
+
+interviewYes.addEventListener("change", () => {
+  exitInterviewQuestions.style.display = "block";
+});
+
+interviewNo.addEventListener("change", () => {
+  exitInterviewQuestions.style.display = "none";
+});
+
+document.querySelectorAll(".fnfApprove").forEach(btn => {
+  btn.onclick = async () => {
+
+    const action = btn.id === "fnfApproveBtn_exit" ? "Approve" : "Reject";
+
+    document.getElementById("fnfApproveBtn_exit").disabled = true;
+    document.getElementById("fnfRejectBtn_exit").disabled = true;
+
+const modal = document.getElementById("verifyFNFModal_exit");
+const remarks = modal.querySelector("#fnfRemarksexit");
+    let interviewValue = document.querySelector('input[name="interviewConducted"]:checked')?.value;
+    let exitAnswers = null;
+
+    if (action === "Approve") {
+
+      if (!interviewValue) {
+        alert("Select interview option");
+        enable();
+        return;
+      }
+
+      if (interviewValue === "no") {
+        alert("Exit Interview mandatory");
+        enable();
+        return;
+      }
+
+      const answers = Array.from(
+        document.querySelectorAll("#exitInterviewQuestions textarea")
+      ).map(t => t.value.trim());
+
+      if (answers.some(a => !a)) {
+        alert("Fill all questions");
+        enable();
+        return;
+      }
+
+      exitAnswers = JSON.stringify(answers);
+    }
+
+    if (action === "Reject" && !remarks.value.trim()) {
+      alert("Enter remarks");
+      enable();
+      return;
+    }
+
+    try {
+      const res = await fetch("/newoffboardApprover/fnfApproveBtnexit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          application_id: selecteded,
+          fnfApproveBtn: action,
+          fnfRemarks: remarks.value,
+          total_complete_approval_level: total_complete_approval_leveled,
+          exitInterviewRemarks: exitAnswers,
+          interviewConducted: interviewValue
+        })
+      });
+
+      const result = await res.json();
+
+      alert(result.message);
+
+      if (result.type === "success") {
+        location.reload();
+      } else {
+        enable();
+      }
+
+    } catch (e) {
+      console.error(e);
+      enable();
+    }
+
+    function enable() {
+      document.getElementById("fnfApproveBtn_exit").disabled = false;
+      document.getElementById("fnfRejectBtn_exit").disabled = false;
+    }
+  };
+});
+document.getElementById("verifyFNFClose_exit").onclick = () => {
+  document.getElementById("verifyFNFBackdrop_exit").classList.remove("show");
+  document.getElementById("verifyFNFModal_exit").classList.remove("show");
+};
 </script>
 
 <%- include("../shared/footer.ejs") %>
